@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'config.dart';
 
 void main() {
+
+  runApp(const App());
   AMapFlutterLocation.updatePrivacyAgree(true);
   AMapFlutterLocation.updatePrivacyShow(true, true);
   const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
 
-  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -59,12 +61,12 @@ class _MapPageState extends State<MapPage> {
 
   static const LatLng mapCenter = LatLng(39.909187, 116.397451);
 
-  @override
-  void initState() {
-    super.initState();
-    AMapFlutterLocation.setApiKey(
-        '0f2a5fd4a1a5edf78a2207d69f0dd0c2', '0f2a5fd4a1a5edf78a2207d69f0dd0c2');
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   AMapFlutterLocation.setApiKey(
+  //       '0f2a5fd4a1a5edf78a2207d69f0dd0c2', '0f2a5fd4a1a5edf78a2207d69f0dd0c2');
+  // }
 
   @override
   Widget build(BuildContext context) {
