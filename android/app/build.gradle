@@ -51,6 +51,13 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 
     buildTypes {
@@ -58,8 +65,26 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    signingConfigs {
+        debug {
+            keyAlias 'mykey'
+            keyPassword 'se2320'
+            storeFile file('../se2320.keystore')
+            storePassword 'se2320'
+        }
+        release {
+            keyAlias 'mykey'
+            keyPassword 'se2320'
+            storeFile file('../se2320.keystore')
+            storePassword 'se2320'
+        }
+    }
+
+
 }
 
 flutter {
@@ -68,4 +93,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api fileTree(dir: "libs", include: ["*.jar"])
+
 }
