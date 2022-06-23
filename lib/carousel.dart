@@ -30,7 +30,6 @@ List houses = [
   ),
 ];
 
-
 // void main() {
 //   runApp(
 //     MaterialApp(
@@ -46,9 +45,7 @@ List houses = [
 *  height为走马灯区域的高度
 * */
 Widget renderCarousel() {
-  return (
-      Carousel(items: houses, height: 250)
-  );
+  return (Carousel(items: houses, height: 260));
 }
 
 class Carousel extends StatefulWidget {
@@ -56,12 +53,13 @@ class Carousel extends StatefulWidget {
   final double height;
 
   const Carousel({
+    Key? key,
     required this.items,
     required this.height,
-  });
+  }) : super(key: key);
 
   @override
-  _CarouselState createState() => _CarouselState();
+  createState() => _CarouselState();
 }
 
 class _CarouselState extends State<Carousel> {
@@ -156,7 +154,7 @@ class _CarouselState extends State<Carousel> {
             },
           ),
         ),
-        PageIndicator(_pageIndex, widget.items.length),
+        PageIndicator(currentIndex: _pageIndex, pageCount: widget.items.length),
       ],
     );
   }
@@ -166,7 +164,9 @@ class PageIndicator extends StatelessWidget {
   final int currentIndex;
   final int pageCount;
 
-  const PageIndicator(this.currentIndex, this.pageCount);
+  const PageIndicator(
+      {Key? key, required this.currentIndex, required this.pageCount})
+      : super(key: key);
 
   Widget _indicator(bool isActive) {
     return Container(
