@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:html';
 
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
@@ -94,10 +95,13 @@ class HouseDetailPage extends StatelessWidget {
   Widget renderDetailTexts(HouseDetail houseDetail) {
       return Column(
         children: [
-          BrnExpandableText(
-            text: houseDetail.title,
-            maxLines: 2,
-            textStyle: TextStyle(fontWeight: FontWeight.w900),
+          ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 300),
+              child:   BrnExpandableText(
+                          text: houseDetail.title,
+                          maxLines: 2,
+                          textStyle: const TextStyle(fontSize: 20),
+             )
           ),
           BrnEnhanceNumberCard(
             rowCount: 1,
@@ -121,6 +125,15 @@ class HouseDetailPage extends StatelessWidget {
       );
   }
 
+  /// 绘制导航图标
+  Widget renderNavigationIcon() {
+     return BrnVerticalIconButton(
+         name: "我要去这儿",
+         iconWidget: Image.asset("assets/navigation_icon.png"),
+          onTap: () {},
+     );
+  }
+
   @override
   Widget build(BuildContext context) {
     return
@@ -133,6 +146,7 @@ class HouseDetailPage extends StatelessWidget {
             renderAppBar(),
             Expanded(child: renderCarousel()),
             Expanded(child: renderDetailTexts(houseDetail)),
+            Expanded(child: renderNavigationIcon()),
           ],
         ),
       )
