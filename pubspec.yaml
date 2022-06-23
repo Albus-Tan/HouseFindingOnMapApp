@@ -45,7 +45,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+  bruno: ^2.2.0
   amap_flutter_base: ^3.0.0
   amap_flutter_location: ^3.0.0
   amap_flutter_map: ^3.0.0
