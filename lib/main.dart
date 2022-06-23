@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app/HouseDetailBottomSheetOnMap.dart';
 import 'package:flutter/material.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
@@ -31,8 +32,12 @@ class App extends StatelessWidget {
           children: [
             const MapPage(title: 'Flutter Demo Home Page'),
             Column(
-              children: const [Text("hwllo")],
+              children: [
+                Text('111111'),
+                HouseDetailBottomSheet(),
+              ],
             ),
+
           ],
         ));
   }
