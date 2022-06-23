@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'HouseCard.dart';
+import 'package:bruno/bruno.dart';
 
+// 地图找房页面 点击某小区后，从下方弹出的房源详情列表 sheet
 class HouseDetailBottomSheet extends StatefulWidget {
   const HouseDetailBottomSheet({Key? key}) : super(key: key);
 
@@ -30,27 +33,28 @@ void _showHouseDetailListSheet(BuildContext context) {
         builder: (_, controller) {
           return Container(
             color: Colors.white,
-            child: ListView.builder(
-              controller: controller, // set this too
-              itemBuilder: (_, i) => ListTile(title: Text('Item $i')),
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text('小区名称', style: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w900),),
+                  subtitle: Text('均价·房源套数等信息'),
+                  trailing: Icon(Icons.keyboard_arrow_down),
+                ),
+                Divider(),
+                Expanded(
+                  child: ListView.builder(
+                    controller: controller, // set this too
+                    // 长度
+                    itemCount: 15,
+                    itemBuilder: (_, i) => HouseCard(title: "title", rooms: 3, squares: 33, community: "community", price: 250),
+                  ),
+                ),
+              ],
             ),
           );
         },
       );
     },
   );
-}
-
-class HouseDetailListOnMap extends StatefulWidget {
-  const HouseDetailListOnMap({Key? key}) : super(key: key);
-
-  @override
-  State<HouseDetailListOnMap> createState() => _HouseDetailListOnMapState();
-}
-
-class _HouseDetailListOnMapState extends State<HouseDetailListOnMap> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
 }
