@@ -14,17 +14,17 @@ class HouseImage {
 
 List houses = [
   HouseImage(
-    color: Color(0xFF86F3FB),
+    color: const Color(0xFF86F3FB),
     image: "assets/house1.jpg",
     title: '1',
   ),
   HouseImage(
-    color: Color(0xFF7D6588),
+    color: const Color(0xFF7D6588),
     image: "assets/house2.jpg",
     title: '2',
   ),
   HouseImage(
-    color: Color(0xFF4C314D),
+    color: const Color(0xFF4C314D),
     image: "assets/house3.jpg",
     title: '3',
   ),
@@ -74,18 +74,18 @@ class _CarouselState extends State<Carousel> {
     return Center(
       child: AnimatedContainer(
         curve: Curves.easeInOut,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         height: activeIndex == index ? 500.0 : 450.0,
-        margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+        margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         decoration: BoxDecoration(
           color: items[index].color,
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         ),
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
             ClipRRect(
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(12.0),
               ),
               child: Image.asset(
@@ -99,8 +99,8 @@ class _CarouselState extends State<Carousel> {
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(12.0),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: const BoxDecoration(
                         color: Colors.black26,
                         borderRadius: BorderRadius.only(
                           bottomRight: Radius.circular(12.0),
@@ -110,7 +110,7 @@ class _CarouselState extends State<Carousel> {
                       child: Text(
                         items[index].title,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -140,7 +140,7 @@ class _CarouselState extends State<Carousel> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Container(
+        SizedBox(
           height: widget.height,
           child: PageView.builder(
             pageSnapping: true,
@@ -172,11 +172,11 @@ class PageIndicator extends StatelessWidget {
     return Container(
       width: 6.0,
       height: 6.0,
-      margin: EdgeInsets.symmetric(horizontal: 3.0),
+      margin: const EdgeInsets.symmetric(horizontal: 3.0),
       decoration: BoxDecoration(
-        color: isActive ? Color(0xff666a84) : Color(0xffb9bcca),
+        color: isActive ? const Color(0xff666a84) : const Color(0xffb9bcca),
         shape: BoxShape.circle,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             offset: Offset(0.0, 3.0),
