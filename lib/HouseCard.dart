@@ -1,3 +1,4 @@
+//HouseCard组件 用于HouseList
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
@@ -27,16 +28,16 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+//TODO:card加收藏按钮
 class HouseCard extends StatelessWidget {
   const HouseCard({
     Key? key,
-    required this.title,
-    required this.rooms,
-    required this.squares,
-    required this.community,
-    required this.price,
-    required this.url,
+    required this.title, //房子简介
+    required this.rooms,  //*室
+    required this.squares,  // *平
+    required this.community,  // 小区
+    required this.price,  // 价格：*元/月
+    required this.url,  //  图片url
   }) : super(key: key);
 
   final String title;

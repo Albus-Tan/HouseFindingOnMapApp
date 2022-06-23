@@ -1,3 +1,5 @@
+//HouseList Widget
+//main函数调用了实现了了无限长的List
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -46,6 +48,7 @@ class _HouseListState extends State<HouseList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      // shrinkWrap:true,  //加了这个HouseList外面就不用了加Container或Expanded了
       padding: const EdgeInsets.all(16.0),
       itemBuilder: /*1*/ (context, i) {
         if (i.isOdd) return const Divider();
