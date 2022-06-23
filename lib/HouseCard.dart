@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
           squares: 89,
           community: "荣安美安府",
           price: 2000,
+          url:
+              "https://pic1.ajkimg.com/display/58ajk/bb2ea992a99e20c0eadf28414065f95d/640x420c.jpg?t=1",
         ),
       ),
     );
@@ -34,6 +36,7 @@ class HouseCard extends StatelessWidget {
     required this.squares,
     required this.community,
     required this.price,
+    required this.url,
   }) : super(key: key);
 
   final String title;
@@ -41,6 +44,7 @@ class HouseCard extends StatelessWidget {
   final int squares;
   final String community;
   final int price;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
@@ -50,30 +54,29 @@ class HouseCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-                leading: Image.network(
-                    "https://pic1.ajkimg.com/display/58ajk/bb2ea992a99e20c0eadf28414065f95d/640x420c.jpg?t=1"),
-                title: BrnExpandableText(
-                  text: title,
-                  textStyle: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w900),
-                  maxLines: 1,
-                ),
-                subtitle: Row(children: [
-                  RichText(
-                    text: TextSpan(
-                        text: '$rooms室·$squares平·$community',
+              leading: Image.network(url),
+              title: BrnExpandableText(
+                text: title,
+                textStyle: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w700),
+                maxLines: 2,
+              ),
+              subtitle: RichText(
+                  text: TextSpan(
+                      text: '$rooms室·$squares平·$community',
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      children: [
+                    TextSpan(
+                        text: '\n$price元/月',
                         style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                        children: [
-                          TextSpan(
-                              text: '\n$price元/月',
-                              style: const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold)),
-                        ]),
-                  ),
-                ])),
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ))
+                  ])),
+            )
           ],
         ),
       ),
