@@ -55,10 +55,16 @@ class HouseCard extends StatelessWidget {
           children: <Widget>[
             ListTile(
               leading: Image.network(url),
+              onTap: (){
+                print("onTap");  //后面改成页面的跳转
+              },
               title: BrnExpandableText(
                 text: title,
                 textStyle: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w700),
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
                 maxLines: 2,
               ),
               subtitle: RichText(
