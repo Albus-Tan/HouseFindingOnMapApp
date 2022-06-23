@@ -41,7 +41,7 @@ class HouseCard extends StatelessWidget {
 
   final String title;
   final int rooms;
-  final int squares;
+  final double squares;
   final String community;
   final int price;
   final String url;
