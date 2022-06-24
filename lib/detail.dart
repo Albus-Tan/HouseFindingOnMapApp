@@ -1,5 +1,5 @@
 import 'dart:ffi';
-import 'dart:html';
+//import 'dart:html';
 
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
@@ -127,9 +127,13 @@ class HouseDetailPage extends StatelessWidget {
 
   /// 绘制导航图标
   Widget renderNavigationIcon() {
-     return BrnVerticalIconButton(
-         name: "我要去这儿",
-         iconWidget: Image.asset("assets/navigation_icon.png"),
+     return
+       BrnVerticalIconButton(
+         name: "导航",
+         iconWidget: Image.asset(
+             "assets/navigation_icon.png",
+              //fit: BoxFit.cover,
+         ),
           onTap: () {},
      );
   }
@@ -146,7 +150,8 @@ class HouseDetailPage extends StatelessWidget {
             renderAppBar(),
             Expanded(child: renderCarousel()),
             Expanded(child: renderDetailTexts(houseDetail)),
-            Expanded(child: renderNavigationIcon()),
+            renderNavigationIcon(),
+            //Expanded(child: renderNavigationIcon()),
           ],
         ),
       )

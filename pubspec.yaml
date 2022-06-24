@@ -63,7 +63,7 @@ flutter:
     - assets/house1.jpg
     - assets/house2.jpg
     - assets/house3.jpg
-
+    - assets/navigation_icon.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
