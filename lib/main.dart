@@ -41,58 +41,48 @@ class MapState {
   MapState({required this.markers, required this.tags});
 }
 
-class ActionMove {
+class MoveAction {
   late final LatLng position;
   late final String id;
 
-  ActionMove({required this.id, required this.position});
+  MoveAction({required this.id, required this.position});
 }
 
-
-MapState mapReducer(MapState mapState,
-    dynamic action) {
-  switch (action.runtimeType) {
-    case ActionMove:
-      {
-        var tags = mapState.tags;
-        var markers = mapState.markers;
-
-        final createId = tags[action.id]!;
-        final modifyId = action.id;
-        final marker = markers[createId];
-
-        final newMarker = Marker(
-            position: action.position,
-            onDragEnd: marker?.onDragEnd,
-            draggable: marker!.draggable);
-
-        markers[createId] = newMarker;
-        tags.remove(modifyId);
-        tags[newMarker.id] = createId;
-        return MapState(markers: markers, tags: tags);
-      }
-    case ActionAdd:
-      {
-        final markers = mapState.markers;
-        final marker = Marker(
-            position: action.position,
-            draggable: true,
-            onDragEnd: action.dragEnd);
-
-        var tags = mapState.tags;
-        markers[marker.id] = marker;
-        tags[marker.id] = marker.id;
-        return MapState(markers: markers, tags: tags);
-      }
-  }
-  throw "Err";
-}
-
-class ActionAdd {
+class AddAction {
   late final LatLng position;
   late final void Function(String id, LatLng position) dragEnd;
 
-  ActionAdd({required this.position, required this.dragEnd});
+  AddAction({required this.position, required this.dragEnd});
+}
+
+MapState addReducer(MapState mapState, AddAction action) {
+  final markers = mapState.markers;
+  final marker = Marker(
+      position: action.position, draggable: true, onDragEnd: action.dragEnd);
+
+  var tags = mapState.tags;
+  markers[marker.id] = marker;
+  tags[marker.id] = marker.id;
+  return MapState(markers: markers, tags: tags);
+}
+
+MapState moveReducer(MapState mapState, MoveAction action) {
+  var tags = mapState.tags;
+  var markers = mapState.markers;
+
+  final createId = tags[action.id]!;
+  final modifyId = action.id;
+  final marker = markers[createId];
+
+  final newMarker = Marker(
+      position: action.position,
+      onDragEnd: marker?.onDragEnd,
+      draggable: marker!.draggable);
+
+  markers[createId] = newMarker;
+  tags.remove(modifyId);
+  tags[newMarker.id] = createId;
+  return MapState(markers: markers, tags: tags);
 }
 
 class TestReduxPage extends StatefulWidget {
@@ -129,7 +119,10 @@ class _TestReduxPageState extends State<TestReduxPage> {
     //     loaded = true;
     //   });
     // });
-    store = Store(mapReducer, initialState: MapState(markers: {}, tags: {}));
+    store = Store(
+        combineReducers([TypedReducer(addReducer), TypedReducer(moveReducer)]),
+
+        initialState: MapState(markers: {}, tags: {}));
   }
 
   late final Store<MapState> store;
@@ -154,16 +147,15 @@ class _TestReduxPageState extends State<TestReduxPage> {
         store: store,
         child: Stack(children: [
           StoreConnector<MapState, Map<String, Marker>>(
-              builder: (context, markers) =>
-                  MapWidgetStateLess(
+              builder: (context, markers) => MapWidgetStateLess(
                     scrollable: _pressed,
                     markers: Set.of(markers.values),
                     onTap: (LatLng position) {
-                      store.dispatch(ActionAdd(
+                      store.dispatch(AddAction(
                           position: position,
                           dragEnd: (String id, LatLng position) {
                             store.dispatch(
-                                ActionMove(position: position, id: id));
+                                MoveAction(position: position, id: id));
                           }));
                     },
                   ),
