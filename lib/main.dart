@@ -1,12 +1,14 @@
-
 import 'dart:typed_data';
 
-import 'package:app/WidgetIcon.dart';
+// import 'package:app/WidgetIcon.dart';
 import 'package:flutter/material.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'map.dart';
+
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 void main() {
   runApp(const App());
@@ -27,19 +29,80 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const TestPage()
-      home: TestPage(),
+      home: const TestReduxPage(),
     );
   }
 }
 
-class TestPage extends StatefulWidget {
-  const TestPage({Key? key}) : super(key: key);
+class MapState {
+  late final Map<String, Marker> markers;
+  late final Map<String, String> tags;
 
-  @override
-  State<TestPage> createState() => _TestPageState();
+  MapState({required this.markers, required this.tags});
 }
 
-class _TestPageState extends State<TestPage> {
+class ActionMove {
+  late final LatLng position;
+  late final String id;
+
+  ActionMove({required this.id, required this.position});
+}
+
+
+MapState mapReducer(MapState mapState,
+    dynamic action) {
+  switch (action.runtimeType) {
+    case ActionMove:
+      {
+        var tags = mapState.tags;
+        var markers = mapState.markers;
+
+        final createId = tags[action.id]!;
+        final modifyId = action.id;
+        final marker = markers[createId];
+
+        final newMarker = Marker(
+            position: action.position,
+            onDragEnd: marker?.onDragEnd,
+            draggable: marker!.draggable);
+
+        markers[createId] = newMarker;
+        tags.remove(modifyId);
+        tags[newMarker.id] = createId;
+        return MapState(markers: markers, tags: tags);
+      }
+    case ActionAdd:
+      {
+        final markers = mapState.markers;
+        final marker = Marker(
+            position: action.position,
+            draggable: true,
+            onDragEnd: action.dragEnd);
+
+        var tags = mapState.tags;
+        markers[marker.id] = marker;
+        tags[marker.id] = marker.id;
+        return MapState(markers: markers, tags: tags);
+      }
+  }
+  throw "Err";
+}
+
+class ActionAdd {
+  late final LatLng position;
+  late final void Function(String id, LatLng position) dragEnd;
+
+  ActionAdd({required this.position, required this.dragEnd});
+}
+
+class TestReduxPage extends StatefulWidget {
+  const TestReduxPage({Key? key}) : super(key: key);
+
+  @override
+  State<TestReduxPage> createState() => _TestReduxPageState();
+}
+
+class _TestReduxPageState extends State<TestReduxPage> {
   var _pressed = false;
   late Uint8List bytes;
   var loaded = false;
@@ -49,68 +112,69 @@ class _TestPageState extends State<TestPage> {
   void initState() {
     super.initState();
     // var window = const InfoWindow(title: "title", snippet: "body");
-    widgetToImage(
-      widget: const Directionality(
-        textDirection: TextDirection.ltr,
-        child: Text(
-          "world",
-          style: TextStyle(
-              color: Color(0xFF000000),
-              fontSize: 50,
-              backgroundColor: Color(0)),
-        ),
-      ),
-    ).then((value) {
-      setState(() {
-        bytes = value!;
-        loaded = true;
-      });
-    });
+    // widgetToImage(
+    //   widget: const Directionality(
+    //     textDirection: TextDirection.ltr,
+    //     child: Text(
+    //       "world",
+    //       style: TextStyle(
+    //           color: Color(0xFF000000),
+    //           fontSize: 50,
+    //           backgroundColor: Color(0x00000000)),
+    //     ),
+    //   ),
+    // ).then((value) {
+    //   setState(() {
+    //     bytes = value!;
+    //     loaded = true;
+    //   });
+    // });
+    store = Store(mapReducer, initialState: MapState(markers: {}, tags: {}));
   }
 
-  var markers = <String, Marker>{};
+  late final Store<MapState> store;
 
   @override
   Widget build(BuildContext context) {
-    if (loaded && !end) {
-      var marker = Marker(
-        // position: const LatLng(39.909187, 116.397451),
-        position: const LatLng(39.909187, 116.50),
-        draggable: true,
-        // icon: BitmapDescriptor.fromIconPath("assets/images.jpeg")
-        icon: BitmapDescriptor.fromBytes(bytes),
-        //icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-      );
-      debugPrint(bytes.toString());
-      markers[marker.id] = marker;
-      end = true;
-    }
+    // if (loaded && !end) {
+    //   var marker = Marker(
+    //     // position: const LatLng(39.909187, 116.397451),
+    //     position: const LatLng(39.909187, 116.50),
+    //     draggable: true,
+    //     // icon: BitmapDescriptor.fromIconPath("assets/images.jpeg")
+    //     icon: BitmapDescriptor.fromBytes(bytes),
+    //     //icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+    //   );
+    //   debugPrint(bytes.toString());
+    //   markers[marker.id] = marker;
+    //   end = true;
+    // }
     // var position = markers.toString();
-    return loaded
-        ? Stack(children: [
-            // MapWidget(scrollable: _pressed),
-            MapWidgetStateLess(
-              scrollable: _pressed,
-              markers: Set.of(markers.values),
-            ),
-            TextButton(
-              onPressed: () => setState(() => _pressed = !_pressed),
-              child: const Text("hello"),
-            ),
-            Center(
-              child: Image.memory(bytes),
-            ),
-          ])
-        : Stack(children: [
-            // MapWidget(scrollable: _pressed),
-            MapWidgetStateLess(
-              scrollable: _pressed,
-              markers: Set.of(markers.values),
-            ),
-            GestureDetector(
-              onTap: () => setState(() => _pressed = !_pressed),
-              child: const Text("hello"),
-            )
-          ]);
+    return StoreProvider(
+        store: store,
+        child: Stack(children: [
+          StoreConnector<MapState, Map<String, Marker>>(
+              builder: (context, markers) =>
+                  MapWidgetStateLess(
+                    scrollable: _pressed,
+                    markers: Set.of(markers.values),
+                    onTap: (LatLng position) {
+                      store.dispatch(ActionAdd(
+                          position: position,
+                          dragEnd: (String id, LatLng position) {
+                            store.dispatch(
+                                ActionMove(position: position, id: id));
+                          }));
+                    },
+                  ),
+              converter: (store) => store.state.markers),
+          TextButton(
+            onPressed: () => setState(() => _pressed = !_pressed),
+            child: const Text("hello"),
+          ),
+          // Center(
+          //   child: Image.memory(bytes),
+          // ),
+        ]));
   }
 }
