@@ -1,8 +1,8 @@
-//房屋列表页面
+//房屋列表页面，不存在高度溢出问题
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'HouseList.dart';
-import 'config_selection.dart';
+import 'Selection.dart';
 
 void main() => runApp(const MyApp());
 
@@ -13,10 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: _title,
       home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
+        // appBar: AppBar(title: const Text(_title)),
         body: HouseListPage(),
       ),
     );
@@ -44,6 +45,7 @@ Widget renderAppBar() {
   ));
 }
 
+
 class HouseListPage extends StatefulWidget {
   const HouseListPage({Key? key}) : super(key: key);
 
@@ -59,7 +61,7 @@ class _HouseListPageState extends State<HouseListPage> {
     return Column(
       children: [
         renderAppBar(),
-
+        selectionView(),
         const Expanded(child: HouseList()),
       ],
     );
