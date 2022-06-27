@@ -1,6 +1,3 @@
-import 'dart:ffi';
-//import 'dart:html';
-
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:app/carousel.dart';
@@ -68,7 +65,7 @@ class HouseDetailPage extends StatelessWidget {
             BrnIconAction(
               iconPressed: () {},
               child: Image.asset(
-                'assets/favorite.png',
+                'assets/house_detail_page_appbar/favorite.png',
                 scale: 3.0,
                 height: 20,
                 width: 20,
@@ -77,7 +74,7 @@ class HouseDetailPage extends StatelessWidget {
             BrnIconAction(
               iconPressed: () {},
               child: Image.asset(
-                'assets/search.png',
+                'assets/house_detail_page_appbar/search.png',
                 scale: 3.0,
                 height: 20,
                 width: 20,
@@ -131,7 +128,7 @@ class HouseDetailPage extends StatelessWidget {
        BrnVerticalIconButton(
          name: "导航",
          iconWidget: Image.asset(
-             "assets/navigation_icon.png",
+             "assets/house_detail_page_appbar/navigation_icon.png",
               //fit: BoxFit.cover,
          ),
           onTap: () {},

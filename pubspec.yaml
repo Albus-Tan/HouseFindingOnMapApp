@@ -58,12 +58,13 @@ dev_dependencies:
 flutter:
 
   assets:
-    - assets/favorite.png
-    - assets/search.png
-    - assets/house1.jpg
-    - assets/house2.jpg
-    - assets/house3.jpg
-    - assets/navigation_icon.png
+    - assets/house_detail_page_appbar/favorite.png
+    - assets/house_detail_page_appbar/search.png
+    - assets/house_detail_page_appbar/navigation_icon.png
+    - assets/house_detail_page_houses/house1.jpg
+    - assets/house_detail_page_houses/house2.jpg
+    - assets/house_detail_page_houses/house3.jpg
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -15,17 +15,17 @@ class HouseImage {
 List houses = [
   HouseImage(
     color: const Color(0xFF86F3FB),
-    image: "assets/house1.jpg",
+    image: "assets/house_detail_page_houses/house1.jpg",
     title: '1',
   ),
   HouseImage(
     color: const Color(0xFF7D6588),
-    image: "assets/house2.jpg",
+    image: "assets/house_detail_page_houses/house2.jpg",
     title: '2',
   ),
   HouseImage(
     color: const Color(0xFF4C314D),
-    image: "assets/house3.jpg",
+    image: "assets/house_detail_page_houses/house3.jpg",
     title: '3',
   ),
 ];
