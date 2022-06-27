@@ -11,36 +11,56 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 void main() {
-  runApp(const App());
+  final store = Store(
+      combineReducers([TypedReducer(addReducer), TypedReducer(moveReducer)]),
+      initialState: AppState(markers: {}, tags: {}));
+  runApp(App(
+    title: 'Flutter Redux Demo',
+    store: store,
+  ));
   AMapFlutterLocation.updatePrivacyAgree(true);
   AMapFlutterLocation.updatePrivacyShow(true, true);
   const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
 }
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  final Store<AppState> store;
+  final String title;
+
+  const App({Key? key, required this.store, required this.title})
+      : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      // home: const TestPage()
-      home: const TestReduxPage(),
-    );
+    return StoreProvider(
+        store: store,
+        child: MaterialApp(
+          title: title,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: StoreBuilder<AppState>(
+            builder: (BuildContext context, Store<AppState> store) =>
+                TestReduxPage(
+              key: key,
+              store: store,
+              context: context,
+            ),
+          ),
+        ));
   }
 }
 
-class MapState {
+//State
+class AppState {
   late final Map<String, Marker> markers;
   late final Map<String, String> tags;
 
-  MapState({required this.markers, required this.tags});
+  AppState({required this.markers, required this.tags});
 }
 
+//Actions
 class MoveAction {
   late final LatLng position;
   late final String id;
@@ -55,7 +75,8 @@ class AddAction {
   AddAction({required this.position, required this.dragEnd});
 }
 
-MapState addReducer(MapState mapState, AddAction action) {
+//Reducers
+AppState addReducer(AppState mapState, AddAction action) {
   final markers = mapState.markers;
   final marker = Marker(
       position: action.position, draggable: true, onDragEnd: action.dragEnd);
@@ -63,10 +84,10 @@ MapState addReducer(MapState mapState, AddAction action) {
   var tags = mapState.tags;
   markers[marker.id] = marker;
   tags[marker.id] = marker.id;
-  return MapState(markers: markers, tags: tags);
+  return AppState(markers: markers, tags: tags);
 }
 
-MapState moveReducer(MapState mapState, MoveAction action) {
+AppState moveReducer(AppState mapState, MoveAction action) {
   var tags = mapState.tags;
   var markers = mapState.markers;
 
@@ -82,14 +103,18 @@ MapState moveReducer(MapState mapState, MoveAction action) {
   markers[createId] = newMarker;
   tags.remove(modifyId);
   tags[newMarker.id] = createId;
-  return MapState(markers: markers, tags: tags);
+  return AppState(markers: markers, tags: tags);
 }
 
+//Pages
 class TestReduxPage extends StatefulWidget {
-  const TestReduxPage({Key? key}) : super(key: key);
+  const TestReduxPage({Key? key, required this.context, required this.store})
+      : super(key: key);
+  final Store<AppState> store;
+  final BuildContext context;
 
   @override
-  State<TestReduxPage> createState() => _TestReduxPageState();
+  createState() => _TestReduxPageState();
 }
 
 class _TestReduxPageState extends State<TestReduxPage> {
@@ -119,13 +144,7 @@ class _TestReduxPageState extends State<TestReduxPage> {
     //     loaded = true;
     //   });
     // });
-    store = Store(
-        combineReducers([TypedReducer(addReducer), TypedReducer(moveReducer)]),
-
-        initialState: MapState(markers: {}, tags: {}));
   }
-
-  late final Store<MapState> store;
 
   @override
   Widget build(BuildContext context) {
@@ -144,17 +163,17 @@ class _TestReduxPageState extends State<TestReduxPage> {
     // }
     // var position = markers.toString();
     return StoreProvider(
-        store: store,
+        store: widget.store,
         child: Stack(children: [
-          StoreConnector<MapState, Map<String, Marker>>(
+          StoreConnector<AppState, Map<String, Marker>>(
               builder: (context, markers) => MapWidgetStateLess(
                     scrollable: _pressed,
                     markers: Set.of(markers.values),
                     onTap: (LatLng position) {
-                      store.dispatch(AddAction(
+                      widget.store.dispatch(AddAction(
                           position: position,
                           dragEnd: (String id, LatLng position) {
-                            store.dispatch(
+                            widget.store.dispatch(
                                 MoveAction(position: position, id: id));
                           }));
                     },
