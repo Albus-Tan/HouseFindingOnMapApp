@@ -4,25 +4,7 @@ import 'package:flutter/material.dart';
 import 'house_list.dart';
 import 'selection.dart';
 
-void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  static const String _title = 'HouseListPage Demo';
-
-  @override
-  Widget build(BuildContext context) {
-
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        // appBar: AppBar(title: const Text(_title)),
-        body: HouseListPage(),
-      ),
-    );
-  }
-}
 
 /*
   * 绘制AppBar，包含返回按钮，查找按钮
@@ -35,7 +17,7 @@ Widget renderAppBar() {
       BrnIconAction(
         iconPressed: () {},
         child: Image.asset(
-          'assets/search.png',
+          'assets/house_detail_page_appbar/search.png',
           scale: 3.0,
           height: 20,
           width: 20,

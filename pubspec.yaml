@@ -29,7 +29,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  bruno: ^2.2.0
+  amap_flutter_base: ^3.0.0
+  amap_flutter_location: ^3.0.0
+  amap_flutter_map: ^3.0.0
+  permission_handler: ^10.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -45,11 +49,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  bruno: ^2.2.0
-  amap_flutter_base: ^3.0.0
-  amap_flutter_location: ^3.0.0
-  amap_flutter_map: ^3.0.0
-  permission_handler: ^10.0.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -58,11 +58,8 @@ dev_dependencies:
 flutter:
 
   assets:
-    - assets/favorite.png
-    - assets/search.png
-    - assets/house1.jpg
-    - assets/house2.jpg
-    - assets/house3.jpg
+    - assets/house_detail_page_appbar/favorite.png
+    - assets/house_detail_page_appbar/search.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
