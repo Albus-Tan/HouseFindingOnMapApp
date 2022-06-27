@@ -5,6 +5,7 @@ import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'config_selection.dart';
 
+
 Widget selectionView() {
   return BrnSelectionView(
     originalSelectionData: BrnSelectionEntityListBean.fromJson(
