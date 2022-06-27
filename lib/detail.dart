@@ -2,10 +2,6 @@ import 'package:app/carousel.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const HouseDetailPage());
-}
-
 class HouseDetail {
   final String title;
   final int pricePerMonth;
@@ -25,18 +21,14 @@ class HouseDetail {
   });
 }
 
-HouseDetail houseDetail = HouseDetail(
-    title: '2号线淞虹路地铁站，精装修一房，房东人好，可以随时看房入住',
-    pricePerMonth: 3800,
-    squares: 40,
-    direction: '南',
-    shiNumber: 1,
-    tingNumber: 1,
-    weiNumber: 1,
-);
 
 class HouseDetailPage extends StatelessWidget {
-  const HouseDetailPage({Key? key}) : super(key: key);
+
+  final HouseDetail houseDetail;
+  const HouseDetailPage({
+    Key? key,
+    required this.houseDetail
+  }) : super(key: key);
 
   /*
   * 绘制标题在上，文字在下的格式化文本
@@ -137,9 +129,7 @@ class HouseDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "appbar",
-      home: Scaffold(
+    return Scaffold(
         body: Column(
           children: [
             renderAppBar(),
@@ -149,7 +139,6 @@ class HouseDetailPage extends StatelessWidget {
             //Expanded(child: renderNavigationIcon()),
           ],
         ),
-      )
     );
   }
 }
