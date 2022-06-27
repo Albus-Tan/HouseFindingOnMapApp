@@ -146,12 +146,17 @@ class HouseDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             renderAppBar(),
-            //renderCarousel(),
-           // renderDetailTexts(houseDetail),
-            Expanded(child: renderCarousel()),
-            Expanded(child: renderDetailTexts(houseDetail)),
+            Expanded(
+              flex: 3,
+                child: renderCarousel()
+            ),
+            Expanded(
+              flex: 2,
+                child: renderDetailTexts(houseDetail)
+            ),
             renderNavigationIcon(),
             //Expanded(child: renderNavigationIcon()),
           ],
