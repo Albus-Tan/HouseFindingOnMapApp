@@ -74,7 +74,7 @@ class _CarouselState extends State<Carousel> {
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 300),
         height: activeIndex == index ? 500.0 : 450.0,
-        margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
         decoration: BoxDecoration(
           color: items[index].color,
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
@@ -84,7 +84,7 @@ class _CarouselState extends State<Carousel> {
           children: <Widget>[
             ClipRRect(
               borderRadius: const BorderRadius.all(
-                Radius.circular(12.0),
+                Radius.circular(15.0),
               ),
               child: Image.asset(
                 items[index].image,
@@ -97,7 +97,7 @@ class _CarouselState extends State<Carousel> {
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(5.0),
                       decoration: const BoxDecoration(
                         color: Colors.black26,
                         borderRadius: BorderRadius.only(
