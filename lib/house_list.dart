@@ -3,8 +3,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'HouseCard.dart';
-import 'HouseData.dart';
+import 'house_card.dart';
+import 'house_data.dart';
 
 void main() => runApp(const MyApp());
 

@@ -1,4 +1,4 @@
-import 'HouseCard.dart';
+import 'house_card.dart';
 
 const houseCardExample = [
   HouseCard(
