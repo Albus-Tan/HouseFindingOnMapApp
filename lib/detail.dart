@@ -1,6 +1,6 @@
+import 'package:app/carousel.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
-import 'package:app/carousel.dart';
 
 void main() {
   runApp(const HouseDetailPage());
@@ -35,30 +35,32 @@ HouseDetail houseDetail = HouseDetail(
     weiNumber: 1,
 );
 
-Widget renderWrappedText(String title, String text) {
-   return Column(
-     children: [
-       Text(
-         title,
-         style: const TextStyle(fontWeight: FontWeight.bold),
-       ),
-       Text(
-         text
-       ),
-     ],
-   );
-}
-
 class HouseDetailPage extends StatelessWidget {
   const HouseDetailPage({Key? key}) : super(key: key);
+
+  /*
+  * 绘制标题在上，文字在下的格式化文本
+  * */
+  Widget renderWrappedText(String title, String text) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(
+            text
+        ),
+      ],
+    );
+  }
 
   /*
   * 绘制AppBar，包含返回按钮，收藏按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
   Widget renderAppBar() {
-    return (
-        BrnAppBar(
+    return BrnAppBar(
           automaticallyImplyLeading: true,
           //多icon
           actions: <Widget>[
@@ -81,8 +83,7 @@ class HouseDetailPage extends StatelessWidget {
               ),
             )
           ],
-        )
-    );
+        );
   }
 
   /*
@@ -124,8 +125,7 @@ class HouseDetailPage extends StatelessWidget {
 
   /// 绘制导航图标
   Widget renderNavigationIcon() {
-     return
-       BrnVerticalIconButton(
+     return BrnVerticalIconButton(
          name: "导航",
          iconWidget: Image.asset(
              "assets/house_detail_page_appbar/navigation_icon.png",
@@ -137,11 +137,9 @@ class HouseDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-    MaterialApp(
+    return MaterialApp(
       title: "appbar",
-      home:
-      Scaffold(
+      home: Scaffold(
         body: Column(
           children: [
             renderAppBar(),

@@ -45,7 +45,7 @@ List houses = [
 *  height为走马灯区域的高度
 * */
 Widget renderCarousel() {
-  return (Carousel(items: houses, height: 260));
+  return Carousel(items: houses, height: 260);
 }
 
 class Carousel extends StatefulWidget {
