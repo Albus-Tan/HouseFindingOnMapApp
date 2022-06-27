@@ -93,14 +93,22 @@ class HouseDetailPage extends StatelessWidget {
                           textStyle: const TextStyle(fontSize: 20),
              )
           ),
-          BrnEnhanceNumberCard(
-            rowCount: 1,
-            itemChildren: [
-              BrnNumberInfoItemModel(
-                number: houseDetail.pricePerMonth.toString(),
-                lastDesc: '元/月',
-              )
-            ],
+          RichText(
+            text: TextSpan(
+              text: houseDetail.pricePerMonth.toString(),
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 20,
+              ),
+              children: const [
+                TextSpan(
+                text: '元/月',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                )
+              )]
+            ),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,22 +125,31 @@ class HouseDetailPage extends StatelessWidget {
 
   /// 绘制导航图标
   Widget renderNavigationIcon() {
-     return BrnVerticalIconButton(
-         name: "导航",
-         iconWidget: Image.asset(
-             "assets/house_detail_page_appbar/navigation_icon.png",
-              //fit: BoxFit.cover,
-         ),
-          onTap: () {},
-     );
+    return BrnBottomButtonPanel(
+        mainButtonName: '打电话',
+        mainButtonOnTap: () {},
+        secondaryButtonName: '跟我聊',
+        secondaryButtonOnTap: () {},
+        iconButtonList: [
+          //构造Icon按钮
+          BrnVerticalIconButton(
+              name: '导航',
+              iconWidget: Image.asset(
+                "assets/house_detail_page_appbar/navigation_icon.png",
+              ),
+              onTap: () {}
+          )
+        ]
+    );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Column(
           children: [
             renderAppBar(),
+            //renderCarousel(),
+           // renderDetailTexts(houseDetail),
             Expanded(child: renderCarousel()),
             Expanded(child: renderDetailTexts(houseDetail)),
             renderNavigationIcon(),
