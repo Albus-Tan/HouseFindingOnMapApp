@@ -3,19 +3,22 @@ import 'dart:convert';
 
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
-import 'config_selection.dart';
 
+import 'config_selection.dart';
 
 Widget selectionView() {
   return BrnSelectionView(
     originalSelectionData: BrnSelectionEntityListBean.fromJson(
-            const JsonDecoder().convert(configSelect)["data"])!
+      const JsonDecoder().convert(configSelect)["data"],
+    )!
         .list!,
-    onSelectionChanged: (int menuIndex,
-        Map<String, String> filterParams,
-        Map<String, String> customParams,
-        BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
-      print("Select: $filterParams");
+    onSelectionChanged: (
+      int menuIndex,
+      Map<String, String> filterParams,
+      Map<String, String> customParams,
+      BrnSetCustomSelectionMenuTitle setCustomTitleFunction,
+    ) {
+      debugPrint("Select: $filterParams");
     },
     onSelectionPreShow: (int index, BrnSelectionEntity entity) {
       if (entity.key == "one_range_key" || entity.key == "two_range_key") {

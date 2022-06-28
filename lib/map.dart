@@ -1,7 +1,7 @@
+import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:app/widget_to_image.dart';
 import 'package:flutter/material.dart';
-import 'package:amap_flutter_base/amap_flutter_base.dart';
 
 class WidgetMarker {
   final String id;
@@ -29,13 +29,13 @@ class MapWidget extends StatefulWidget {
   final Iterable<WidgetMarker> markers;
   final Set<Polyline> polyLines;
 
-  const MapWidget(
-      {Key? key,
-      this.scrollable = true,
-      this.drawable = false,
-      this.markers = const <WidgetMarker>{},
-      this.polyLines = const <Polyline>{}})
-      : super(key: key);
+  const MapWidget({
+    Key? key,
+    this.scrollable = true,
+    this.drawable = false,
+    this.markers = const <WidgetMarker>{},
+    this.polyLines = const <Polyline>{},
+  }) : super(key: key);
 
   @override
   State<MapWidget> createState() => _MapPageState();
@@ -82,30 +82,30 @@ class _MapPageState extends State<MapWidget> {
       if (widget != null) {
         widgetToImage(widget: widget).then((value) {
           final marker = Marker(
-              position: element.position,
-              clickable: element.clickable,
-              onTap: onTapConvert,
-              draggable: element.draggable,
-              onDragEnd: onDragEndConvert,
-              icon: BitmapDescriptor.fromBytes(value!));
+            position: element.position,
+            clickable: element.clickable,
+            onTap: onTapConvert,
+            draggable: element.draggable,
+            onDragEnd: onDragEndConvert,
+            icon: BitmapDescriptor.fromBytes(value!),
+          );
           _tags[marker.id] = '${element.id}external';
           _markers['${element.id}external'] = marker;
         });
       } else {
         final marker = Marker(
-            position: element.position,
-            clickable: element.clickable,
-            onTap: onTapConvert,
-            draggable: element.draggable,
-            onDragEnd: onDragEndConvert);
+          position: element.position,
+          clickable: element.clickable,
+          onTap: onTapConvert,
+          draggable: element.draggable,
+          onDragEnd: onDragEndConvert,
+        );
 
         _tags[marker.id] = '${element.id}external';
         _markers['${element.id}external'] = marker;
       }
     }
   }
-
-  void on(String id, LatLng position) {}
 
   @override
   Widget build(BuildContext context) {
@@ -116,29 +116,30 @@ class _MapPageState extends State<MapWidget> {
             markers: Set.of(_markers.values),
             onTap: (LatLng position) {
               final marker = Marker(
-                  position: position,
-                  draggable: true,
-                  onDragEnd: (String updateId, LatLng position) {
-                    String createId = _tags[updateId]!;
-                    final oldMarker = _markers[createId]!;
-                    setState(() {
-                      final newMarker = Marker(
-                        position: position,
-                        clickable: oldMarker.clickable,
-                        draggable: oldMarker.draggable,
-                        icon: oldMarker.icon,
-                        onTap: oldMarker.onTap,
-                        onDragEnd: oldMarker.onDragEnd,
-                      );
-                      if (_polygonMarkers.containsKey(createId)) {
-                        _polygonMarkers[createId] = newMarker;
-                      }
-                      _markers[createId] = newMarker;
+                position: position,
+                draggable: true,
+                onDragEnd: (String updateId, LatLng position) {
+                  String createId = _tags[updateId]!;
+                  final oldMarker = _markers[createId]!;
+                  setState(() {
+                    final newMarker = Marker(
+                      position: position,
+                      clickable: oldMarker.clickable,
+                      draggable: oldMarker.draggable,
+                      icon: oldMarker.icon,
+                      onTap: oldMarker.onTap,
+                      onDragEnd: oldMarker.onDragEnd,
+                    );
+                    if (_polygonMarkers.containsKey(createId)) {
+                      _polygonMarkers[createId] = newMarker;
+                    }
+                    _markers[createId] = newMarker;
 
-                      _tags.remove(createId);
-                      _tags[_markers[createId]!.id] = createId;
-                    });
+                    _tags.remove(createId);
+                    _tags[_markers[createId]!.id] = createId;
                   });
+                },
+              );
               setState(() {
                 _polygonMarkers[marker.id] = marker;
                 _markers[marker.id] = marker;
@@ -149,8 +150,10 @@ class _MapPageState extends State<MapWidget> {
                 ? {}
                 : {
                     Polygon(
-                        points: List.of(
-                            _polygonMarkers.values.map((e) => e.position)))
+                      points: List.of(
+                        _polygonMarkers.values.map((e) => e.position),
+                      ),
+                    ),
                   },
             polylines: widget.polyLines,
           )

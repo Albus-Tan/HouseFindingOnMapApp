@@ -1,5 +1,5 @@
 //selection配置
-const configSelect ='''
+const configSelect = '''
 {
   "errno": 0,
   "data": {
@@ -359,5 +359,4 @@ const configSelect ='''
     ]
   }
 }
-'''
-;
+''';

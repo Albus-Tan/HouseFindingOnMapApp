@@ -45,7 +45,10 @@ List houses = [
 *  height为走马灯区域的高度
 * */
 Widget renderCarousel() {
-  return Carousel(items: houses, height: 260);
+  return Carousel(
+    items: houses,
+    height: 260,
+  );
 }
 
 class Carousel extends StatefulWidget {
@@ -74,10 +77,15 @@ class _CarouselState extends State<Carousel> {
         curve: Curves.easeInOut,
         duration: const Duration(milliseconds: 300),
         height: activeIndex == index ? 500.0 : 450.0,
-        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+        margin: const EdgeInsets.symmetric(
+          vertical: 5.0,
+          horizontal: 10.0,
+        ),
         decoration: BoxDecoration(
           color: items[index].color,
-          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(12.0),
+          ),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -115,7 +123,7 @@ class _CarouselState extends State<Carousel> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -154,7 +162,10 @@ class _CarouselState extends State<Carousel> {
             },
           ),
         ),
-        PageIndicator(currentIndex: _pageIndex, pageCount: widget.items.length),
+        PageIndicator(
+          currentIndex: _pageIndex,
+          pageCount: widget.items.length,
+        ),
       ],
     );
   }
@@ -164,9 +175,11 @@ class PageIndicator extends StatelessWidget {
   final int currentIndex;
   final int pageCount;
 
-  const PageIndicator(
-      {Key? key, required this.currentIndex, required this.pageCount})
-      : super(key: key);
+  const PageIndicator({
+    Key? key,
+    required this.currentIndex,
+    required this.pageCount,
+  }) : super(key: key);
 
   Widget _indicator(bool isActive) {
     return Container(
@@ -190,7 +203,9 @@ class PageIndicator extends StatelessWidget {
   List<Widget> _buildIndicators() {
     List<Widget> indicators = [];
     for (int i = 0; i < pageCount; i++) {
-      indicators.add(i == currentIndex ? _indicator(true) : _indicator(false));
+      indicators.add(
+        i == currentIndex ? _indicator(true) : _indicator(false),
+      );
     }
     return indicators;
   }
@@ -220,4 +235,3 @@ class PageIndicator extends StatelessWidget {
 //     );
 //   }
 // }
-
