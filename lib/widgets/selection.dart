@@ -3,13 +3,15 @@ import 'dart:convert';
 
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'config_selection.dart';
 
-Widget selectionView() {
+Future<Widget> selectionView(String path) async {
+  final json = await rootBundle.loadString(path);
+
   return BrnSelectionView(
     originalSelectionData: BrnSelectionEntityListBean.fromJson(
-      const JsonDecoder().convert(configSelect)["data"],
+      const JsonDecoder().convert(json)['data'],
     )!
         .list!,
     onSelectionChanged: (
