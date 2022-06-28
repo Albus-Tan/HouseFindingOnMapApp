@@ -39,7 +39,6 @@ class _HouseListPageState extends State<HouseListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: const Text(_title)),
       body: Column(
         children: [
           renderAppBar(),
