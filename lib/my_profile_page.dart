@@ -32,7 +32,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         title: const Text('地图找房'),
       ),
       body: Column(
-        children: <Widget>[
+        children:[
           const ListTile(
             contentPadding: EdgeInsets.all(20),
             leading: CircleAvatar(
