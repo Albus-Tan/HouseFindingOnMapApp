@@ -2,21 +2,21 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   amap_flutter_base:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: amap_flutter_base
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
   amap_flutter_location:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: amap_flutter_location
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
   amap_flutter_map:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: amap_flutter_map
       url: "https://pub.dartlang.org"
@@ -44,7 +44,7 @@ packages:
     source: hosted
     version: "2.1.0"
   bruno:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: bruno
       url: "https://pub.dartlang.org"
@@ -194,7 +194,7 @@ packages:
     source: hosted
     version: "1.0.0"
   permission_handler:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: permission_handler
       url: "https://pub.dartlang.org"
