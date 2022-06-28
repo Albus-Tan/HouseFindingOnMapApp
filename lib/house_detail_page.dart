@@ -1,4 +1,5 @@
 import 'package:app/carousel.dart';
+import 'package:app/house_list.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,9 @@ class HouseDetailPage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         Text(text),
       ],
@@ -165,16 +168,16 @@ class HouseDetailPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           renderAppBar(),
-          Expanded(
-            flex: 3,
-            child: renderCarousel(),
-          ),
+          renderCarousel(),
           Expanded(
             flex: 2,
             child: renderDetailTexts(houseDetail),
           ),
+          const Flexible(
+            flex: 4,
+            child: HouseList(),
+          ),
           renderNavigationIcon(),
-          //Expanded(child: renderNavigationIcon(),),
         ],
       ),
     );
