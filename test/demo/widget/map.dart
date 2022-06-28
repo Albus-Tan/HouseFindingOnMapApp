@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 
-
 void main() {
   runApp(const App(
     title: 'Flutter Redux Demo',
@@ -28,7 +27,7 @@ class App extends StatelessWidget {
         widget: const Directionality(
           textDirection: TextDirection.ltr,
           child: Text(
-            "world",
+            "Hello World",
             style: TextStyle(
                 color: Color(0xFF000000),
                 fontSize: 100,
@@ -41,15 +40,15 @@ class App extends StatelessWidget {
         });
 
     return MaterialApp(
-      title: title,
-      home: MapWidget(
-        markers: {marker},
-        polyLines: {
-          Polyline(
-              points: [const LatLng(40, 116.397451), const LatLng(40, 117)],
-              color: Colors.red)
-        },
-      ),
+        title: title,
+        home: MapWidget(
+          markers: {marker},
+          polyLines: {
+            Polyline(
+                points: [const LatLng(39, 116.397451), const LatLng(40, 117)],
+                color: Colors.red)
+          },
+        )
     );
   }
 }
