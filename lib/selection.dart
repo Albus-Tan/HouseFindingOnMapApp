@@ -3,13 +3,14 @@ import 'dart:convert';
 
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
-import 'config_selection.dart';
 
+import 'config_selection.dart';
 
 Widget selectionView() {
   return BrnSelectionView(
     originalSelectionData: BrnSelectionEntityListBean.fromJson(
-            const JsonDecoder().convert(configSelect)["data"])!
+      const JsonDecoder().convert(configSelect)["data"],
+    )!
         .list!,
     onSelectionChanged: (int menuIndex,
         Map<String, String> filterParams,

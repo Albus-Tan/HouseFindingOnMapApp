@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
 
 Future<Uint8List?> widgetToImage(
     {required Widget widget,
@@ -23,7 +23,9 @@ Future<Uint8List?> widgetToImage(
   PipelineOwner pipelineOwner = PipelineOwner();
   pipelineOwner.rootNode = renderView;
   renderView.prepareInitialFrame();
-  BuildOwner buildOwner = BuildOwner(focusManager: FocusManager());
+  BuildOwner buildOwner = BuildOwner(
+    focusManager: FocusManager(),
+  );
   RenderObjectToWidgetElement rootElement = RenderObjectToWidgetAdapter(
     container: repaintBoundary,
     child: widget,
@@ -37,6 +39,6 @@ Future<Uint8List?> widgetToImage(
   ByteData? byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
   return byteData?.buffer
       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
-  // Image image = Image.memory(Uint8List.view(byteData!.buffer));
+  // Image image = Image.memory(Uint8List.view(byteData!.buffer),);
   // return image;
 }

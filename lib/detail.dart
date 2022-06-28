@@ -10,6 +10,7 @@ class HouseDetail {
   final int shiNumber;
   final int tingNumber;
   final int weiNumber;
+
   HouseDetail({
     required this.title,
     required this.pricePerMonth,
@@ -17,17 +18,16 @@ class HouseDetail {
     required this.direction,
     required this.shiNumber,
     required this.tingNumber,
-    required this.weiNumber
+    required this.weiNumber,
   });
 }
 
-
 class HouseDetailPage extends StatelessWidget {
-
   final HouseDetail houseDetail;
+
   const HouseDetailPage({
     Key? key,
-    required this.houseDetail
+    required this.houseDetail,
   }) : super(key: key);
 
   /*
@@ -40,9 +40,7 @@ class HouseDetailPage extends StatelessWidget {
           title,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        Text(
-            text
-        ),
+        Text(text),
       ],
     );
   }
@@ -53,29 +51,29 @@ class HouseDetailPage extends StatelessWidget {
   * */
   Widget renderAppBar() {
     return BrnAppBar(
-          automaticallyImplyLeading: true,
-          //多icon
-          actions: <Widget>[
-            BrnIconAction(
-              iconPressed: () {},
-              child: Image.asset(
-                'assets/house_detail_page_appbar/favorite.png',
-                scale: 3.0,
-                height: 20,
-                width: 20,
-              ),
-            ),
-            BrnIconAction(
-              iconPressed: () {},
-              child: Image.asset(
-                'assets/house_detail_page_appbar/search.png',
-                scale: 3.0,
-                height: 20,
-                width: 20,
-              ),
-            )
-          ],
-        );
+      automaticallyImplyLeading: true,
+      //多icon
+      actions: [
+        BrnIconAction(
+          iconPressed: () {},
+          child: Image.asset(
+            'assets/house_detail_page_appbar/favorite.png',
+            scale: 3.0,
+            height: 20,
+            width: 20,
+          ),
+        ),
+        BrnIconAction(
+          iconPressed: () {},
+          child: Image.asset(
+            'assets/house_detail_page_appbar/search.png',
+            scale: 3.0,
+            height: 20,
+            width: 20,
+          ),
+        ),
+      ],
+    );
   }
 
   /*
@@ -83,84 +81,102 @@ class HouseDetailPage extends StatelessWidget {
   * */
 
   Widget renderDetailTexts(HouseDetail houseDetail) {
-      return Column(
-        children: [
-          ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 300),
-              child:   BrnExpandableText(
-                          text: houseDetail.title,
-                          maxLines: 2,
-                          textStyle: const TextStyle(fontSize: 20),
-             )
+    return Column(
+      children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: BrnExpandableText(
+            text: houseDetail.title,
+            maxLines: 2,
+            textStyle: const TextStyle(fontSize: 20),
           ),
-          RichText(
-            text: TextSpan(
-              text: houseDetail.pricePerMonth.toString(),
-              style: const TextStyle(
-                color: Colors.red,
-                fontSize: 20,
-              ),
-              children: const [
-                TextSpan(
+        ),
+        RichText(
+          text: TextSpan(
+            text: houseDetail.pricePerMonth.toString(),
+            style: const TextStyle(
+              color: Colors.red,
+              fontSize: 20,
+            ),
+            children: const [
+              TextSpan(
                 text: '元/月',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15,
-                )
-              )]
-            ),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(child: renderWrappedText(
-                  "${houseDetail.shiNumber}室${houseDetail.tingNumber}厅${houseDetail.weiNumber}卫", "房型")),
-              Expanded(child: renderWrappedText("${houseDetail.squares}平", "面积")),
-              Expanded(child: renderWrappedText(houseDetail.direction, "朝向")),
+                ),
+              ),
             ],
-          )
-        ],
-      );
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: renderWrappedText(
+                "${houseDetail.shiNumber}室"
+                    "${houseDetail.tingNumber}厅"
+                    "${houseDetail.weiNumber}卫",
+                "房型",
+              ),
+            ),
+            Expanded(
+              child: renderWrappedText(
+                "${houseDetail.squares}平",
+                "面积",
+              ),
+            ),
+            Expanded(
+              child: renderWrappedText(
+                houseDetail.direction,
+                "朝向",
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   /// 绘制导航图标
   Widget renderNavigationIcon() {
     return BrnBottomButtonPanel(
-        mainButtonName: '打电话',
-        mainButtonOnTap: () {},
-        secondaryButtonName: '跟我聊',
-        secondaryButtonOnTap: () {},
-        iconButtonList: [
-          //构造Icon按钮
-          BrnVerticalIconButton(
-              name: '导航',
-              iconWidget: Image.asset(
-                "assets/house_detail_page_appbar/navigation_icon.png",
-              ),
-              onTap: () {}
-          )
-        ]
+      mainButtonName: '打电话',
+      mainButtonOnTap: () {},
+      secondaryButtonName: '跟我聊',
+      secondaryButtonOnTap: () {},
+      iconButtonList: [
+        //构造Icon按钮
+        BrnVerticalIconButton(
+          name: '导航',
+          iconWidget: Image.asset(
+            "assets/house_detail_page_appbar/navigation_icon.png",
+          ),
+          onTap: () {},
+        ),
+      ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            renderAppBar(),
-            Expanded(
-              flex: 3,
-                child: renderCarousel()
-            ),
-            Expanded(
-              flex: 2,
-                child: renderDetailTexts(houseDetail)
-            ),
-            renderNavigationIcon(),
-            //Expanded(child: renderNavigationIcon()),
-          ],
-        ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          renderAppBar(),
+          Expanded(
+            flex: 3,
+            child: renderCarousel(),
+          ),
+          Expanded(
+            flex: 2,
+            child: renderDetailTexts(houseDetail),
+          ),
+          renderNavigationIcon(),
+          //Expanded(child: renderNavigationIcon(),),
+        ],
+      ),
     );
   }
 }
