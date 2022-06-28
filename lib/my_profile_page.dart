@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:bruno/bruno.dart';
 
 class MyProfilePage extends StatefulWidget {
-  const MyProfilePage({Key? key}) : super(key: key);
+  const MyProfilePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MyProfilePage> createState() => _MyProfilePageState();
@@ -14,7 +16,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
     List<Widget> list = [];
     for (int i = 0; i < 30; i++) {
       // TODO: 修改为 用户收藏的 房屋详情信息卡
-      list.add(ListTile(title: Text("收藏$i")));
+      list.add(ListTile(
+        title: Text("收藏$i"),
+      ));
     }
     return list;
   }
@@ -37,8 +41,11 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   "iew2/2/w/1024/"),
             ),
             title: Text("用户名"),
-            subtitle: Text("用户信息",
-                maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle: Text(
+              "用户信息",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -76,15 +83,22 @@ class _MyProfilePageState extends State<MyProfilePage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(top: 30),
+            padding: const EdgeInsets.only(
+              top: 30,
+            ),
             child: const Text(
               '我的收藏',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           const Divider(),
           Expanded(
-            child: ListView(children: _getData()),
+            child: ListView(
+              children: _getData(),
+            ),
           )
         ],
       ),
