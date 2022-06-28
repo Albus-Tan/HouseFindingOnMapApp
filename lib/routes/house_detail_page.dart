@@ -60,7 +60,7 @@ class HouseDetailPage extends StatelessWidget {
         BrnIconAction(
           iconPressed: () {},
           child: Image.asset(
-            'assets/house_detail_page_appbar/favorite.png',
+            'assets/icon/favorite.png',
             scale: 3.0,
             height: 20,
             width: 20,
@@ -69,7 +69,7 @@ class HouseDetailPage extends StatelessWidget {
         BrnIconAction(
           iconPressed: () {},
           child: Image.asset(
-            'assets/house_detail_page_appbar/search.png',
+            'assets/icon/search.png',
             scale: 3.0,
             height: 20,
             width: 20,
@@ -153,7 +153,7 @@ class HouseDetailPage extends StatelessWidget {
         BrnVerticalIconButton(
           name: '导航',
           iconWidget: Image.asset(
-            "assets/house_detail_page_appbar/navigation_icon.png",
+            "assets/icon/navigation_icon.png",
           ),
           onTap: () {},
         ),
