@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SearchBarViewDelegate extends SearchDelegate<String> {
   String searchHint = "请输入搜索内容...";
+
+  /// 待搜索的所有条目
   var sourceList = [
-    "dart",
-    "dart 入门",
-    "flutter",
-    "flutter 编程",
-    "flutter 编程开发",
+    "汤臣一品",
+    "上海交通大学西一区",
+    "上海交通大学东区",
+    "平安里",
+    "东方明珠",
+    "金茂大厦",
+    "sousuo",
+    "sss",
+    "sobk",
+    "haofangzi",
+    "abcdef",
   ];
 
-  var suggestList = ["flutter", "flutter 编程开发"];
+  /// 推荐的搜索条目
+  var suggestList = ["汤臣一品", "上海交通大学"];
 
   @override
   String get searchFieldLabel => searchHint;
@@ -19,6 +28,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   List<Widget> buildActions(BuildContext context) {
     ///显示在最右边的控件列表
     return [
+      /// 清除按钮
       IconButton(
         icon: Icon(Icons.clear),
         onPressed: () {
@@ -28,6 +38,8 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
           showSuggestions(context);
         },
       ),
+
+      /// 搜索按钮
       IconButton(
         icon: Icon(Icons.search),
         onPressed: () => query = "",
@@ -35,7 +47,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
     ];
   }
 
-  ///左侧带动画的控件，一般都是返回
+  ///左侧带动画的控件，此处是返回
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
@@ -69,33 +81,132 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
     );
   }
 
+  /// 搜索推荐下拉列表
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> suggest = query.isEmpty
         ? suggestList
         : sourceList.where((input) => input.startsWith(query)).toList();
-    return ListView.builder(
-      itemCount: suggest.length,
-      itemBuilder: (BuildContext context, int index) => InkWell(
-        child: ListTile(
-          title: RichText(
-            text: TextSpan(
-              text: suggest[index].substring(0, query.length),
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-              children: [
-                TextSpan(
-                  text: suggest[index].substring(query.length),
-                  style: TextStyle(color: Colors.grey),
+    return query.isEmpty
+        ? SingleChildScrollView(
+            child: SearchContentView(),
+          )
+        : ListView.builder(
+            itemCount: suggest.length,
+            itemBuilder: (BuildContext context, int index) => InkWell(
+              child: ListTile(
+                title: RichText(
+                  text: TextSpan(
+                    text: suggest[index].substring(0, query.length),
+                    style: TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                    children: [
+                      TextSpan(
+                        text: suggest[index].substring(query.length),
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
+              onTap: () {
+                query.replaceAll("", suggest[index].toString());
+                searchHint = "";
+                query = suggest[index].toString();
+                showResults(context);
+              },
+            ),
+          );
+  }
+}
+
+class SearchContentView extends StatefulWidget {
+  @override
+  _SearchContentViewState createState() => _SearchContentViewState();
+}
+
+class _SearchContentViewState extends State<SearchContentView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: Text(
+              '房源推荐',
+              style: TextStyle(fontSize: 16),
             ),
           ),
+          SearchItemView(),
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Text(
+              '历史记录',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          SearchItemView()
+        ],
+      ),
+    );
+  }
+}
+
+class SearchItemView extends StatefulWidget {
+  @override
+  _SearchItemViewState createState() => _SearchItemViewState();
+}
+
+class _SearchItemViewState extends State<SearchItemView> {
+  List<String> items = [
+    "汤臣一品",
+    "上海交通大学西一区",
+    "上海交通大学东区",
+    "平安里",
+    'gradle',
+    'Camera',
+    '代码混淆 安全',
+    '逆向加固'
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Wrap(
+        spacing: 10,
+        // runSpacing: 0,
+        children: items.map((item) {
+          return SearchItem(title: item);
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class SearchItem extends StatefulWidget {
+  @required
+  final String title;
+
+  const SearchItem({Key? key, required this.title}) : super(key: key);
+
+  @override
+  _SearchItemState createState() => _SearchItemState();
+}
+
+class _SearchItemState extends State<SearchItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: InkWell(
+        child: Chip(
+          label: Text(widget.title),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
         onTap: () {
-          query.replaceAll("", suggest[index].toString());
-          searchHint = "";
-          query = suggest[index].toString();
-          showResults(context);
+          print(widget.title);
         },
       ),
     );
