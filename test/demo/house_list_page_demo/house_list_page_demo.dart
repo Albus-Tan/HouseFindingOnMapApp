@@ -14,10 +14,7 @@ class MyApp extends StatelessWidget {
 
     return const MaterialApp(
       title: _title,
-      home: Scaffold(
-        // appBar: AppBar(title: const Text(_title)),
-        body: HouseListPage(),
-      ),
+      home: HouseListPage()
     );
   }
 }
