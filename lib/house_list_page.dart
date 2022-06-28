@@ -21,7 +21,7 @@ Widget renderAppBar() {
           height: 20,
           width: 20,
         ),
-      )
+      ),
     ],
   );
 }
@@ -32,20 +32,22 @@ class HouseListPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<HouseListPage> createState() => _HouseListPageState();
+  createState() => _HouseListPageState();
 }
 
 class _HouseListPageState extends State<HouseListPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        renderAppBar(),
-        selectionView(),
-        const Expanded(
-          child: HouseList(),
-        ),
-      ],
+    return Scaffold(
+      body: Column(
+        children: [
+          renderAppBar(),
+          selectionView(),
+          const Expanded(
+            child: HouseList(),
+          ),
+        ],
+      ),
     );
   }
 }
