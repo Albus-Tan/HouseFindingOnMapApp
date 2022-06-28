@@ -169,10 +169,7 @@ class HouseDetailPage extends StatelessWidget {
         children: [
           _renderAppBar(),
           renderCarousel(),
-          Expanded(
-            flex: 2,
-            child: _renderDetailTexts(houseDetail),
-          ),
+          _renderDetailTexts(houseDetail),
           const Flexible(
             flex: 4,
             child: HouseList(),
