@@ -3,9 +3,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
 import 'house_card.dart';
 import 'house_data.dart';
-
 
 class HouseList extends StatefulWidget {
   const HouseList({Key? key}) : super(key: key);
@@ -20,7 +20,9 @@ class _HouseListState extends State<HouseList> {
   List<HouseCard> generateHouseCard(int num) {
     List<HouseCard> tmp = [];
     for (int i = 0; i < num; i++) {
-      tmp.add(houseCardExample[Random().nextInt(houseCardExample.length)]);
+      tmp.add(
+        houseCardExample[Random().nextInt(houseCardExample.length)],
+      );
     }
     return tmp;
   }
@@ -36,7 +38,9 @@ class _HouseListState extends State<HouseList> {
 
         final index = i ~/ 2; /*3*/
         if (index >= _houseCards.length) {
-          _houseCards.addAll(generateHouseCard(2)); /*4*/
+          _houseCards.addAll(
+            generateHouseCard(2),
+          ); /*4*/
         }
         return _houseCards[index];
       },
