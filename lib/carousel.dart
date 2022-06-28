@@ -47,7 +47,7 @@ List houses = [
 Widget renderCarousel() {
   return Carousel(
     items: houses,
-    height: 260,
+    height: 200,
   );
 }
 
