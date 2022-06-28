@@ -16,7 +16,7 @@ Widget _renderAppBar() {
       BrnIconAction(
         iconPressed: () {},
         child: Image.asset(
-          'assets/house_detail_page_appbar/search.png',
+          'assets/icon/search.png',
           scale: 3.0,
           height: 20,
           width: 20,
