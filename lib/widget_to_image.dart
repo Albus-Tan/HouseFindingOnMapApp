@@ -1,16 +1,9 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class PngHome extends StatefulWidget {
-  const PngHome({Key? key}) : super(key: key);
-
-  @override
-  State<PngHome> createState() => _PngHomeState();
-}
 
 Future<Uint8List?> widgetToImage(
     {required Widget widget,
@@ -46,33 +39,4 @@ Future<Uint8List?> widgetToImage(
       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
   // Image image = Image.memory(Uint8List.view(byteData!.buffer));
   // return image;
-}
-
-class _PngHomeState extends State<PngHome> {
-  bool loaded = false;
-  late Image image;
-  @override
-  Widget build(BuildContext context) {
-    return loaded
-        ? Center(
-            child: image,
-          )
-        : Center(
-            child: TextButton(
-              onPressed: () {
-                widgetToImage(
-                        widget: const Directionality(
-                            textDirection: TextDirection.ltr,
-                            child: Text("world")))
-                    .then((value) {
-                  setState(() {
-                    image = Image.memory(Uint8List.view(value!.buffer));
-                    loaded = true;
-                  });
-                });
-              },
-              child: const Text('Hello', textDirection: TextDirection.ltr),
-            ),
-          );
-  }
 }
