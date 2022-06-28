@@ -12,11 +12,13 @@ Widget selectionView() {
       const JsonDecoder().convert(configSelect)["data"],
     )!
         .list!,
-    onSelectionChanged: (int menuIndex,
-        Map<String, String> filterParams,
-        Map<String, String> customParams,
-        BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
-      print("Select: $filterParams");
+    onSelectionChanged: (
+      int menuIndex,
+      Map<String, String> filterParams,
+      Map<String, String> customParams,
+      BrnSetCustomSelectionMenuTitle setCustomTitleFunction,
+    ) {
+      debugPrint("Select: $filterParams");
     },
     onSelectionPreShow: (int index, BrnSelectionEntity entity) {
       if (entity.key == "one_range_key" || entity.key == "two_range_key") {

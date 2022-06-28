@@ -29,9 +29,10 @@ class App extends StatelessWidget {
           child: Text(
             "Hello World",
             style: TextStyle(
-                color: Color(0xFF000000),
-                fontSize: 100,
-                backgroundColor: Color(0)),
+              color: Color(0xFF000000),
+              fontSize: 100,
+              backgroundColor: Color(0x00000000),
+            ),
           ),
         ),
         draggable: true,
@@ -40,15 +41,15 @@ class App extends StatelessWidget {
         });
 
     return MaterialApp(
-        title: title,
-        home: MapWidget(
-          markers: {marker},
-          polyLines: {
-            Polyline(
-                points: [const LatLng(39, 116.397451), const LatLng(40, 117)],
-                color: Colors.red)
-          },
-        )
+      title: title,
+      home: MapWidget(
+        markers: {marker},
+        polyLines: {
+          Polyline(
+              points: [const LatLng(39, 116.397451), const LatLng(40, 117)],
+              color: Colors.red)
+        },
+      ),
     );
   }
 }

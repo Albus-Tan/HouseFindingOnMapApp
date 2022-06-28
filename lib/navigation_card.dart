@@ -24,7 +24,7 @@ class _NavigationCardState extends State<NavigationCard> {
               Container(
                 height: 100,
                 color: Colors.white,
-                child: NavigationForm(),
+                child: const NavigationForm(),
               ),
               Container(
                 height: 200,
