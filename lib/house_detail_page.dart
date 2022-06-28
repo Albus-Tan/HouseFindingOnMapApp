@@ -39,7 +39,9 @@ class HouseDetailPage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         Text(text),
       ],
@@ -171,7 +173,10 @@ class HouseDetailPage extends StatelessWidget {
             flex: 2,
             child: renderDetailTexts(houseDetail),
           ),
-          const Flexible(flex: 4, child: HouseList()),
+          const Flexible(
+            flex: 4,
+            child: HouseList(),
+          ),
           renderNavigationIcon(),
         ],
       ),

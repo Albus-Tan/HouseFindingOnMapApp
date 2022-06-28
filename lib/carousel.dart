@@ -218,20 +218,3 @@ class PageIndicator extends StatelessWidget {
     );
   }
 }
-
-// class IndexPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         elevation: 0.0,
-//         backgroundColor: Colors.white,
-//       ),
-//       body: Carousel(
-//         height: 540,
-//         items: heroes,
-//       ),
-//       backgroundColor: Colors.white,
-//     );
-//   }
-// }
