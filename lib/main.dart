@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:app/HouseDetailBottomSheetOnMap.dart';
+import 'package:app/house_detail_bottom_sheet_on_map.dart';
 import 'package:flutter/material.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
