@@ -36,17 +36,33 @@ class HouseListPage extends StatefulWidget {
 }
 
 class _HouseListPageState extends State<HouseListPage> {
+  late final Widget selection;
+  bool selectionInitialized = false;
+
   @override
   Widget build(BuildContext context) {
+    selectionView('assets/json/selection.json').then(
+      (value) => setState(
+        () {
+          selection = value;
+          selectionInitialized = true;
+        },
+      ),
+    );
+    final list = [
+      _renderAppBar(),
+    ];
+    if (selectionInitialized) {
+      list.add(selection);
+    }
+    list.add(
+      const Expanded(
+        child: HouseList(),
+      ),
+    );
     return Scaffold(
       body: Column(
-        children: [
-          _renderAppBar(),
-          selectionView(),
-          const Expanded(
-            child: HouseList(),
-          ),
-        ],
+        children: list,
       ),
     );
   }
