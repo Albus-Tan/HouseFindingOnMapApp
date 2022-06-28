@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'house_list.dart';
 import 'selection.dart';
 
-
-
 /*
   * 绘制AppBar，包含返回按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
@@ -27,7 +25,6 @@ Widget renderAppBar() {
   ));
 }
 
-
 class HouseListPage extends StatefulWidget {
   const HouseListPage({Key? key}) : super(key: key);
 
@@ -35,17 +32,17 @@ class HouseListPage extends StatefulWidget {
   State<HouseListPage> createState() => _HouseListPageState();
 }
 
-
-
 class _HouseListPageState extends State<HouseListPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Scaffold(
+        // appBar: AppBar(title: const Text(_title)),
+        body: Column(
       children: [
         renderAppBar(),
         selectionView(),
         const Expanded(child: HouseList()),
       ],
-    );
+    ));
   }
 }
