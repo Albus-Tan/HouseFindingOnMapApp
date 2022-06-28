@@ -1,8 +1,8 @@
-import 'package:app/house_detail_bottom_sheet_on_map.dart';
-import 'package:app/house_list_page.dart';
-import 'package:app/my_profile_page.dart';
+import 'package:app/widgets/house_detail_bottom_sheet_on_map.dart';
+import 'package:app/routes/house_list_page.dart';
+import 'package:app/routes/my_profile_page.dart';
 import 'package:flutter/material.dart';
-import 'map.dart';
+import 'package:app/widgets/map.dart';
 
 void main() => runApp(const App());
 
@@ -14,7 +14,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-
   static const String _title = '地图找房';
 
   var allPages = [
@@ -39,7 +38,6 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: _title,
       home: Scaffold(
-        // appBar: AppBar(title: const Text(_title)),
         body: allPages[currentPageIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentPageIndex,
@@ -71,5 +69,3 @@ class _AppState extends State<App> {
     );
   }
 }
-
-

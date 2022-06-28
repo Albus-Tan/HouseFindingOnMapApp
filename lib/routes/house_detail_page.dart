@@ -1,5 +1,5 @@
-import 'package:app/carousel.dart';
-import 'package:app/house_list.dart';
+import 'package:app/widgets/carousel.dart';
+import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +34,7 @@ class HouseDetailPage extends StatelessWidget {
   /*
   * 绘制标题在上，文字在下的格式化文本
   * */
-  Widget renderWrappedText(String title, String text) {
+  Widget _renderWrappedText(String title, String text) {
     return Column(
       children: [
         Text(
@@ -52,7 +52,7 @@ class HouseDetailPage extends StatelessWidget {
   * 绘制AppBar，包含返回按钮，收藏按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-  Widget renderAppBar() {
+  Widget _renderAppBar() {
     return BrnAppBar(
       automaticallyImplyLeading: true,
       //多icon
@@ -83,7 +83,7 @@ class HouseDetailPage extends StatelessWidget {
   * 绘制标题和价格
   * */
 
-  Widget renderDetailTexts(HouseDetail houseDetail) {
+  Widget _renderDetailTexts(HouseDetail houseDetail) {
     return Column(
       children: [
         ConstrainedBox(
@@ -116,7 +116,7 @@ class HouseDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: renderWrappedText(
+              child: _renderWrappedText(
                 "${houseDetail.shiNumber}室"
                     "${houseDetail.tingNumber}厅"
                     "${houseDetail.weiNumber}卫",
@@ -124,13 +124,13 @@ class HouseDetailPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: renderWrappedText(
+              child: _renderWrappedText(
                 "${houseDetail.squares}平",
                 "面积",
               ),
             ),
             Expanded(
-              child: renderWrappedText(
+              child: _renderWrappedText(
                 houseDetail.direction,
                 "朝向",
               ),
@@ -142,7 +142,7 @@ class HouseDetailPage extends StatelessWidget {
   }
 
   /// 绘制导航图标
-  Widget renderNavigationIcon() {
+  Widget _renderNavigationIcon() {
     return BrnBottomButtonPanel(
       mainButtonName: '打电话',
       mainButtonOnTap: () {},
@@ -167,17 +167,17 @@ class HouseDetailPage extends StatelessWidget {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          renderAppBar(),
+          _renderAppBar(),
           renderCarousel(),
           Expanded(
             flex: 2,
-            child: renderDetailTexts(houseDetail),
+            child: _renderDetailTexts(houseDetail),
           ),
           const Flexible(
             flex: 4,
             child: HouseList(),
           ),
-          renderNavigationIcon(),
+          _renderNavigationIcon(),
         ],
       ),
     );

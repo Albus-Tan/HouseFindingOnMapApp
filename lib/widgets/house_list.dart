@@ -1,11 +1,9 @@
-//HouseList Widget
-//main函数调用了实现了了无限长的List
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 import 'house_card.dart';
-import 'house_data.dart';
+import 'house_list/house_data.dart';
 
 class HouseList extends StatefulWidget {
   const HouseList({Key? key}) : super(key: key);

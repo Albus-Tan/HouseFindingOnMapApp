@@ -2,14 +2,14 @@
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
-import 'house_list.dart';
-import 'selection.dart';
+import 'package:app/widgets/house_list.dart';
+import 'package:app/widgets/selection.dart';
 
 /*
   * 绘制AppBar，包含返回按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-Widget renderAppBar() {
+Widget _renderAppBar() {
   return BrnAppBar(
     automaticallyImplyLeading: true,
     actions: [
@@ -41,7 +41,7 @@ class _HouseListPageState extends State<HouseListPage> {
     return Scaffold(
       body: Column(
         children: [
-          renderAppBar(),
+          _renderAppBar(),
           selectionView(),
           const Expanded(
             child: HouseList(),

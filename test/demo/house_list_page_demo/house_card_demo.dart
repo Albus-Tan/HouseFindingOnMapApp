@@ -1,6 +1,6 @@
 
 
-import 'package:app/house_card.dart';
+import 'package:app/widgets/house_card.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
