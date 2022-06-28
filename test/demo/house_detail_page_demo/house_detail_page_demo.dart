@@ -1,4 +1,4 @@
-import 'package:app/house_detail_page.dart';
+import 'package:app/routes/house_detail_page.dart';
 import 'package:flutter/material.dart';
 
 HouseDetail houseDetail = HouseDetail(

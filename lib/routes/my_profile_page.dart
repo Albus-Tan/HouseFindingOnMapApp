@@ -7,8 +7,10 @@ class MyProfilePage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<MyProfilePage> createState() => _MyProfilePageState();
+  createState() => _MyProfilePageState();
 }
+
+
 
 class _MyProfilePageState extends State<MyProfilePage> {
   // 私有方法
@@ -32,7 +34,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         title: const Text('地图找房'),
       ),
       body: Column(
-        children:[
+        children: [
           const ListTile(
             contentPadding: EdgeInsets.all(20),
             leading: CircleAvatar(
@@ -48,7 +50,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(25.0)),

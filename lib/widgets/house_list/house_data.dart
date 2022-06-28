@@ -1,5 +1,5 @@
 //临时用来做demo的一些数据
-import 'house_card.dart';
+import '../house_card.dart';
 
 const houseCardExample = [
   HouseCard(
