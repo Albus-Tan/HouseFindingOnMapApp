@@ -3,10 +3,12 @@ import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
+import 'map_navigation_page.dart';
+
 class HouseDetail {
   final String title;
   final int pricePerMonth;
-  final int squares;
+  final double squares;
   final String direction;
   final int shiNumber;
   final int tingNumber;
@@ -16,10 +18,10 @@ class HouseDetail {
     required this.title,
     required this.pricePerMonth,
     required this.squares,
-    required this.direction,
     required this.shiNumber,
-    required this.tingNumber,
-    required this.weiNumber,
+    this.direction = '*',
+    this.tingNumber = 0,
+    this.weiNumber = 0,
   });
 }
 
@@ -142,7 +144,7 @@ class HouseDetailPage extends StatelessWidget {
   }
 
   /// 绘制导航图标
-  Widget _renderNavigationIcon() {
+  Widget _renderNavigationIcon(BuildContext context) {
     return BrnBottomButtonPanel(
       mainButtonName: '打电话',
       mainButtonOnTap: () {},
@@ -155,7 +157,14 @@ class HouseDetailPage extends StatelessWidget {
           iconWidget: Image.asset(
             "assets/icon/navigation_icon.png",
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MapNavigationPage(),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -177,7 +186,7 @@ class HouseDetailPage extends StatelessWidget {
             flex: 4,
             child: HouseList(),
           ),
-          _renderNavigationIcon(),
+          _renderNavigationIcon(context),
         ],
       ),
     );

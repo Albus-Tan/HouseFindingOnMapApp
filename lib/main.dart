@@ -1,8 +1,7 @@
-import 'package:app/widgets/house_detail_bottom_sheet_on_map.dart';
 import 'package:app/routes/house_list_page.dart';
 import 'package:app/routes/my_profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:app/widgets/map.dart';
+import 'package:app/routes/map_find_page.dart';
 
 void main() => runApp(const App());
 
@@ -18,18 +17,8 @@ class _AppState extends State<App> {
 
   var allPages = [
     const HouseListPage(),
-    Stack(
-      children: [
-        const MapWidget(),
-        Column(
-          children: const [
-            Text('这是为了占用空间的一行字'),
-            HouseDetailBottomSheet(),
-          ],
-        ),
-      ],
-    ),
-    const MyProfilePage()
+    const MapFindPage(),
+    const MyProfilePage(),
   ];
   var currentPageIndex = 0;
 
