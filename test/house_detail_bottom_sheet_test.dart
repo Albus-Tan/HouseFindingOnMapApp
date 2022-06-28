@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:app/config.dart';
 import 'package:app/house_detail_bottom_sheet_on_map.dart';
 import 'package:flutter/material.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
@@ -81,7 +80,7 @@ class _MapPageState extends State<MapPage> {
       _initMarkerMap[marker.id] = marker;
     }
     final map = AMapWidget(
-      apiKey: ConstConfig.amapApiKeys,
+      // apiKey: ConstConfig.amapApiKeys,
       markers: Set<Marker>.of(_initMarkerMap.values),
     );
     return Scaffold(

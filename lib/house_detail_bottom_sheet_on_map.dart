@@ -15,7 +15,7 @@ class _HouseDetailBottomSheetState extends State<HouseDetailBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       child: MaterialButton(
-        child: Text('点击展开 bottom sheet'),
+        child: const Text('点击展开 bottom sheet'),
         onPressed: (){_showHouseDetailListSheet(context);},
       ),
     );
@@ -35,8 +35,8 @@ void _showHouseDetailListSheet(BuildContext context) {
             color: Colors.white,
             child: Column(
               children: [
-                ListTile(
-                  title: Text('小区名称', style: const TextStyle(
+                const ListTile(
+                  title: Text('小区名称', style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w900),),
                   subtitle: Text('均价·房源套数等信息'),
                   trailing: Icon(Icons.keyboard_arrow_down),
@@ -47,7 +47,7 @@ void _showHouseDetailListSheet(BuildContext context) {
                     controller: controller, // set this too
                     // 长度
                     itemCount: 15,
-                    itemBuilder: (_, i) => HouseCard(title: "title", rooms: 3, squares: 33, community: "community", price: 250),
+                    itemBuilder: (_, i) => const HouseCard(title: "title", rooms: 3, squares: 33, community: "community", price: 250, url: '',),
                   ),
                 ),
               ],
