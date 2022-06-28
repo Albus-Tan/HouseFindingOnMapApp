@@ -29,7 +29,13 @@ class HouseCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              leading: Image.network(url),
+              leading: (url != '')
+                  ? Image.network(url)
+                  : Image.asset(
+                      'assets/picture/404.jpg',
+                      // height: 20,
+                      // width: 20,
+                    ),
               onTap: () {
                 debugPrint("onTap"); //后面改成页面的跳转
               },
