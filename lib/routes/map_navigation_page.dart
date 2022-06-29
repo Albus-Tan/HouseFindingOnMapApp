@@ -20,7 +20,7 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
           const NavigationCard(),
           IconButton(
             padding: const EdgeInsets.symmetric(vertical: 24.0),
-            iconSize:40.0,
+            iconSize: 40.0,
             onPressed: () {
               Navigator.pop(context);
             },

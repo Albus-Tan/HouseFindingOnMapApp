@@ -4,7 +4,7 @@ class NavigationCard extends StatefulWidget {
   const NavigationCard({Key? key}) : super(key: key);
 
   @override
-   createState() => _NavigationCardState();
+  createState() => _NavigationCardState();
 }
 
 class _NavigationCardState extends State<NavigationCard> {

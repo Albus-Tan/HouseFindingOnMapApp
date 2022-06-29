@@ -1,3 +1,4 @@
+import 'package:app/routes/search_page.dart';
 import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
@@ -72,7 +73,10 @@ class HouseDetailPage extends StatelessWidget {
         ),
         BrnIconAction(
           iconPressed: () {
-            showSearch(context: context, delegate: SearchBarViewDelegate());
+            showSearch(
+              context: context,
+              delegate: SearchBarViewDelegate(),
+            );
           },
           child: const Icon(
             Icons.search,
@@ -156,10 +160,9 @@ class HouseDetailPage extends StatelessWidget {
         //构造Icon按钮
         BrnVerticalIconButton(
           name: '导航',
-          iconWidget:const Icon(
+          iconWidget: const Icon(
             Icons.navigation_outlined,
             color: Colors.black,
-
           ),
           onTap: () {
             Navigator.push(
@@ -185,7 +188,9 @@ class HouseDetailPage extends StatelessWidget {
             List<HouseImage>.generate(
               1,
               (index) => HouseImage(
-                  image: houseDetail.image, title: '1', isStatic: houseDetail.isStatic),
+                  image: houseDetail.image,
+                  title: '1',
+                  isStatic: houseDetail.isStatic),
             ),
           ),
           _renderDetailTexts(houseDetail),

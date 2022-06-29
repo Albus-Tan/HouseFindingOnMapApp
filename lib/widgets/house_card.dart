@@ -1,6 +1,7 @@
 //HouseCard组件 用于HouseList
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
+
 import '../routes/house_detail_page.dart';
 
 //TODO:card加收藏按钮
@@ -40,14 +41,14 @@ class HouseCard extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => HouseDetailPage(
-                       houseDetail: HouseDetail(
-                         title: title,
-                         pricePerMonth: price,
-                         squares: squares,
-                         shiNumber:rooms,
-                         image: url,
-                         isStatic: false,
-                       ),
+                      houseDetail: HouseDetail(
+                        title: title,
+                        pricePerMonth: price,
+                        squares: squares,
+                        shiNumber: rooms,
+                        image: url,
+                        isStatic: false,
+                      ),
                     ),
                   ),
                 );

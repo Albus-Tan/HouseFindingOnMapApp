@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:bruno/bruno.dart';
+import 'package:flutter/material.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({
@@ -9,8 +9,6 @@ class MyProfilePage extends StatefulWidget {
   @override
   createState() => _MyProfilePageState();
 }
-
-
 
 class _MyProfilePageState extends State<MyProfilePage> {
   // 私有方法

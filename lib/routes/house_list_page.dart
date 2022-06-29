@@ -1,10 +1,9 @@
 //房屋列表页面，不存在高度溢出问题
 import 'package:app/routes/search_page.dart';
-import 'package:bruno/bruno.dart';
-import 'package:flutter/material.dart';
-
 import 'package:app/widgets/house_list.dart';
 import 'package:app/widgets/selection.dart';
+import 'package:bruno/bruno.dart';
+import 'package:flutter/material.dart';
 
 /*
   * 绘制AppBar，包含返回按钮，查找按钮
@@ -18,7 +17,10 @@ Widget _renderAppBar(BuildContext context) {
         iconPressed: () {
           showSearch(context: context, delegate: SearchBarViewDelegate());
         },
-        child: const Icon(Icons.search,color: Colors.black,),
+        child: const Icon(
+          Icons.search,
+          color: Colors.black,
+        ),
       ),
     ],
   );

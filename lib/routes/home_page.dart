@@ -1,7 +1,6 @@
 import 'package:app/routes/search_page.dart';
-import 'package:flutter/material.dart';
-
 import 'package:app/widgets/house_list.dart';
+import 'package:flutter/material.dart';
 
 import '../widgets/carousel.dart';
 
