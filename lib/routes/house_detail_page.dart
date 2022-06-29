@@ -1,3 +1,4 @@
+import 'package:app/routes/search_page.dart';
 import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
@@ -54,7 +55,7 @@ class HouseDetailPage extends StatelessWidget {
   * 绘制AppBar，包含返回按钮，收藏按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-  Widget _renderAppBar() {
+  Widget _renderAppBar(BuildContext context) {
     return BrnAppBar(
       automaticallyImplyLeading: true,
       //多icon
@@ -69,7 +70,9 @@ class HouseDetailPage extends StatelessWidget {
           ),
         ),
         BrnIconAction(
-          iconPressed: () {},
+          iconPressed: () {
+            showSearch(context: context, delegate: SearchBarViewDelegate());
+          },
           child: Image.asset(
             'assets/icon/search.png',
             scale: 3.0,
@@ -176,7 +179,7 @@ class HouseDetailPage extends StatelessWidget {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _renderAppBar(),
+          _renderAppBar(context),
           renderCarousel(),
           _renderDetailTexts(houseDetail),
           const Flexible(
