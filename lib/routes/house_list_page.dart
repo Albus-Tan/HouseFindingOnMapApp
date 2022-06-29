@@ -15,12 +15,7 @@ Widget _renderAppBar() {
     actions: [
       BrnIconAction(
         iconPressed: () {},
-        child: Image.asset(
-          'assets/icon/search.png',
-          scale: 3.0,
-          height: 20,
-          width: 20,
-        ),
+        child: const Icon(Icons.search,color: Colors.black,),
       ),
     ],
   );
@@ -36,7 +31,7 @@ class HouseListPage extends StatefulWidget {
 }
 
 class _HouseListPageState extends State<HouseListPage> {
-  late final Widget selection;
+  late Widget selection;
   bool selectionInitialized = false;
 
   @override
