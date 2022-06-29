@@ -18,7 +18,6 @@ class _AppState extends State<App> {
 
   var allPages = [
     const HomePage(),
-    // const HouseListPage(),
     const MapFindPage(),
     const MyProfilePage(),
   ];

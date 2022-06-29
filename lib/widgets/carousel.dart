@@ -138,7 +138,7 @@ class _CarouselState extends State<Carousel> {
     super.initState();
     _pageController = PageController(
       initialPage: 0,
-      viewportFraction: 0.8,
+      viewportFraction: 1,
     );
   }
 
@@ -150,7 +150,7 @@ class _CarouselState extends State<Carousel> {
           height: widget.height,
           child: PageView.builder(
             pageSnapping: true,
-            itemCount: houses.length,
+            itemCount: widget.items.length,
             controller: _pageController,
             onPageChanged: (int index) {
               setState(() {
