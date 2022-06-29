@@ -2,7 +2,7 @@ import 'package:app/widgets/selection.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -33,13 +33,6 @@ class _MyAppState extends State<MyApp> {
     if (selectionInitialized) {
       list.add(selection);
     }
-    list.add(
-        Container(
-          padding: const EdgeInsets.only(top: 400),
-          alignment: Alignment.center,
-          child: const Text("背景内容区域"),
-        )
-    );
     return MaterialApp(
       home: Scaffold(
         appBar: BrnAppBar(title: _title),
