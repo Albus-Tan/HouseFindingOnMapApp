@@ -30,7 +30,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
     return [
       /// 清除按钮
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
         onPressed: () {
           query = "";
 
@@ -41,7 +41,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
 
       /// 搜索按钮
       IconButton(
-        icon: Icon(Icons.search),
+        icon: const Icon(Icons.search),
         onPressed: () => query = "",
       )
     ];
@@ -88,7 +88,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
         ? suggestList
         : sourceList.where((input) => input.startsWith(query)).toList();
     return query.isEmpty
-        ? SingleChildScrollView(
+        ? const SingleChildScrollView(
             child: SearchContentView(),
           )
         : ListView.builder(
@@ -98,12 +98,16 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
                 title: RichText(
                   text: TextSpan(
                     text: suggest[index].substring(0, query.length),
-                    style: TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
                     children: [
                       TextSpan(
                         text: suggest[index].substring(query.length),
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -121,33 +125,33 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
 }
 
 class SearchContentView extends StatefulWidget {
+  const SearchContentView({Key? key}) : super(key: key);
+
   @override
-  _SearchContentViewState createState() => _SearchContentViewState();
+  createState() => _SearchContentViewState();
 }
 
 class _SearchContentViewState extends State<SearchContentView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            child: Text(
-              '房源推荐',
-              style: TextStyle(fontSize: 16),
-            ),
+          const Text(
+            '房源推荐',
+            style: TextStyle(fontSize: 16),
           ),
-          SearchItemView(),
+          const SearchItemView(),
           Container(
-            margin: EdgeInsets.only(top: 20),
-            child: Text(
+            margin: const EdgeInsets.only(top: 20),
+            child: const Text(
               '历史记录',
               style: TextStyle(fontSize: 16),
             ),
           ),
-          SearchItemView()
+          const SearchItemView()
         ],
       ),
     );
@@ -155,8 +159,10 @@ class _SearchContentViewState extends State<SearchContentView> {
 }
 
 class SearchItemView extends StatefulWidget {
+  const SearchItemView({Key? key}) : super(key: key);
+
   @override
-  _SearchItemViewState createState() => _SearchItemViewState();
+   createState() => _SearchItemViewState();
 }
 
 class _SearchItemViewState extends State<SearchItemView> {
@@ -173,14 +179,12 @@ class _SearchItemViewState extends State<SearchItemView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Wrap(
-        spacing: 10,
-        // runSpacing: 0,
-        children: items.map((item) {
-          return SearchItem(title: item);
-        }).toList(),
-      ),
+    return Wrap(
+      spacing: 10,
+      // runSpacing: 0,
+      children: items.map((item) {
+        return SearchItem(title: item);
+      }).toList(),
     );
   }
 }
@@ -192,23 +196,21 @@ class SearchItem extends StatefulWidget {
   const SearchItem({Key? key, required this.title}) : super(key: key);
 
   @override
-  _SearchItemState createState() => _SearchItemState();
+   createState() => _SearchItemState();
 }
 
 class _SearchItemState extends State<SearchItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: InkWell(
-        child: Chip(
-          label: Text(widget.title),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        onTap: () {
-          print(widget.title);
-        },
+    return InkWell(
+      child: Chip(
+        label: Text(widget.title),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
+      onTap: () {
+        debugPrint(widget.title);
+      },
     );
   }
 }
