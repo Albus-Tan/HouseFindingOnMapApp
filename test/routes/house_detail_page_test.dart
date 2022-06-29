@@ -1,8 +1,8 @@
-import 'package:app/routes/house_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'house_detail_page_demo.dart';
+
+import '../demo/house_detail_page_demo/house_detail_page_demo.dart';
 
 void main() {
   testWidgets('Widget test', (WidgetTester tester) async {
