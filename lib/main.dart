@@ -1,3 +1,4 @@
+import 'package:app/routes/home_page.dart';
 import 'package:app/routes/house_list_page.dart';
 import 'package:app/routes/my_profile_page.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class _AppState extends State<App> {
   static const String _title = '地图找房';
 
   var allPages = [
-    const HouseListPage(),
+    const HomePage(),
+    // const HouseListPage(),
     const MapFindPage(),
     const MyProfilePage(),
   ];
