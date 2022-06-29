@@ -58,6 +58,7 @@ class HouseDetailPage extends StatelessWidget {
       //多icon
       actions: [
         BrnIconAction(
+          key: const ValueKey('detail_favorite_button'),
           iconPressed: () {},
           child: Image.asset(
             'assets/icon/favorite.png',
@@ -67,6 +68,7 @@ class HouseDetailPage extends StatelessWidget {
           ),
         ),
         BrnIconAction(
+          key: const ValueKey('detail_search_button'),
           iconPressed: () {},
           child: Image.asset(
             'assets/icon/search.png',
@@ -144,6 +146,7 @@ class HouseDetailPage extends StatelessWidget {
   /// 绘制导航图标
   Widget _renderNavigationIcon() {
     return BrnBottomButtonPanel(
+      key: const ValueKey('detail_bottom_buttons'),
       mainButtonName: '打电话',
       mainButtonOnTap: () {},
       secondaryButtonName: '跟我聊',
@@ -151,6 +154,7 @@ class HouseDetailPage extends StatelessWidget {
       iconButtonList: [
         //构造Icon按钮
         BrnVerticalIconButton(
+          key: const ValueKey("detail_navigation_icon"),
           name: '导航',
           iconWidget: Image.asset(
             "assets/icon/navigation_icon.png",
