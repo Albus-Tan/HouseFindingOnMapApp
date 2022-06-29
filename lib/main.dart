@@ -1,10 +1,16 @@
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:app/routes/home_page.dart';
-import 'package:app/routes/house_list_page.dart';
 import 'package:app/routes/my_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/routes/map_find_page.dart';
 
-void main() => runApp(const App());
+void main() {
+  runApp(const App());
+  AMapFlutterLocation.updatePrivacyAgree(true);
+  AMapFlutterLocation.updatePrivacyShow(true, true);
+  const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
+}
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
