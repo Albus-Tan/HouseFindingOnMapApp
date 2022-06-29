@@ -73,6 +73,7 @@ class HouseDetailPage extends StatelessWidget {
           ),
         ),
         BrnIconAction(
+          key: const ValueKey('detail_search_button'),
           iconPressed: () {
             showSearch(
               context: context,
