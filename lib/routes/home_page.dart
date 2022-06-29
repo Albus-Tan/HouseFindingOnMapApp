@@ -1,6 +1,5 @@
 import 'package:app/routes/search_page.dart';
 import 'package:flutter/material.dart';
-import 'package:bruno/bruno.dart';
 
 import 'package:app/widgets/house_list.dart';
 
@@ -9,14 +8,16 @@ import '../widgets/carousel.dart';
 /// 轮播的广告图片
 List advertisement = [
   HouseImage(
-    color: const Color(0xFF86F3FB),
+    color: Colors.white,
     image: "assets/advertisement/advertisement1.jpg",
     title: '启航租房节',
+    isStatic: true,
   ),
   HouseImage(
-    color: const Color(0xFF7D6588),
+    color: Colors.white,
     image: "assets/advertisement/advertisement2.jpg",
     title: '海量房源',
+    isStatic: true,
   ),
 ];
 

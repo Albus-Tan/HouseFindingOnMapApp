@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'house_list_page.dart';
+
 class SearchBarViewDelegate extends SearchDelegate<String> {
   String searchHint = "请输入搜索内容...";
 
@@ -73,11 +75,14 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
     }
 
     ///展示搜索结果
-    return ListView.builder(
-      itemCount: result.length,
-      itemBuilder: (BuildContext context, int index) => ListTile(
-        title: Text(result[index]),
-      ),
+    // return ListView.builder(
+    //   itemCount: result.length,
+    //   itemBuilder: (BuildContext context, int index) => ListTile(
+    //     title: Text(result[index]),
+    //   ),
+    // );
+    return const HouseListPage(
+      needAppBar: false,
     );
   }
 
@@ -162,7 +167,7 @@ class SearchItemView extends StatefulWidget {
   const SearchItemView({Key? key}) : super(key: key);
 
   @override
-   createState() => _SearchItemViewState();
+  createState() => _SearchItemViewState();
 }
 
 class _SearchItemViewState extends State<SearchItemView> {
@@ -196,7 +201,7 @@ class SearchItem extends StatefulWidget {
   const SearchItem({Key? key, required this.title}) : super(key: key);
 
   @override
-   createState() => _SearchItemState();
+  createState() => _SearchItemState();
 }
 
 class _SearchItemState extends State<SearchItem> {
@@ -205,8 +210,7 @@ class _SearchItemState extends State<SearchItem> {
     return InkWell(
       child: Chip(
         label: Text(widget.title),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onTap: () {
         debugPrint(widget.title);

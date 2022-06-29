@@ -45,6 +45,8 @@ class HouseCard extends StatelessWidget {
                          pricePerMonth: price,
                          squares: squares,
                          shiNumber:rooms,
+                         image: url,
+                         isStatic: false,
                        ),
                     ),
                   ),

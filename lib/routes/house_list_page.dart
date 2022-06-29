@@ -32,7 +32,10 @@ Widget _renderAppBar(BuildContext context) {
 class HouseListPage extends StatefulWidget {
   const HouseListPage({
     Key? key,
+    this.needAppBar = true,
   }) : super(key: key);
+
+  final bool needAppBar;
 
   @override
   createState() => _HouseListPageState();
@@ -45,16 +48,18 @@ class _HouseListPageState extends State<HouseListPage> {
   @override
   Widget build(BuildContext context) {
     selectionView('assets/json/selection.json').then(
-          (value) => setState(
-            () {
+      (value) => setState(
+        () {
           selection = value;
           selectionInitialized = true;
         },
       ),
     );
-    final list = [
-      _renderAppBar(context),
-    ];
+    final list = widget.needAppBar
+        ? <Widget>[
+            _renderAppBar(context),
+          ]
+        : <Widget>[];
     if (selectionInitialized) {
       list.add(selection);
     }

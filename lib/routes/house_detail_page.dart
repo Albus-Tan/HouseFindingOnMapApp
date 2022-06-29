@@ -14,6 +14,8 @@ class HouseDetail {
   final int shiNumber;
   final int tingNumber;
   final int weiNumber;
+  final String image;
+  final bool isStatic;
 
   HouseDetail({
     required this.title,
@@ -23,6 +25,8 @@ class HouseDetail {
     this.direction = '*',
     this.tingNumber = 0,
     this.weiNumber = 0,
+    this.image = "",
+    this.isStatic = false,
   });
 }
 
@@ -180,7 +184,13 @@ class HouseDetailPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _renderAppBar(context),
-          renderCarousel(),
+          renderCarousel(
+            List<HouseImage>.generate(
+              1,
+              (index) => HouseImage(
+                  image: houseDetail.image, title: '1', isStatic: houseDetail.isStatic),
+            ),
+          ),
           _renderDetailTexts(houseDetail),
           const Flexible(
             flex: 4,
