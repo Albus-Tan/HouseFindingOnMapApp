@@ -5,7 +5,6 @@ import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 Future<Widget> selectionView(String path) async {
   final json = await rootBundle.loadString(path);
 

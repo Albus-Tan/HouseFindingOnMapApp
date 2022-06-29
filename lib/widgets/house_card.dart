@@ -2,6 +2,8 @@
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
+import '../routes/house_detail_page.dart';
+
 //TODO:card加收藏按钮
 class HouseCard extends StatelessWidget {
   const HouseCard({
@@ -33,11 +35,23 @@ class HouseCard extends StatelessWidget {
                   ? Image.network(url)
                   : Image.asset(
                       'assets/picture/404.jpg',
-                      // height: 20,
-                      // width: 20,
                     ),
               onTap: () {
-                debugPrint("onTap"); //后面改成页面的跳转
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HouseDetailPage(
+                      houseDetail: HouseDetail(
+                        title: title,
+                        pricePerMonth: price,
+                        squares: squares,
+                        shiNumber: rooms,
+                        image: url,
+                        isStatic: false,
+                      ),
+                    ),
+                  ),
+                );
               },
               title: BrnExpandableText(
                 text: title,

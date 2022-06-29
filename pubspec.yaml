@@ -57,12 +57,12 @@ dev_dependencies:
 flutter:
 
   assets:
-    - assets/icon/favorite.png
-    - assets/icon/search.png
-    - assets/icon/navigation_icon.png
+
     - assets/house_detail_page_houses/house1.jpg
     - assets/house_detail_page_houses/house2.jpg
     - assets/house_detail_page_houses/house3.jpg
+    - assets/advertisement/advertisement1.jpg
+    - assets/advertisement/advertisement2.jpg
     - assets/picture/404.jpg
     - assets/json/selection.json
   # The following line ensures that the Material Icons font is

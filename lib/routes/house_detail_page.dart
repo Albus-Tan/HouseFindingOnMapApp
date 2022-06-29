@@ -1,25 +1,32 @@
+import 'package:app/routes/search_page.dart';
 import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
+import 'map_navigation_page.dart';
+
 class HouseDetail {
   final String title;
   final int pricePerMonth;
-  final int squares;
+  final double squares;
   final String direction;
   final int shiNumber;
   final int tingNumber;
   final int weiNumber;
+  final String image;
+  final bool isStatic;
 
   HouseDetail({
     required this.title,
     required this.pricePerMonth,
     required this.squares,
-    required this.direction,
     required this.shiNumber,
-    required this.tingNumber,
-    required this.weiNumber,
+    this.direction = '*',
+    this.tingNumber = 0,
+    this.weiNumber = 0,
+    this.image = "",
+    this.isStatic = false,
   });
 }
 
@@ -52,7 +59,7 @@ class HouseDetailPage extends StatelessWidget {
   * 绘制AppBar，包含返回按钮，收藏按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-  Widget _renderAppBar() {
+  Widget _renderAppBar(BuildContext context) {
     return BrnAppBar(
       automaticallyImplyLeading: true,
       //多icon
@@ -60,21 +67,21 @@ class HouseDetailPage extends StatelessWidget {
         BrnIconAction(
           key: const ValueKey('detail_favorite_button'),
           iconPressed: () {},
-          child: Image.asset(
-            'assets/icon/favorite.png',
-            scale: 3.0,
-            height: 20,
-            width: 20,
+          child: const Icon(
+            Icons.star_border_outlined,
+            color: Colors.black,
           ),
         ),
         BrnIconAction(
-          key: const ValueKey('detail_search_button'),
-          iconPressed: () {},
-          child: Image.asset(
-            'assets/icon/search.png',
-            scale: 3.0,
-            height: 20,
-            width: 20,
+          iconPressed: () {
+            showSearch(
+              context: context,
+              delegate: SearchBarViewDelegate(),
+            );
+          },
+          child: const Icon(
+            Icons.search,
+            color: Colors.black,
           ),
         ),
       ],
@@ -144,7 +151,7 @@ class HouseDetailPage extends StatelessWidget {
   }
 
   /// 绘制导航图标
-  Widget _renderNavigationIcon() {
+  Widget _renderNavigationIcon(BuildContext context) {
     return BrnBottomButtonPanel(
       key: const ValueKey('detail_bottom_buttons'),
       mainButtonName: '打电话',
@@ -156,10 +163,18 @@ class HouseDetailPage extends StatelessWidget {
         BrnVerticalIconButton(
           key: const ValueKey("detail_navigation_icon"),
           name: '导航',
-          iconWidget: Image.asset(
-            "assets/icon/navigation_icon.png",
+          iconWidget: const Icon(
+            Icons.navigation_outlined,
+            color: Colors.black,
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MapNavigationPage(),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -171,14 +186,22 @@ class HouseDetailPage extends StatelessWidget {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _renderAppBar(),
-          renderCarousel(),
+          _renderAppBar(context),
+          renderCarousel(
+            List<HouseImage>.generate(
+              1,
+              (index) => HouseImage(
+                  image: houseDetail.image,
+                  title: '1',
+                  isStatic: houseDetail.isStatic),
+            ),
+          ),
           _renderDetailTexts(houseDetail),
           const Flexible(
             flex: 4,
             child: HouseList(),
           ),
-          _renderNavigationIcon(),
+          _renderNavigationIcon(context),
         ],
       ),
     );
