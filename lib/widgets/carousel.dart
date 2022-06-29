@@ -4,29 +4,34 @@ class HouseImage {
   final Color color;
   final String image;
   final String title;
+  final bool isStatic;
 
   HouseImage({
-    required this.color,
+    this.color = Colors.white,
     required this.image,
     required this.title,
+    this.isStatic = false,
   });
 }
 
-List houses = [
+List<HouseImage> houses = [
   HouseImage(
-    color: const Color(0xFF86F3FB),
+    color: Colors.white,
     image: "assets/house_detail_page_houses/house1.jpg",
-    title: '1',
-  ),
-  HouseImage(
-    color: const Color(0xFF7D6588),
-    image: "assets/house_detail_page_houses/house2.jpg",
     title: '2',
+    isStatic: true,
   ),
   HouseImage(
-    color: const Color(0xFF4C314D),
-    image: "assets/house_detail_page_houses/house3.jpg",
+    color: Colors.white,
+    image: "assets/house_detail_page_houses/house2.jpg",
     title: '3',
+    isStatic: true,
+  ),
+  HouseImage(
+    color: Colors.white,
+    image: "assets/house_detail_page_houses/house3.jpg",
+    title: '4',
+    isStatic: true,
   ),
 ];
 
@@ -44,9 +49,11 @@ List houses = [
 *  List中必须含有 'image'和 'title'
 *  height为走马灯区域的高度
 * */
-Widget renderCarousel() {
+Widget renderCarousel(List<HouseImage> list) {
+  //TODO: 不用这三张图片的时候删除这句话;
+  list.addAll(houses);
   return Carousel(
-    items: houses,
+    items: list,
     height: 200,
   );
 }
@@ -94,10 +101,15 @@ class _CarouselState extends State<Carousel> {
               borderRadius: const BorderRadius.all(
                 Radius.circular(15.0),
               ),
-              child: Image.asset(
-                items[index].image,
-                fit: BoxFit.cover,
-              ),
+              child: items[index].isStatic
+                  ? Image.asset(
+                      items[index].image,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.network(
+                      items[index].image,
+                      fit: BoxFit.cover,
+                    ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -138,7 +150,7 @@ class _CarouselState extends State<Carousel> {
     super.initState();
     _pageController = PageController(
       initialPage: 0,
-      viewportFraction: 0.8,
+      viewportFraction: 1,
     );
   }
 
@@ -150,7 +162,7 @@ class _CarouselState extends State<Carousel> {
           height: widget.height,
           child: PageView.builder(
             pageSnapping: true,
-            itemCount: houses.length,
+            itemCount: widget.items.length,
             controller: _pageController,
             onPageChanged: (int index) {
               setState(() {

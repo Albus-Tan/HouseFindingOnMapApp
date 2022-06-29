@@ -1,10 +1,16 @@
-import 'package:app/widgets/house_detail_bottom_sheet_on_map.dart';
-import 'package:app/routes/house_list_page.dart';
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_location/amap_flutter_location.dart';
+import 'package:app/routes/home_page.dart';
+import 'package:app/routes/map_find_page.dart';
 import 'package:app/routes/my_profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:app/widgets/map.dart';
 
-void main() => runApp(const App());
+void main() {
+  runApp(const App());
+  AMapFlutterLocation.updatePrivacyAgree(true);
+  AMapFlutterLocation.updatePrivacyShow(true, true);
+  const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
+}
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -17,19 +23,9 @@ class _AppState extends State<App> {
   static const String _title = '地图找房';
 
   var allPages = [
-    const HouseListPage(),
-    Stack(
-      children: [
-        const MapWidget(),
-        Column(
-          children: const [
-            Text('这是为了占用空间的一行字'),
-            HouseDetailBottomSheet(),
-          ],
-        ),
-      ],
-    ),
-    const MyProfilePage()
+    const HomePage(),
+    const MapFindPage(),
+    const MyProfilePage(),
   ];
   var currentPageIndex = 0;
 

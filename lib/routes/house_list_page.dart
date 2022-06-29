@@ -1,21 +1,26 @@
 //房屋列表页面，不存在高度溢出问题
-import 'package:bruno/bruno.dart';
-import 'package:flutter/material.dart';
-
+import 'package:app/routes/search_page.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:app/widgets/selection.dart';
+import 'package:bruno/bruno.dart';
+import 'package:flutter/material.dart';
 
 /*
   * 绘制AppBar，包含返回按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-Widget _renderAppBar() {
+Widget _renderAppBar(BuildContext context) {
   return BrnAppBar(
     automaticallyImplyLeading: true,
     actions: [
       BrnIconAction(
-        iconPressed: () {},
-        child: const Icon(Icons.search,color: Colors.black,),
+        iconPressed: () {
+          showSearch(context: context, delegate: SearchBarViewDelegate());
+        },
+        child: const Icon(
+          Icons.search,
+          color: Colors.black,
+        ),
       ),
     ],
   );
@@ -24,7 +29,10 @@ Widget _renderAppBar() {
 class HouseListPage extends StatefulWidget {
   const HouseListPage({
     Key? key,
+    this.needAppBar = true,
   }) : super(key: key);
+
+  final bool needAppBar;
 
   @override
   createState() => _HouseListPageState();
@@ -44,9 +52,11 @@ class _HouseListPageState extends State<HouseListPage> {
         },
       ),
     );
-    final list = [
-      _renderAppBar(),
-    ];
+    final list = widget.needAppBar
+        ? <Widget>[
+            _renderAppBar(context),
+          ]
+        : <Widget>[];
     if (selectionInitialized) {
       list.add(selection);
     }
