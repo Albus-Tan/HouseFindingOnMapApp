@@ -21,11 +21,5 @@ Future<Widget> selectionView(String path) async {
     ) {
       debugPrint("Select: $filterParams");
     },
-    onSelectionPreShow: (int index, BrnSelectionEntity entity) {
-      if (entity.key == "one_range_key" || entity.key == "two_range_key") {
-        return BrnSelectionWindowType.range;
-      }
-      return entity.filterShowType!;
-    },
   );
 }

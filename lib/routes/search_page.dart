@@ -101,6 +101,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
             itemBuilder: (BuildContext context, int index) => InkWell(
               child: ListTile(
                 title: RichText(
+                  key: Key(suggest[index]),
                   text: TextSpan(
                     text: suggest[index].substring(0, query.length),
                     style: const TextStyle(

@@ -9,6 +9,8 @@ HouseDetail houseDetail = HouseDetail(
   shiNumber: 1,
   tingNumber: 1,
   weiNumber: 1,
+  isStatic: true,
+  image: "assets/house_detail_page_houses/house1.jpg",
 );
 
 class HouseDetailPageApp extends StatelessWidget{
