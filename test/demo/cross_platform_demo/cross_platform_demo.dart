@@ -1,3 +1,4 @@
+import 'package:app/main.dart';
 import 'package:app/routes/house_detail_page.dart';
 import 'package:app/routes/house_list_page.dart';
 import 'package:flutter/foundation.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget { // the framework for device preview
       builder: DevicePreview.appBuilder,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: HouseDetailPage(houseDetail: houseDetail) // start your app in here
+      home: const App(),// start your app in here
     );
   }
 }
