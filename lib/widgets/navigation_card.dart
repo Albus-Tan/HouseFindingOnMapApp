@@ -197,8 +197,8 @@ class NavigationForm extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SizedBox(
-                width: 270,
+              Expanded(
+                flex: 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
@@ -213,21 +213,24 @@ class NavigationForm extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                width: 100,
-                alignment: Alignment.center,
-                color: Colors.white70,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.near_me),
-                  label: const Text("导航"),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.redAccent,
-                    //change background color of button
-                    onPrimary: Colors.white,
-                    //change text color of button
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  width: 100,
+                  alignment: Alignment.center,
+                  color: Colors.white70,
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.near_me),
+                    label: const Text("导航"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                      //change background color of button
+                      onPrimary: Colors.white,
+                      //change text color of button
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
                     ),
                   ),
                 ),

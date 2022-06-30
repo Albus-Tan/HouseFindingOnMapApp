@@ -43,19 +43,24 @@ class _HouseListPageState extends State<HouseListPage> {
   bool selectionInitialized = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     selectionView('assets/json/selection.json').then(
-      (value) => setState(
-        () {
+          (value) => setState(
+            () {
           selection = value;
           selectionInitialized = true;
         },
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final list = widget.needAppBar
         ? <Widget>[
-            _renderAppBar(context),
-          ]
+      _renderAppBar(context),
+    ]
         : <Widget>[];
     if (selectionInitialized) {
       list.add(selection);

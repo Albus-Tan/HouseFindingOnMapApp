@@ -14,18 +14,28 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          const MapWidget(),
-          const NavigationCard(),
-          IconButton(
-            padding: const EdgeInsets.symmetric(vertical: 24.0),
-            iconSize: 40.0,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.chevron_left),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text(
+          "导航",
+          style: TextStyle(color: Colors.black),
+        ),
+        leading: IconButton(
+          //padding: const EdgeInsets.symmetric(vertical: 24.0),
+
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
           ),
+        ),
+      ),
+      body: Stack(
+        children: const [
+          MapWidget(),
+          NavigationCard(),
         ],
       ),
     );
