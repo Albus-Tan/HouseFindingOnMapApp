@@ -117,6 +117,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
             Container(
               padding: const EdgeInsets.symmetric(vertical: 13.0),
               child: Carousel(
+                key: const Key('home page Carousel'),
                 items: advertisement,
                 height: 150,
               ),
@@ -143,13 +144,21 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
             ),
             Expanded(
               child: TabBarView(
-                children: [
-                  HouseList(),
-                  HouseList(),
-                  HouseList(),
-                  HouseList(),
-                ],
                 controller: _tabController,
+                children: const [
+                  HouseList(
+                    key: Key('recommendTabView'),
+                  ),
+                  HouseList(
+                    key: Key('nearbyTabView'),
+                  ),
+                  HouseList(
+                    key: Key('rentWholeTabView'),
+                  ),
+                  HouseList(
+                    key: Key('rentTogetherTabView'),
+                  ),
+                ],
               ),
             ),
           ],
