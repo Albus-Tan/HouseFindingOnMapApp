@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 part 'driving_route_plan.g.dart';
+// run 'flutter packages pub run build_runner build' in terminal
 
 @JsonSerializable()
 class DrivingRoutePlan extends Object {
