@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:app/service/amap_api_service/driving_route_plan.dart';
+import 'package:app/service/amap_api_service/route_plan/driving_route_plan.dart';
 import 'package:http/http.dart' as http;
 
 Future<DrivingRoutePlan> fetchDrivingRoutePlan() async {
