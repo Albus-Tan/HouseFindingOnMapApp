@@ -75,7 +75,6 @@ dev_dependencies:
 flutter:
 
   assets:
-
     - assets/house_detail_page_houses/house1.jpg
     - assets/house_detail_page_houses/house2.jpg
     - assets/house_detail_page_houses/house3.jpg
@@ -83,6 +82,10 @@ flutter:
     - assets/advertisement/advertisement2.jpg
     - assets/picture/404.jpg
     - assets/json/selection.json
+    - assets/map/end.png
+    - assets/map/start.png
+    - assets/map/location_marker.png
+    - assets/map/texture_green.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -6,7 +6,7 @@ import '../widgets/map.dart';
 import '../widgets/navigation_card.dart';
 
 class MapNavigationPage extends StatefulWidget {
-  const MapNavigationPage({Key? key}) : super(key: key);
+  MapNavigationPage({Key? key}) : super(key: key);
 
   @override
   State<MapNavigationPage> createState() => _MapNavigationPageState();
@@ -19,13 +19,15 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
 
   void _handleNavigation(String newPolyline) {
     _polylinePoints.clear();
+    print("_handleNavigation: $newPolyline");
     List<String> pointsStrs = newPolyline.split(";");
     for(int i = 0; i < pointsStrs.length; ++i){
       List<String> latlng = pointsStrs[i].split(",");
-      double lat = double.parse(latlng[0]);
-      double lng = double.parse(latlng[1]);
+      double lng = double.parse(latlng[0]);
+      double lat = double.parse(latlng[1]);
       _polylinePoints.add(LatLng(lat, lng));
     }
+    print(_polylinePoints);
     setState(() {
       _polyline = newPolyline;
     });
@@ -55,10 +57,13 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
       body: Stack(
         children: [
           MapWidget(
-            polyLines: _polylinePoints.isEmpty ? {} :{
+
+            polyLines: _polylinePoints.isEmpty ? {} : {
               Polyline(
+                  width: 20,
+                  customTexture: BitmapDescriptor.fromIconPath('assets/map/texture_green.png'),
+                  joinType: JoinType.round,
                   points: _polylinePoints,
-                  color: Colors.red,
               )
             },
           ),

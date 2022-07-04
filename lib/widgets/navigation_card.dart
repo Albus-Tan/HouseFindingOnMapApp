@@ -23,7 +23,6 @@ class NavigationCard extends StatefulWidget {
 }
 
 class _NavigationCardState extends State<NavigationCard> {
-
   Map<NavigationType, String> _polylinesMap = {};
 
   /// 用于表明此时处于哪个的导航页面
@@ -39,7 +38,6 @@ class _NavigationCardState extends State<NavigationCard> {
   String _oriText = "11111";
   String _desText = "22222";
 
-
   void _updateNavigationType(NavigationType newNavigationType) {
     print(_polylinesMap);
     // TODO: finish all types
@@ -48,10 +46,12 @@ class _NavigationCardState extends State<NavigationCard> {
         _navigationDriving(_oriLng, _oriLat, _desLng, _desLat);
         break;
       case NavigationType.walking:
+        _navigationWalking(_oriLng, _oriLat, _desLng, _desLat);
         break;
       case NavigationType.public:
         break;
       case NavigationType.bicycle:
+        _navigationBicycle(_oriLng, _oriLat, _desLng, _desLat);
         break;
       default:
         break;
@@ -64,27 +64,78 @@ class _NavigationCardState extends State<NavigationCard> {
     if (_polylinesMap.containsKey(NavigationType.driving)) {
       widget.onNavigate(_polylinesMap[NavigationType.driving] ?? '');
     } else {
-      await fetchDrivingRoutePlan(oriLng, oriLat, desLng, desLat)
-          .then((value) => {
-                print("fetchDrivingRoutePlan"),
-                print(value.count),
-                print(value.route.taxiCost),
-                value.route.paths.forEach((path) => {
-                      path.steps.forEach((step) => {
-                            drivingPolyline =
-                                "$drivingPolyline${step.polyline};",
-                          }),
+      await fetchDrivingRoutePlan(oriLng, oriLat, desLng, desLat).then(
+        (value) => {
+          print("fetchDrivingRoutePlan"),
+          print(value.count),
+          print(value.route.taxiCost),
+          value.route.paths.forEach((path) => {
+                path.steps.forEach((step) => {
+                      drivingPolyline = "$drivingPolyline${step.polyline};",
                     }),
-                // setState(() {
-                //
-                // }),
-                _polylinesMap[NavigationType.driving] =
-                drivingPolyline.substring(0, drivingPolyline.length - 1),
-                widget.onNavigate(
-                    drivingPolyline.substring(0, drivingPolyline.length - 1)),
-              });
+              }),
+          // setState(() {
+          //
+          // }),
+          _polylinesMap[NavigationType.driving] =
+              drivingPolyline.substring(0, drivingPolyline.length - 1),
+          widget.onNavigate(
+              _polylinesMap[NavigationType.driving] ?? ''
+          ),
+        },
+      );
     }
   }
+
+  void _navigationWalking(
+      String oriLng, String oriLat, String desLng, String desLat) async {
+    String walkingPolyline = "";
+    if (_polylinesMap.containsKey(NavigationType.walking)) {
+      widget.onNavigate(_polylinesMap[NavigationType.walking] ?? '');
+    } else {
+      await fetchWalkingRoutePlan(oriLng, oriLat, desLng, desLat).then(
+            (value) => {
+          print("fetchWalkingRoutePlan"),
+          value.route.paths.forEach((path) => {
+            path.steps.forEach((step) => {
+              walkingPolyline = "$walkingPolyline${step.polyline};",
+            }),
+          }),
+          _polylinesMap[NavigationType.walking] =
+              walkingPolyline.substring(0, walkingPolyline.length - 1),
+          widget.onNavigate(
+              _polylinesMap[NavigationType.walking] ?? ''
+          ),
+        },
+      );
+    }
+  }
+
+
+  void _navigationBicycle(
+      String oriLng, String oriLat, String desLng, String desLat) async {
+    String bicyclePolyline = "";
+    if (_polylinesMap.containsKey(NavigationType.bicycle)) {
+      widget.onNavigate(_polylinesMap[NavigationType.bicycle] ?? '');
+    } else {
+      await fetchBicycleRoutePlan(oriLng, oriLat, desLng, desLat).then(
+            (value) => {
+          print("fetchBicycleRoutePlan"),
+          value.route.paths.forEach((path) => {
+            path.steps.forEach((step) => {
+              bicyclePolyline = "$bicyclePolyline${step.polyline};",
+            }),
+          }),
+          _polylinesMap[NavigationType.bicycle] =
+              bicyclePolyline.substring(0, bicyclePolyline.length - 1),
+          widget.onNavigate(
+              _polylinesMap[NavigationType.bicycle] ?? ''
+          ),
+        },
+      );
+    }
+  }
+
 
   void _handleNavigationResultBarChanged(NavigationType newNavigationType) {
     print("_handleNavigationResultBarChanged: $newNavigationType");
