@@ -7,19 +7,6 @@ import 'package:app/service/amap_api_service/route_plan/public_route_plan.dart';
 import 'package:app/service/amap_api_service/route_plan/walking_route_plan.dart';
 import 'package:http/http.dart' as http;
 
-navigation(String oriLng, String oriLat, String desLng, String desLat) async {
-  String drivingPolyline = "";
-  await fetchDrivingRoutePlan('116.434307','39.90909','116.434446','39.90816').then((value) => {
-    print(value.count),
-    print(value.route.taxiCost),
-    value.route.paths.forEach((path) => {
-      path.steps.forEach((step) => {
-        drivingPolyline = "$drivingPolyline${step.polyline};",
-      }),
-    }),
-    print(drivingPolyline.substring(0, drivingPolyline.length - 1)),
-  });
-}
 
 Future<DrivingRoutePlan> fetchDrivingRoutePlan(String oriLng, String oriLat, String desLng, String desLat) async {
   final response = await http.get(

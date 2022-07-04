@@ -1,3 +1,5 @@
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/map.dart';
@@ -11,6 +13,24 @@ class MapNavigationPage extends StatefulWidget {
 }
 
 class _MapNavigationPageState extends State<MapNavigationPage> {
+
+  String _polyline = "";
+  List<LatLng> _polylinePoints = [];
+
+  void _handleNavigation(String newPolyline) {
+    _polylinePoints.clear();
+    List<String> pointsStrs = newPolyline.split(";");
+    for(int i = 0; i < pointsStrs.length; ++i){
+      List<String> latlng = pointsStrs[i].split(",");
+      double lat = double.parse(latlng[0]);
+      double lng = double.parse(latlng[1]);
+      _polylinePoints.add(LatLng(lat, lng));
+    }
+    setState(() {
+      _polyline = newPolyline;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +53,19 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
         ),
       ),
       body: Stack(
-        children: const [
-          MapWidget(),
-          NavigationCard(),
+        children: [
+          MapWidget(
+            polyLines: _polylinePoints.isEmpty ? {} :{
+              Polyline(
+                  points: _polylinePoints,
+                  color: Colors.red,
+              )
+            },
+          ),
+          NavigationCard(
+            polyline: _polyline,
+            onNavigate: _handleNavigation,
+          ),
         ],
       ),
     );

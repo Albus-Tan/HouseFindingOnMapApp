@@ -1,13 +1,182 @@
 import 'package:flutter/material.dart';
+import '../service/amap_api_service/amap_api_service.dart';
+
+enum NavigationType {
+  driving,
+  walking,
+  public,
+  bicycle,
+}
 
 class NavigationCard extends StatefulWidget {
-  const NavigationCard({Key? key}) : super(key: key);
+  final String polyline; // 当前显示在界面上的
+  final ValueChanged<String> onNavigate;
+
+  NavigationCard({
+    Key? key,
+    this.polyline = "",
+    required this.onNavigate,
+  }) : super(key: key);
 
   @override
   createState() => _NavigationCardState();
 }
 
 class _NavigationCardState extends State<NavigationCard> {
+
+  Map<NavigationType, String> _polylinesMap = {};
+
+  /// 用于表明此时处于哪个的导航页面
+  NavigationType _navigationType = NavigationType.driving;
+
+  /// 导航的起始点终止点经纬度
+  String _oriLng = "116.434307";
+  String _oriLat = "39.90909";
+  String _desLng = "116.434446";
+  String _desLat = "39.90816";
+
+  /// 导航的起始点终止点名称
+  String _oriText = "11111";
+  String _desText = "22222";
+
+
+  void _updateNavigationType(NavigationType newNavigationType) {
+    print(_polylinesMap);
+    // TODO: finish all types
+    switch (newNavigationType) {
+      case NavigationType.driving:
+        _navigationDriving(_oriLng, _oriLat, _desLng, _desLat);
+        break;
+      case NavigationType.walking:
+        break;
+      case NavigationType.public:
+        break;
+      case NavigationType.bicycle:
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _navigationDriving(
+      String oriLng, String oriLat, String desLng, String desLat) async {
+    String drivingPolyline = "";
+    if (_polylinesMap.containsKey(NavigationType.driving)) {
+      widget.onNavigate(_polylinesMap[NavigationType.driving] ?? '');
+    } else {
+      await fetchDrivingRoutePlan(oriLng, oriLat, desLng, desLat)
+          .then((value) => {
+                print("fetchDrivingRoutePlan"),
+                print(value.count),
+                print(value.route.taxiCost),
+                value.route.paths.forEach((path) => {
+                      path.steps.forEach((step) => {
+                            drivingPolyline =
+                                "$drivingPolyline${step.polyline};",
+                          }),
+                    }),
+                // setState(() {
+                //
+                // }),
+                _polylinesMap[NavigationType.driving] =
+                drivingPolyline.substring(0, drivingPolyline.length - 1),
+                widget.onNavigate(
+                    drivingPolyline.substring(0, drivingPolyline.length - 1)),
+              });
+    }
+  }
+
+  void _handleNavigationResultBarChanged(NavigationType newNavigationType) {
+    print("_handleNavigationResultBarChanged: $newNavigationType");
+    setState(() {
+      _navigationType = newNavigationType;
+    });
+    _updateNavigationType(newNavigationType);
+  }
+
+  void _handleOriTextChanged(String newOriText) {
+    print("_handleOriTextChanged: $newOriText");
+    setState(() {
+      _oriText = newOriText;
+    });
+  }
+
+  void _handleDesTextChanged(String newDesText) {
+    print("_handleDesTextChanged: $newDesText");
+    setState(() {
+      _desText = newDesText;
+    });
+  }
+
+  Widget buildNavigationForm(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(20.0),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.grey,
+            //设置四周圆角 角度
+            borderRadius: BorderRadius.all(
+              Radius.circular(4.0),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFieldDemo(
+                      labelText: '起始点',
+                      hintText: '请输入出发地',
+                      prefixIconColor: Colors.green,
+                      onInputTextChanged: _handleOriTextChanged,
+                      inputText: _oriText,
+                    ),
+                    TextFieldDemo(
+                      labelText: '终止点',
+                      hintText: '请输入目的地',
+                      prefixIconColor: Colors.red,
+                      onInputTextChanged: _handleDesTextChanged,
+                      inputText: _desText,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  width: 100,
+                  alignment: Alignment.center,
+                  color: Colors.white70,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      print("按钮 导航 pressed");
+                      _updateNavigationType(_navigationType);
+                    },
+                    icon: const Icon(Icons.near_me),
+                    label: const Text("导航"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                      //change background color of button
+                      onPrimary: Colors.white,
+                      //change text color of button
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -24,12 +193,15 @@ class _NavigationCardState extends State<NavigationCard> {
               Container(
                 height: 100,
                 color: Colors.white,
-                child: const NavigationForm(),
+                child: buildNavigationForm(context),
               ),
               Container(
                 height: 200,
                 color: Colors.white,
-                child: const NavigationResultBar(),
+                child: NavigationResultBar(
+                  navigationType: _navigationType,
+                  onNavigationTypeChanged: _handleNavigationResultBarChanged,
+                ),
               ),
             ],
           ),
@@ -39,8 +211,136 @@ class _NavigationCardState extends State<NavigationCard> {
   }
 }
 
-class NavigationResultBar extends StatelessWidget {
-  const NavigationResultBar({Key? key}) : super(key: key);
+class NavigationResultBar extends StatefulWidget {
+  const NavigationResultBar(
+      {Key? key,
+      required this.navigationType,
+      required this.onNavigationTypeChanged})
+      : super(key: key);
+
+  final NavigationType navigationType;
+  final ValueChanged<NavigationType> onNavigationTypeChanged;
+
+  @override
+  State<NavigationResultBar> createState() => _NavigationResultBarState();
+}
+
+class _NavigationResultBarState extends State<NavigationResultBar> {
+  Widget buildNavigationResultTabBar() {
+    return TabBar(
+      onTap: (int index) {
+        print('Selected......$index');
+        widget.onNavigationTypeChanged(NavigationType.values[index]);
+      },
+      unselectedLabelColor: Colors.redAccent,
+      indicatorSize: TabBarIndicatorSize.tab,
+      indicator: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Colors.redAccent,
+            Colors.orangeAccent,
+          ],
+        ),
+        color: Colors.redAccent,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      tabs: [
+        Row(
+          children: const [
+            Icon(Icons.directions_car),
+            SizedBox(width: 10),
+            Text("驾车"),
+          ],
+        ),
+        Row(
+          children: const [
+            Icon(Icons.directions_walk),
+            SizedBox(width: 10),
+            Text("步行"),
+          ],
+        ),
+        Row(
+          children: const [
+            Icon(Icons.directions_bus),
+            SizedBox(width: 10),
+            Text("公交"),
+          ],
+        ),
+        Row(
+          children: const [
+            Icon(Icons.directions_bike),
+            SizedBox(width: 10),
+            Text("骑行"),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildNavigationResultTabBarView() {
+    return TabBarView(
+      children: [
+        ListView.builder(
+          //controller: scrollController,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return buildNavigationResultCard();
+          },
+        ),
+        ListView.builder(
+          //controller: scrollController,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return buildNavigationResultCard();
+          },
+        ),
+        ListView.builder(
+          //controller: scrollController,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return buildNavigationResultCard();
+          },
+        ),
+        ListView.builder(
+          //controller: scrollController,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return buildNavigationResultCard();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget buildNavigationResultCard() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Card(
+        color: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+        ),
+        // 抗锯齿
+        clipBehavior: Clip.antiAlias,
+        elevation: 5.0,
+        child: Container(
+          height: 80,
+          alignment: Alignment.center,
+
+          // 演示 ListTile
+          child: const ListTile(
+            title: Text("20分钟"),
+            subtitle: Text("1003m"),
+
+            // 列表尾部的图标
+            trailing: Icon(Icons.chevron_right),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,201 +364,25 @@ class NavigationResultBar extends StatelessWidget {
   }
 }
 
-buildNavigationResultTabBar() {
-  return TabBar(
-    unselectedLabelColor: Colors.redAccent,
-    indicatorSize: TabBarIndicatorSize.tab,
-    indicator: BoxDecoration(
-      gradient: const LinearGradient(
-        colors: [
-          Colors.redAccent,
-          Colors.orangeAccent,
-        ],
-      ),
-      color: Colors.redAccent,
-      borderRadius: BorderRadius.circular(50),
-    ),
-    tabs: [
-      Row(
-        children: const [
-          Icon(Icons.directions_car),
-          SizedBox(width: 10),
-          Text("驾车"),
-        ],
-      ),
-      Row(
-        children: const [
-          Icon(Icons.directions_walk),
-          SizedBox(width: 10),
-          Text("步行"),
-        ],
-      ),
-      Row(
-        children: const [
-          Icon(Icons.directions_bus),
-          SizedBox(width: 10),
-          Text("公交"),
-        ],
-      ),
-      Row(
-        children: const [
-          Icon(Icons.directions_bike),
-          SizedBox(width: 10),
-          Text("骑行"),
-        ],
-      ),
-    ],
-  );
-}
-
-buildNavigationResultTabBarView() {
-  return TabBarView(
-    children: [
-      ListView.builder(
-        //controller: scrollController,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return buildNavigationResultCard();
-        },
-      ),
-      ListView.builder(
-        //controller: scrollController,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return buildNavigationResultCard();
-        },
-      ),
-      ListView.builder(
-        //controller: scrollController,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return buildNavigationResultCard();
-        },
-      ),
-      ListView.builder(
-        //controller: scrollController,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return buildNavigationResultCard();
-        },
-      ),
-    ],
-  );
-}
-
-buildNavigationResultCard() {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-    child: Card(
-      color: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5.0),
-        ),
-      ),
-      // 抗锯齿
-      clipBehavior: Clip.antiAlias,
-      elevation: 5.0,
-      child: Container(
-        height: 80,
-        alignment: Alignment.center,
-
-        // 演示 ListTile
-        child: const ListTile(
-          title: Text("20分钟"),
-          subtitle: Text("1003m"),
-
-          // 列表尾部的图标
-          trailing: Icon(Icons.chevron_right),
-        ),
-      ),
-    ),
-  );
-}
-
-class NavigationForm extends StatelessWidget {
-  const NavigationForm({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(20.0),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.grey,
-            //设置四周圆角 角度
-            borderRadius: BorderRadius.all(
-              Radius.circular(4.0),
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    TextFieldDemo(
-                        labelText: '起始点',
-                        hintText: '请输入出发地',
-                        prefixIconColor: Colors.green),
-                    TextFieldDemo(
-                        labelText: '终止点',
-                        hintText: '请输入目的地',
-                        prefixIconColor: Colors.red),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  width: 100,
-                  alignment: Alignment.center,
-                  color: Colors.white70,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.near_me),
-                    label: const Text("导航"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                      //change background color of button
-                      onPrimary: Colors.white,
-                      //change text color of button
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class TextFieldDemo extends StatefulWidget {
   final String labelText;
   final String hintText;
   final MaterialColor prefixIconColor;
 
-  const TextFieldDemo(
-      {Key? key,
-      this.labelText = '',
-      this.hintText = '',
-      this.prefixIconColor = Colors.grey})
-      : super(key: key);
+  final String inputText;
+  final ValueChanged<String> onInputTextChanged;
+
+  const TextFieldDemo({
+    Key? key,
+    this.labelText = '',
+    this.hintText = '',
+    this.prefixIconColor = Colors.grey,
+    this.inputText = '',
+    required this.onInputTextChanged,
+  }) : super(key: key);
 
   @override
   createState() => _TextFieldDemoState();
-// @override
-// _TextFieldDemoState createState() => _TextFieldDemoState(labelText, hintText);
 }
 
 class _TextFieldDemoState extends State<TextFieldDemo> {
@@ -267,6 +391,9 @@ class _TextFieldDemoState extends State<TextFieldDemo> {
     return SizedBox(
       height: 30,
       child: TextField(
+        onChanged: (value) {
+          widget.onInputTextChanged(value);
+        },
         decoration: InputDecoration(
           prefixIcon: Icon(
             Icons.trip_origin,
