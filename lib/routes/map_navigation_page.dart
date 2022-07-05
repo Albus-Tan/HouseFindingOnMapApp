@@ -2,7 +2,6 @@ import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/map.dart';
 import '../widgets/navigation_card.dart';
 
 class MapNavigationPage extends StatefulWidget {
@@ -56,9 +55,8 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
       ),
       body: Stack(
         children: [
-          MapWidget(
-            // TODO: add ori and des markers
-            polyLines: _polylinePoints.isEmpty ? {} : {
+          AMapWidget(
+            polylines: _polylinePoints.isEmpty ? {} : {
               Polyline(
                   width: 20,
                   customTexture: BitmapDescriptor.fromIconPath('assets/map/texture_green.png'),

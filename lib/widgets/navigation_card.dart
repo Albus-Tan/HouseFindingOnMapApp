@@ -31,7 +31,7 @@ class _NavigationCardState extends State<NavigationCard> {
   NavigationType _navigationType = NavigationType.driving;
 
   /// 此时处于第几条路径
-  int _count = 0;
+  int _idx = 0;
 
   /// 路线所花费的时间距离
   Map<NavigationType, List<int>> _timeCostMap = {};
@@ -66,9 +66,8 @@ class _NavigationCardState extends State<NavigationCard> {
 
   void _updateNavigationType(NavigationType newNavigationType) {
     setState(() {
-      _count = 0;
+      _idx = 0;
     });
-    // TODO: finish all types
     switch (newNavigationType) {
       case NavigationType.driving:
         _navigationDriving(_oriLng, _oriLat, _desLng, _desLat);
@@ -87,7 +86,6 @@ class _NavigationCardState extends State<NavigationCard> {
     }
   }
 
-
   Future<void> _navigationPublic(
       String oriLng, String oriLat, String desLng, String desLat) async {
     String publicPolyline = "";
@@ -95,29 +93,31 @@ class _NavigationCardState extends State<NavigationCard> {
       widget.onNavigate(_polylinesMap[NavigationType.public]?[0] ?? '');
     } else {
       await fetchPublicRoutePlan(oriLng, oriLat, desLng, desLat).then(
-            (value) => {
+        (value) => {
           print("fetchPublicRoutePlan"),
           print(value.count),
           _polylinesMap[NavigationType.public] = [],
           _distanceCostMap[NavigationType.public] = [],
           _timeCostMap[NavigationType.public] = [],
           value.route.transits.forEach((path) => {
-            publicPolyline = "",
-            _distanceCostMap[NavigationType.public]
-                ?.add(int.parse(path.distance)),
-            _timeCostMap[NavigationType.public]
-                ?.add(int.parse(path.cost.duration ?? '0')),
-            path.segments.forEach((segment) => {
-              segment.walking.steps.forEach((step) => {
-                publicPolyline = "$publicPolyline${step.polyline.polyline};",
+                publicPolyline = "",
+                _distanceCostMap[NavigationType.public]
+                    ?.add(int.parse(path.distance)),
+                _timeCostMap[NavigationType.public]
+                    ?.add(int.parse(path.cost.duration ?? '0')),
+                path.segments.forEach((segment) => {
+                      segment.walking.steps.forEach((step) => {
+                            publicPolyline =
+                                "$publicPolyline${step.polyline.polyline};",
+                          }),
+                      segment.bus.buslines.forEach((step) => {
+                            publicPolyline =
+                                "$publicPolyline${step.polyline.polyline};",
+                          }),
+                    }),
+                _polylinesMap[NavigationType.public]?.add(
+                    publicPolyline.substring(0, publicPolyline.length - 1)),
               }),
-              segment.bus.buslines.forEach((step) => {
-                publicPolyline = "$publicPolyline${step.polyline.polyline};",
-              }),
-            }),
-            _polylinesMap[NavigationType.public]?.add(
-                publicPolyline.substring(0, publicPolyline.length - 1)),
-          }),
           widget.onNavigate(_polylinesMap[NavigationType.public]?[0] ?? ''),
         },
       );
@@ -215,6 +215,13 @@ class _NavigationCardState extends State<NavigationCard> {
         },
       );
     }
+  }
+
+  void _handleRouteIdxChanged(int newIdx) {
+    setState(() {
+      _idx = newIdx;
+    });
+    widget.onNavigate(_polylinesMap[_navigationType]?[newIdx] ?? '');
   }
 
   void _handleNavigationResultBarChanged(NavigationType newNavigationType) {
@@ -350,10 +357,12 @@ class _NavigationCardState extends State<NavigationCard> {
                         return NavigationResultBar(
                           navigationType: _navigationType,
                           onNavigationTypeChanged:
-                          _handleNavigationResultBarChanged,
+                              _handleNavigationResultBarChanged,
                           timeCostMap: _timeCostMap,
                           distanceCostMap: _distanceCostMap,
                           scrollController: scrollController,
+                          idx: _idx,
+                          onRouteIdxChanged: _handleRouteIdxChanged,
                         );
                       } else {
                         return Text('Error: ${snapShot.error}');
@@ -375,11 +384,16 @@ class NavigationResultBar extends StatefulWidget {
       required this.onNavigationTypeChanged,
       required this.timeCostMap,
       required this.distanceCostMap,
-      required this.scrollController})
+      required this.scrollController,
+      required this.idx,
+      required this.onRouteIdxChanged})
       : super(key: key);
 
   final NavigationType navigationType;
   final ValueChanged<NavigationType> onNavigationTypeChanged;
+
+  final int idx;
+  final ValueChanged<int> onRouteIdxChanged;
 
   /// 路线所花费的时间距离
   final Map<NavigationType, List<int>> timeCostMap;
@@ -443,7 +457,7 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
     );
   }
 
-  Widget buildNavigationResultListView(NavigationType type){
+  Widget buildNavigationResultListView(NavigationType type) {
     return ListView.builder(
       controller: widget.scrollController,
       itemCount: widget.timeCostMap[type]?.length,
@@ -451,7 +465,8 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
         return buildNavigationResultCard(
             type,
             widget.timeCostMap[type]?[index] ?? 0,
-            widget.distanceCostMap[type]?[index] ?? 0);
+            widget.distanceCostMap[type]?[index] ?? 0,
+            index);
       },
     );
   }
@@ -484,7 +499,7 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
   }
 
   Widget buildNavigationResultCard(
-      NavigationType type, int time, int distance) {
+      NavigationType type, int time, int distance, int index) {
     print("buildNavigationResultCard: ");
     print(widget.timeCostMap[type]);
     String timeCost = _durationTransform(time);
@@ -505,12 +520,18 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
           child: Container(
             height: 80,
             alignment: Alignment.center,
-
-            // 演示 ListTile
             child: ListTile(
-              title: Text(timeCost),
+              title: (index == widget.idx)
+                  ? Text(
+                      "$timeCost（当前）",
+                      style: const TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.w900),
+                    )
+                  : Text(timeCost),
               subtitle: Text(distanceCost),
-
+              onTap: () {
+                widget.onRouteIdxChanged(index);
+              },
               // 列表尾部的图标
               trailing: Icon(Icons.chevron_right),
             ),
