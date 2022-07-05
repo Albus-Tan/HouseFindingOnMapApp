@@ -13,10 +13,26 @@ class NavigationCard extends StatefulWidget {
   final String polyline; // 当前显示在界面上的
   final ValueChanged<String> onNavigate;
 
+  /// 导航的起始点终止点经纬度
+  final String oriLng;
+  final String oriLat;
+  final String desLng;
+  final String desLat;
+
+  /// 导航的起始点终止点名称
+  final String oriText;
+  final String desText;
+
   NavigationCard({
     Key? key,
     this.polyline = "",
     required this.onNavigate,
+    required this.oriLng,
+    required this.oriLat,
+    required this.desLng,
+    required this.desLat,
+    required this.oriText,
+    required this.desText,
   }) : super(key: key);
 
   @override
@@ -38,19 +54,25 @@ class _NavigationCardState extends State<NavigationCard> {
   Map<NavigationType, List<int>> _distanceCostMap = {};
 
   /// 导航的起始点终止点经纬度
-  String _oriLng = "116.484307";
-  String _oriLat = "39.90909";
-  String _desLng = "116.434446";
-  String _desLat = "39.90816";
+  late String _oriLng;
+  late String _oriLat;
+  late String _desLng;
+  late String _desLat;
 
   /// 导航的起始点终止点名称
-  String _oriText = "11111";
-  String _desText = "22222";
+  late String _oriText;
+  late String _desText;
 
   var _futureBuilderFuture;
 
   @override
   void initState() {
+    _oriLng = widget.oriLng;
+    _oriLat = widget.oriLat;
+    _desLng = widget.desLng;
+    _desLat = widget.desLat;
+    _oriText = widget.oriText;
+    _desText = widget.desText;
     _futureBuilderFuture = getDatas();
     super.initState();
   }
@@ -267,14 +289,14 @@ class _NavigationCardState extends State<NavigationCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFieldDemo(
-                      labelText: '起始点',
+                      labelText: _oriText,
                       hintText: '请输入出发地',
                       prefixIconColor: Colors.green,
                       onInputTextChanged: _handleOriTextChanged,
                       inputText: _oriText,
                     ),
                     TextFieldDemo(
-                      labelText: '终止点',
+                      labelText: _desText,
                       hintText: '请输入目的地',
                       prefixIconColor: Colors.red,
                       onInputTextChanged: _handleDesTextChanged,

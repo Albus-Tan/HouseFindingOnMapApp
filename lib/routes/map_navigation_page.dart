@@ -14,8 +14,8 @@ class MapNavigationPage extends StatefulWidget {
   final String _desLat = "39.90816";
 
   /// 导航的起始点终止点名称
-  final String _oriText = "11111";
-  final String _desText = "22222";
+  final String _oriText = "天安门";
+  final String _desText = "一个目的地名字";
 
   @override
   State<MapNavigationPage> createState() => _MapNavigationPageState();
@@ -97,6 +97,16 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
       body: Stack(
         children: [
           AMapWidget(
+            initialCameraPosition: CameraPosition(
+              // TODO: calculate zoom and center pos
+              zoom: 12,
+                target: LatLng(
+                    (double.parse(widget._oriLat) +
+                            double.parse(widget._desLat)) /
+                        2 - 0.05,
+                    (double.parse(widget._oriLng) +
+                            double.parse(widget._desLng)) /
+                        2)),
             markers: Set<Marker>.of(_initMarkerMap.values),
             polylines: _polylinePoints.isEmpty
                 ? {}
@@ -113,6 +123,12 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
           NavigationCard(
             polyline: _polyline,
             onNavigate: _handleNavigation,
+            oriLat: widget._oriLat,
+            oriLng: widget._oriLng,
+            desLat: widget._desLat,
+            desLng: widget._desLng,
+            oriText: widget._oriText,
+            desText: widget._desText,
           ),
         ],
       ),
