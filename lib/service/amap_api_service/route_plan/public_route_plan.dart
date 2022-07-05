@@ -61,9 +61,15 @@ class Route extends Object {
 class Cost extends Object {
 
   @JsonKey(name: 'taxi_fee')
-  String taxiFee;
+  String? taxiFee;
 
-  Cost(this.taxiFee,);
+  @JsonKey(name: 'duration')
+  String? duration;
+
+  @JsonKey(name: 'transit_fee')
+  String? transitFee;
+
+  Cost({this.duration,this.transitFee,this.taxiFee,});
 
   factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
 
@@ -155,7 +161,7 @@ class Walking extends Object {
 
   Walking(this.destination,this.distance,this.origin,this.cost,this.steps,);
 
-  factory Walking.fromJson(Map<String, dynamic> srcJson) => _$WalkingFromJson(srcJson);
+  factory Walking.fromJson(Map<String, dynamic>? srcJson) => _$WalkingFromJson(srcJson??{});
 
   Map<String, dynamic> toJson() => _$WalkingToJson(this);
 
@@ -224,7 +230,7 @@ class Bus extends Object {
 
   Bus(this.buslines,);
 
-  factory Bus.fromJson(Map<String, dynamic> srcJson) => _$BusFromJson(srcJson);
+  factory Bus.fromJson(Map<String, dynamic>? srcJson) => _$BusFromJson(srcJson??{});
 
   Map<String, dynamic> toJson() => _$BusToJson(this);
 

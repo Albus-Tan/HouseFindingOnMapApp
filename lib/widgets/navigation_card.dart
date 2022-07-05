@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../service/amap_api_service/amap_api_service.dart';
 
 enum NavigationType {
@@ -58,7 +59,8 @@ class _NavigationCardState extends State<NavigationCard> {
     return Future.wait([
       _navigationDriving(_oriLng, _oriLat, _desLng, _desLat),
       _navigationWalking(_oriLng, _oriLat, _desLng, _desLat),
-      _navigationBicycle(_oriLng, _oriLat, _desLng, _desLat)
+      _navigationPublic(_oriLng, _oriLat, _desLng, _desLat),
+      _navigationBicycle(_oriLng, _oriLat, _desLng, _desLat),
     ]);
   }
 
@@ -75,6 +77,7 @@ class _NavigationCardState extends State<NavigationCard> {
         _navigationWalking(_oriLng, _oriLat, _desLng, _desLat);
         break;
       case NavigationType.public:
+        _navigationPublic(_oriLng, _oriLat, _desLng, _desLat);
         break;
       case NavigationType.bicycle:
         _navigationBicycle(_oriLng, _oriLat, _desLng, _desLat);
@@ -84,11 +87,48 @@ class _NavigationCardState extends State<NavigationCard> {
     }
   }
 
+
+  Future<void> _navigationPublic(
+      String oriLng, String oriLat, String desLng, String desLat) async {
+    String publicPolyline = "";
+    if (_polylinesMap.containsKey(NavigationType.public)) {
+      widget.onNavigate(_polylinesMap[NavigationType.public]?[0] ?? '');
+    } else {
+      await fetchPublicRoutePlan(oriLng, oriLat, desLng, desLat).then(
+            (value) => {
+          print("fetchPublicRoutePlan"),
+          print(value.count),
+          _polylinesMap[NavigationType.public] = [],
+          _distanceCostMap[NavigationType.public] = [],
+          _timeCostMap[NavigationType.public] = [],
+          value.route.transits.forEach((path) => {
+            publicPolyline = "",
+            _distanceCostMap[NavigationType.public]
+                ?.add(int.parse(path.distance)),
+            _timeCostMap[NavigationType.public]
+                ?.add(int.parse(path.cost.duration ?? '0')),
+            path.segments.forEach((segment) => {
+              segment.walking.steps.forEach((step) => {
+                publicPolyline = "$publicPolyline${step.polyline.polyline};",
+              }),
+              segment.bus.buslines.forEach((step) => {
+                publicPolyline = "$publicPolyline${step.polyline.polyline};",
+              }),
+            }),
+            _polylinesMap[NavigationType.public]?.add(
+                publicPolyline.substring(0, publicPolyline.length - 1)),
+          }),
+          widget.onNavigate(_polylinesMap[NavigationType.public]?[0] ?? ''),
+        },
+      );
+    }
+  }
+
   Future<void> _navigationDriving(
       String oriLng, String oriLat, String desLng, String desLat) async {
     String drivingPolyline = "";
     if (_polylinesMap.containsKey(NavigationType.driving)) {
-      widget.onNavigate(_polylinesMap[NavigationType.driving]![0] ?? '');
+      widget.onNavigate(_polylinesMap[NavigationType.driving]?[0] ?? '');
     } else {
       await fetchDrivingRoutePlan(oriLng, oriLat, desLng, desLat).then(
         (value) => {
@@ -96,6 +136,8 @@ class _NavigationCardState extends State<NavigationCard> {
           print(value.count),
           print(value.route.taxiCost),
           _polylinesMap[NavigationType.driving] = [],
+          _distanceCostMap[NavigationType.driving] = [],
+          _timeCostMap[NavigationType.driving] = [],
           value.route.paths.forEach((path) => {
                 drivingPolyline = "",
                 _distanceCostMap[NavigationType.driving]
@@ -108,7 +150,7 @@ class _NavigationCardState extends State<NavigationCard> {
                 _polylinesMap[NavigationType.driving]?.add(
                     drivingPolyline.substring(0, drivingPolyline.length - 1)),
               }),
-          widget.onNavigate(_polylinesMap[NavigationType.driving]![0] ?? ''),
+          widget.onNavigate(_polylinesMap[NavigationType.driving]?[0] ?? ''),
         },
       );
     }
@@ -118,17 +160,20 @@ class _NavigationCardState extends State<NavigationCard> {
       String oriLng, String oriLat, String desLng, String desLat) async {
     String walkingPolyline = "";
     if (_polylinesMap.containsKey(NavigationType.walking)) {
-      widget.onNavigate(_polylinesMap[NavigationType.walking]![0] ?? '');
+      widget.onNavigate(_polylinesMap[NavigationType.walking]?[0] ?? '');
     } else {
       int i;
       await fetchWalkingRoutePlan(oriLng, oriLat, desLng, desLat).then(
         (value) => {
           print("fetchWalkingRoutePlan"),
           _polylinesMap[NavigationType.walking] = [],
+          _distanceCostMap[NavigationType.walking] = [],
+          _timeCostMap[NavigationType.walking] = [],
           value.route.paths.forEach((path) => {
-                _distanceCostMap[NavigationType.driving]
+                walkingPolyline = "",
+                _distanceCostMap[NavigationType.walking]
                     ?.add(int.parse(path.distance)),
-                _timeCostMap[NavigationType.driving]
+                _timeCostMap[NavigationType.walking]
                     ?.add(int.parse(path.cost.duration)),
                 path.steps.forEach((step) => {
                       walkingPolyline = "$walkingPolyline${step.polyline};",
@@ -136,7 +181,7 @@ class _NavigationCardState extends State<NavigationCard> {
               }),
           _polylinesMap[NavigationType.walking]
               ?.add(walkingPolyline.substring(0, walkingPolyline.length - 1)),
-          widget.onNavigate(_polylinesMap[NavigationType.walking]![0] ?? ''),
+          widget.onNavigate(_polylinesMap[NavigationType.walking]?[0] ?? ''),
         },
       );
     }
@@ -146,16 +191,19 @@ class _NavigationCardState extends State<NavigationCard> {
       String oriLng, String oriLat, String desLng, String desLat) async {
     String bicyclePolyline = "";
     if (_polylinesMap.containsKey(NavigationType.bicycle)) {
-      widget.onNavigate(_polylinesMap[NavigationType.bicycle]![0] ?? '');
+      widget.onNavigate(_polylinesMap[NavigationType.bicycle]?[0] ?? '');
     } else {
       await fetchBicycleRoutePlan(oriLng, oriLat, desLng, desLat).then(
         (value) => {
           print("fetchBicycleRoutePlan"),
           _polylinesMap[NavigationType.bicycle] = [],
+          _distanceCostMap[NavigationType.bicycle] = [],
+          _timeCostMap[NavigationType.bicycle] = [],
           value.route.paths.forEach((path) => {
-                _distanceCostMap[NavigationType.driving]
+                bicyclePolyline = "",
+                _distanceCostMap[NavigationType.bicycle]
                     ?.add(int.parse(path.distance)),
-                _timeCostMap[NavigationType.driving]
+                _timeCostMap[NavigationType.bicycle]
                     ?.add(int.parse(path.duration)),
                 path.steps.forEach((step) => {
                       bicyclePolyline = "$bicyclePolyline${step.polyline};",
@@ -163,7 +211,7 @@ class _NavigationCardState extends State<NavigationCard> {
               }),
           _polylinesMap[NavigationType.bicycle]
               ?.add(bicyclePolyline.substring(0, bicyclePolyline.length - 1)),
-          widget.onNavigate(_polylinesMap[NavigationType.bicycle]![0] ?? ''),
+          widget.onNavigate(_polylinesMap[NavigationType.bicycle]?[0] ?? ''),
         },
       );
     }
@@ -267,17 +315,18 @@ class _NavigationCardState extends State<NavigationCard> {
       // 设置父容器的高度 1 ~ 0, initialChildSize必须 <= maxChildSize
       minChildSize: 0.4,
       // 限制child最小高度, minChildSize必须 <= initialChildSize
-      maxChildSize: 0.4,
-      // 限制child最大高度,
+      expand: true,
       builder: (BuildContext context, ScrollController scrollController) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               height: 100,
               color: Colors.white,
               child: buildNavigationForm(context),
             ),
-            Expanded(
+            Flexible(
+              fit: FlexFit.loose,
               child: Container(
                 color: Colors.white,
                 child: FutureBuilder(
@@ -304,6 +353,7 @@ class _NavigationCardState extends State<NavigationCard> {
                           _handleNavigationResultBarChanged,
                           timeCostMap: _timeCostMap,
                           distanceCostMap: _distanceCostMap,
+                          scrollController: scrollController,
                         );
                       } else {
                         return Text('Error: ${snapShot.error}');
@@ -324,7 +374,8 @@ class NavigationResultBar extends StatefulWidget {
       required this.navigationType,
       required this.onNavigationTypeChanged,
       required this.timeCostMap,
-      required this.distanceCostMap})
+      required this.distanceCostMap,
+      required this.scrollController})
       : super(key: key);
 
   final NavigationType navigationType;
@@ -333,6 +384,8 @@ class NavigationResultBar extends StatefulWidget {
   /// 路线所花费的时间距离
   final Map<NavigationType, List<int>> timeCostMap;
   final Map<NavigationType, List<int>> distanceCostMap;
+
+  final ScrollController scrollController;
 
   @override
   State<NavigationResultBar> createState() => _NavigationResultBarState();
@@ -390,37 +443,26 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
     );
   }
 
+  Widget buildNavigationResultListView(NavigationType type){
+    return ListView.builder(
+      controller: widget.scrollController,
+      itemCount: widget.timeCostMap[type]?.length,
+      itemBuilder: (BuildContext context, int index) {
+        return buildNavigationResultCard(
+            type,
+            widget.timeCostMap[type]?[index] ?? 0,
+            widget.distanceCostMap[type]?[index] ?? 0);
+      },
+    );
+  }
+
   Widget buildNavigationResultTabBarView() {
     return TabBarView(
       children: [
-        ListView.builder(
-          //controller: scrollController,
-          itemCount: 1,
-          itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.driving, widget.timeCostMap[NavigationType.driving]![0], 22);
-          },
-        ),
-        ListView.builder(
-          //controller: scrollController,
-          itemCount: 1,
-          itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.walking, 12132, 22);
-          },
-        ),
-        ListView.builder(
-          //controller: scrollController,
-          itemCount: 1,
-          itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.public, 12132, 22);
-          },
-        ),
-        ListView.builder(
-          //controller: scrollController,
-          itemCount: 1,
-          itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.bicycle, 12132, 22);
-          },
-        ),
+        buildNavigationResultListView(NavigationType.driving),
+        buildNavigationResultListView(NavigationType.walking),
+        buildNavigationResultListView(NavigationType.public),
+        buildNavigationResultListView(NavigationType.bicycle),
       ],
     );
   }
@@ -432,10 +474,21 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
     return (parts[0] != '0') ? '${parts[0]}小时${parts[1]}分钟' : '${parts[1]}分钟';
   }
 
-  Widget buildNavigationResultCard(NavigationType type, int time, int distance) {
+  String _distanceTransform(int meters) {
+    if (meters < 1000) {
+      return '$meters米';
+    } else {
+      var km = (meters / 1000.0).toStringAsFixed(2);
+      return '$km千米';
+    }
+  }
+
+  Widget buildNavigationResultCard(
+      NavigationType type, int time, int distance) {
     print("buildNavigationResultCard: ");
     print(widget.timeCostMap[type]);
     String timeCost = _durationTransform(time);
+    String distanceCost = _distanceTransform(distance);
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -456,7 +509,7 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
             // 演示 ListTile
             child: ListTile(
               title: Text(timeCost),
-              subtitle: Text("$distance米"),
+              subtitle: Text(distanceCost),
 
               // 列表尾部的图标
               trailing: Icon(Icons.chevron_right),

@@ -43,7 +43,9 @@ Map<String, dynamic> _$RouteToJson(Route instance) => <String, dynamic>{
     };
 
 Cost _$CostFromJson(Map<String, dynamic> json) => Cost(
-      json['taxi_fee'] as String,
+      taxiFee: json['taxi_fee'] as String?,
+      duration: json['duration'] as String?,
+      transitFee: json['transit_fee'] as String?,
     );
 
 Map<String, dynamic> _$CostToJson(Cost instance) => <String, dynamic>{
@@ -79,8 +81,8 @@ Map<String, dynamic> _$TransitsToJson(Transits instance) => <String, dynamic>{
 //     };
 
 Segments _$SegmentsFromJson(Map<String, dynamic> json) => Segments(
-      Walking.fromJson(json['walking'] as Map<String, dynamic>),
-      Bus.fromJson(json['bus'] as Map<String, dynamic>),
+      Walking.fromJson(json['walking'] as Map<String, dynamic>?),
+      Bus.fromJson(json['bus'] as Map<String, dynamic>?),
     );
 
 Map<String, dynamic> _$SegmentsToJson(Segments instance) => <String, dynamic>{
@@ -137,9 +139,8 @@ Map<String, dynamic> _$PolylineToJson(Polyline instance) => <String, dynamic>{
     };
 
 Bus _$BusFromJson(Map<String, dynamic> json) => Bus(
-      (json['buslines'] as List<dynamic>)
-          .map((e) => Buslines.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      List<Buslines>.from((json['buslines']??<dynamic>[] as List<dynamic>)
+          .map((e) => Buslines.fromJson(e as Map<String, dynamic>))),
     );
 
 Map<String, dynamic> _$BusToJson(Bus instance) => <String, dynamic>{
