@@ -42,10 +42,13 @@ class Route extends Object {
   @JsonKey(name: 'distance')
   String distance;
 
+  @JsonKey(name: 'cost')
+  Cost cost;
+
   @JsonKey(name: 'transits')
   List<Transits> transits;
 
-  Route(this.origin,this.destination,this.distance,this.transits,);
+  Route(this.origin,this.destination,this.distance,this.cost,this.transits,);
 
   factory Route.fromJson(Map<String, dynamic> srcJson) => _$RouteFromJson(srcJson);
 
@@ -55,7 +58,25 @@ class Route extends Object {
 
 
 @JsonSerializable()
+class Cost extends Object {
+
+  @JsonKey(name: 'taxi_fee')
+  String taxiFee;
+
+  Cost(this.taxiFee,);
+
+  factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+
+  Map<String, dynamic> toJson() => _$CostToJson(this);
+
+}
+
+
+@JsonSerializable()
 class Transits extends Object {
+
+  @JsonKey(name: 'cost')
+  Cost cost;
 
   @JsonKey(name: 'distance')
   String distance;
@@ -69,13 +90,31 @@ class Transits extends Object {
   @JsonKey(name: 'segments')
   List<Segments> segments;
 
-  Transits(this.distance,this.walkingDistance,this.nightflag,this.segments,);
+  Transits(this.cost,this.distance,this.walkingDistance,this.nightflag,this.segments,);
 
   factory Transits.fromJson(Map<String, dynamic> srcJson) => _$TransitsFromJson(srcJson);
 
   Map<String, dynamic> toJson() => _$TransitsToJson(this);
 
 }
+
+
+// @JsonSerializable()
+// class Cost extends Object {
+//
+//   @JsonKey(name: 'duration')
+//   String duration;
+//
+//   @JsonKey(name: 'transit_fee')
+//   String transitFee;
+//
+//   Cost(this.duration,this.transitFee,);
+//
+//   factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+//
+//   Map<String, dynamic> toJson() => _$CostToJson(this);
+//
+// }
 
 
 @JsonSerializable()
@@ -108,16 +147,34 @@ class Walking extends Object {
   @JsonKey(name: 'origin')
   String origin;
 
+  @JsonKey(name: 'cost')
+  Cost cost;
+
   @JsonKey(name: 'steps')
   List<Steps> steps;
 
-  Walking(this.destination,this.distance,this.origin,this.steps,);
+  Walking(this.destination,this.distance,this.origin,this.cost,this.steps,);
 
   factory Walking.fromJson(Map<String, dynamic> srcJson) => _$WalkingFromJson(srcJson);
 
   Map<String, dynamic> toJson() => _$WalkingToJson(this);
 
 }
+
+
+// @JsonSerializable()
+// class Cost extends Object {
+//
+//   @JsonKey(name: 'duration')
+//   String duration;
+//
+//   Cost(this.duration,);
+//
+//   factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+//
+//   Map<String, dynamic> toJson() => _$CostToJson(this);
+//
+// }
 
 
 @JsonSerializable()
@@ -195,6 +252,9 @@ class Buslines extends Object {
   @JsonKey(name: 'distance')
   String distance;
 
+  @JsonKey(name: 'cost')
+  Cost cost;
+
   @JsonKey(name: 'polyline')
   Polyline polyline;
 
@@ -216,7 +276,7 @@ class Buslines extends Object {
   @JsonKey(name: 'via_stops')
   List<Via_stops> viaStops;
 
-  Buslines(this.departureStop,this.arrivalStop,this.name,this.id,this.type,this.distance,this.polyline,this.busTimeTips,this.bustimetag,this.startTime,this.endTime,this.viaNum,this.viaStops,);
+  Buslines(this.departureStop,this.arrivalStop,this.name,this.id,this.type,this.distance,this.cost,this.polyline,this.busTimeTips,this.bustimetag,this.startTime,this.endTime,this.viaNum,this.viaStops,);
 
   factory Buslines.fromJson(Map<String, dynamic> srcJson) => _$BuslinesFromJson(srcJson);
 
@@ -266,7 +326,22 @@ class Arrival_stop extends Object {
 
 }
 
+
+// @JsonSerializable()
+// class Cost extends Object {
 //
+//   @JsonKey(name: 'duration')
+//   String duration;
+//
+//   Cost(this.duration,);
+//
+//   factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+//
+//   Map<String, dynamic> toJson() => _$CostToJson(this);
+//
+// }
+
+
 // @JsonSerializable()
 // class Polyline extends Object {
 //

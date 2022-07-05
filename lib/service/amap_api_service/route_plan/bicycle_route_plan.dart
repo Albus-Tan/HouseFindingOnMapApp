@@ -30,6 +30,7 @@ class BicycleRoutePlan extends Object {
 }
 
 
+
 @JsonSerializable()
 class Route extends Object {
 
@@ -87,14 +88,32 @@ class Steps extends Object {
   @JsonKey(name: 'step_distance')
   int stepDistance;
 
+  @JsonKey(name: 'cost')
+  Cost cost;
+
   @JsonKey(name: 'polyline')
   String polyline;
 
-  Steps(this.instruction,this.orientation,this.roadName,this.stepDistance,this.polyline,);
+  Steps(this.instruction,this.orientation,this.roadName,this.stepDistance,this.cost,this.polyline,);
 
   factory Steps.fromJson(Map<String, dynamic> srcJson) => _$StepsFromJson(srcJson);
 
   Map<String, dynamic> toJson() => _$StepsToJson(this);
+
+}
+
+
+@JsonSerializable()
+class Cost extends Object {
+
+  @JsonKey(name: 'duration')
+  String duration;
+
+  Cost(this.duration,);
+
+  factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+
+  Map<String, dynamic> toJson() => _$CostToJson(this);
 
 }
 

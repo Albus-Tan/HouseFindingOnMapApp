@@ -13,7 +13,7 @@ Future<DrivingRoutePlan> fetchDrivingRoutePlan(String oriLng, String oriLat, Str
     Uri.parse('https://restapi.amap.com/v5/direction/driving?'
         'key=beba67dedb3de25a4f91da96b33c62c0&'
         'origin=$oriLng,$oriLat&destination=$desLng,$desLat&'
-        'show_fields=polyline'),
+        'show_fields=polyline,cost'),
   );
   final responseJson = jsonDecode(response.body);
   return DrivingRoutePlan.fromJson(responseJson);

@@ -28,6 +28,7 @@ Route _$RouteFromJson(Map<String, dynamic> json) => Route(
       json['origin'] as String,
       json['destination'] as String,
       json['distance'] as String,
+      Cost.fromJson(json['cost'] as Map<String, dynamic>),
       (json['transits'] as List<dynamic>)
           .map((e) => Transits.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -37,10 +38,20 @@ Map<String, dynamic> _$RouteToJson(Route instance) => <String, dynamic>{
       'origin': instance.origin,
       'destination': instance.destination,
       'distance': instance.distance,
+      'cost': instance.cost,
       'transits': instance.transits,
     };
 
+Cost _$CostFromJson(Map<String, dynamic> json) => Cost(
+      json['taxi_fee'] as String,
+    );
+
+Map<String, dynamic> _$CostToJson(Cost instance) => <String, dynamic>{
+      'taxi_fee': instance.taxiFee,
+    };
+
 Transits _$TransitsFromJson(Map<String, dynamic> json) => Transits(
+      Cost.fromJson(json['cost'] as Map<String, dynamic>),
       json['distance'] as String,
       json['walking_distance'] as String,
       json['nightflag'] as String,
@@ -50,11 +61,22 @@ Transits _$TransitsFromJson(Map<String, dynamic> json) => Transits(
     );
 
 Map<String, dynamic> _$TransitsToJson(Transits instance) => <String, dynamic>{
+      'cost': instance.cost,
       'distance': instance.distance,
       'walking_distance': instance.walkingDistance,
       'nightflag': instance.nightflag,
       'segments': instance.segments,
     };
+
+// Cost _$CostFromJson(Map<String, dynamic> json) => Cost(
+//       json['duration'] as String,
+//       json['transit_fee'] as String,
+//     );
+//
+// Map<String, dynamic> _$CostToJson(Cost instance) => <String, dynamic>{
+//       'duration': instance.duration,
+//       'transit_fee': instance.transitFee,
+//     };
 
 Segments _$SegmentsFromJson(Map<String, dynamic> json) => Segments(
       Walking.fromJson(json['walking'] as Map<String, dynamic>),
@@ -70,6 +92,7 @@ Walking _$WalkingFromJson(Map<String, dynamic> json) => Walking(
       json['destination'] as String,
       json['distance'] as String,
       json['origin'] as String,
+      Cost.fromJson(json['cost'] as Map<String, dynamic>),
       (json['steps'] as List<dynamic>)
           .map((e) => Steps.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -79,8 +102,17 @@ Map<String, dynamic> _$WalkingToJson(Walking instance) => <String, dynamic>{
       'destination': instance.destination,
       'distance': instance.distance,
       'origin': instance.origin,
+      'cost': instance.cost,
       'steps': instance.steps,
     };
+
+// Cost _$CostFromJson(Map<String, dynamic> json) => Cost(
+//       json['duration'] as String,
+//     );
+//
+// Map<String, dynamic> _$CostToJson(Cost instance) => <String, dynamic>{
+//       'duration': instance.duration,
+//     };
 
 Steps _$StepsFromJson(Map<String, dynamic> json) => Steps(
       json['instruction'] as String,
@@ -121,6 +153,7 @@ Buslines _$BuslinesFromJson(Map<String, dynamic> json) => Buslines(
       json['id'] as String,
       json['type'] as String,
       json['distance'] as String,
+      Cost.fromJson(json['cost'] as Map<String, dynamic>),
       Polyline.fromJson(json['polyline'] as Map<String, dynamic>),
       json['bus_time_tips'] as String,
       json['bustimetag'] as String,
@@ -139,6 +172,7 @@ Map<String, dynamic> _$BuslinesToJson(Buslines instance) => <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
       'distance': instance.distance,
+      'cost': instance.cost,
       'polyline': instance.polyline,
       'bus_time_tips': instance.busTimeTips,
       'bustimetag': instance.bustimetag,

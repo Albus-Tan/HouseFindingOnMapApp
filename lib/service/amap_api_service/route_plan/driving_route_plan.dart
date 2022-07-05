@@ -63,14 +63,41 @@ class Paths extends Object {
   @JsonKey(name: 'restriction')
   String restriction;
 
+  @JsonKey(name: 'cost')
+  Cost cost;
+
   @JsonKey(name: 'steps')
   List<Steps> steps;
 
-  Paths(this.distance,this.restriction,this.steps,);
+  Paths(this.distance,this.restriction,this.cost,this.steps,);
 
   factory Paths.fromJson(Map<String, dynamic> srcJson) => _$PathsFromJson(srcJson);
 
   Map<String, dynamic> toJson() => _$PathsToJson(this);
+
+}
+
+
+@JsonSerializable()
+class Cost extends Object {
+
+  @JsonKey(name: 'duration')
+  String duration;
+
+  @JsonKey(name: 'tolls')
+  String tolls;
+
+  @JsonKey(name: 'toll_distance')
+  String tollDistance;
+
+  @JsonKey(name: 'traffic_lights')
+  String trafficLights;
+
+  Cost(this.duration,this.tolls,this.tollDistance,this.trafficLights,);
+
+  factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+
+  Map<String, dynamic> toJson() => _$CostToJson(this);
 
 }
 
@@ -87,10 +114,13 @@ class Steps extends Object {
   @JsonKey(name: 'step_distance')
   String stepDistance;
 
+  @JsonKey(name: 'cost')
+  Cost cost;
+
   @JsonKey(name: 'polyline')
   String polyline;
 
-  Steps(this.instruction,this.orientation,this.stepDistance,this.polyline,);
+  Steps(this.instruction,this.orientation,this.stepDistance,this.cost,this.polyline,);
 
   factory Steps.fromJson(Map<String, dynamic> srcJson) => _$StepsFromJson(srcJson);
 
@@ -99,3 +129,30 @@ class Steps extends Object {
 }
 
 
+// @JsonSerializable()
+// class Cost extends Object {
+//
+//   @JsonKey(name: 'duration')
+//   String duration;
+//
+//   @JsonKey(name: 'tolls')
+//   String tolls;
+//
+//   @JsonKey(name: 'toll_distance')
+//   String tollDistance;
+//
+//   @JsonKey(name: 'toll_road')
+//   String tollRoad;
+//
+//   @JsonKey(name: 'traffic_lights')
+//   String trafficLights;
+//
+//   Cost(this.duration,this.tolls,this.tollDistance,this.tollRoad,this.trafficLights,);
+//
+//   factory Cost.fromJson(Map<String, dynamic> srcJson) => _$CostFromJson(srcJson);
+//
+//   Map<String, dynamic> toJson() => _$CostToJson(this);
+//
+// }
+//
+//

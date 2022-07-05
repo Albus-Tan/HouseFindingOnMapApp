@@ -57,6 +57,7 @@ Steps _$StepsFromJson(Map<String, dynamic> json) => Steps(
       json['orientation'] as String,
       json['road_name'] as String,
       json['step_distance'] as int,
+      Cost.fromJson(json['cost'] as Map<String, dynamic>),
       json['polyline'] as String,
     );
 
@@ -65,5 +66,14 @@ Map<String, dynamic> _$StepsToJson(Steps instance) => <String, dynamic>{
       'orientation': instance.orientation,
       'road_name': instance.roadName,
       'step_distance': instance.stepDistance,
+      'cost': instance.cost,
       'polyline': instance.polyline,
+    };
+
+Cost _$CostFromJson(Map<String, dynamic> json) => Cost(
+      json['duration'] as String,
+    );
+
+Map<String, dynamic> _$CostToJson(Cost instance) => <String, dynamic>{
+      'duration': instance.duration,
     };
