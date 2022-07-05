@@ -23,7 +23,7 @@ Future<WalkingRoutePlan> fetchWalkingRoutePlan(String oriLng, String oriLat, Str
   final response = await http.get(
     Uri.parse('https://restapi.amap.com/v5/direction/walking?'
         'origin=$oriLng,$oriLat&destination=$desLng,$desLat&'
-        'key=beba67dedb3de25a4f91da96b33c62c0&show_fields=polyline'),
+        'key=beba67dedb3de25a4f91da96b33c62c0&show_fields=polyline,cost'),
   );
   final responseJson = jsonDecode(response.body);
   return WalkingRoutePlan.fromJson(responseJson);
@@ -35,7 +35,7 @@ Future<PublicRoutePlan> fetchPublicRoutePlan(String oriLng, String oriLat, Strin
         'integrated?origin=$oriLng,$oriLat&'
         'destination=$desLng,$desLat&'
         'key=beba67dedb3de25a4f91da96b33c62c0&'
-        'show_fields=polyline&city1=021&city2=021'),
+        'show_fields=polyline,cost&city1=021&city2=021'),
   ); // citycode 021 is for shanghai
   final responseJson = jsonDecode(response.body);
   return PublicRoutePlan.fromJson(responseJson);
@@ -45,7 +45,7 @@ Future<BicycleRoutePlan> fetchBicycleRoutePlan(String oriLng, String oriLat, Str
   final response = await http.get(
     Uri.parse('https://restapi.amap.com/v5/direction/bicycling?'
         'origin=$oriLng,$oriLat&destination=$desLng,$desLat&'
-        'key=beba67dedb3de25a4f91da96b33c62c0&show_fields=polyline'),
+        'key=beba67dedb3de25a4f91da96b33c62c0&show_fields=polyline,cost'),
   );
   final responseJson = jsonDecode(response.body);
   return BicycleRoutePlan.fromJson(responseJson);
