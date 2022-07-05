@@ -397,28 +397,28 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
           //controller: scrollController,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.driving);
+            return buildNavigationResultCard(NavigationType.driving, widget.timeCostMap[NavigationType.driving]![0], 22);
           },
         ),
         ListView.builder(
           //controller: scrollController,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.walking);
+            return buildNavigationResultCard(NavigationType.walking, 12132, 22);
           },
         ),
         ListView.builder(
           //controller: scrollController,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.public);
+            return buildNavigationResultCard(NavigationType.public, 12132, 22);
           },
         ),
         ListView.builder(
           //controller: scrollController,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return buildNavigationResultCard(NavigationType.bicycle);
+            return buildNavigationResultCard(NavigationType.bicycle, 12132, 22);
           },
         ),
       ],
@@ -432,11 +432,10 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
     return (parts[0] != '0') ? '${parts[0]}小时${parts[1]}分钟' : '${parts[1]}分钟';
   }
 
-  Widget buildNavigationResultCard(NavigationType type) {
+  Widget buildNavigationResultCard(NavigationType type, int time, int distance) {
     print("buildNavigationResultCard: ");
     print(widget.timeCostMap[type]);
-    //String timeCost = _durationTransform(widget.timeCostMap[type]![0]);
-    String timeCost = _durationTransform(1321);
+    String timeCost = _durationTransform(time);
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -457,7 +456,7 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
             // 演示 ListTile
             child: ListTile(
               title: Text(timeCost),
-              subtitle: Text("1003m"),
+              subtitle: Text("$distance米"),
 
               // 列表尾部的图标
               trailing: Icon(Icons.chevron_right),
