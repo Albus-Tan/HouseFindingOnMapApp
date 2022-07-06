@@ -1,5 +1,4 @@
 import 'package:app/routes/search_page.dart';
-import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const AppWrapper());
@@ -17,8 +16,6 @@ class AppWrapper extends StatelessWidget {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-  static const String _title = "search_page_example";
 
   @override
   Widget build(BuildContext context) {
