@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   device_preview: ^1.1.0
   network_image_mock: ^2.1.1
+  flutter_redux: ^0.10.0
+  redux: ^5.0.0
 
 dev_dependencies:
   flutter_test:

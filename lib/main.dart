@@ -3,17 +3,38 @@ import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:app/routes/home_page.dart';
 import 'package:app/routes/map_find_page.dart';
 import 'package:app/routes/my_profile_page.dart';
+import 'package:app/widgets/map/reducer.dart';
+import 'package:app/widgets/map/state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 void main() {
-  runApp(const App());
+  //Redux State Init
+  final store = Store(
+    mapReducer,
+    initialState: MapState.initialState(),
+  );
+
+  runApp(
+    StoreProvider(
+      store: store,
+      child: const App(),
+    ),
+  );
+
+  //Amap Permission
   AMapFlutterLocation.updatePrivacyAgree(true);
   AMapFlutterLocation.updatePrivacyShow(true, true);
   const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
 }
 
 class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
+  const App({
+    Key? key,
+  }) : super(
+          key: key,
+        );
 
   @override
   State<App> createState() => _AppState();

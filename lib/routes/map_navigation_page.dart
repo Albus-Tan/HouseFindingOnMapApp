@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 
 import '../widgets/map.dart';
+import '../widgets/map/reducer.dart';
+import '../widgets/map/state.dart';
 import '../widgets/navigation_card.dart';
 
 class MapNavigationPage extends StatefulWidget {
@@ -11,6 +14,14 @@ class MapNavigationPage extends StatefulWidget {
 }
 
 class _MapNavigationPageState extends State<MapNavigationPage> {
+  late Store<MapState> store;
+
+  @override
+  void initState() {
+    super.initState();
+    store = Store(mapReducer, initialState: MapState.initialState());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +44,7 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
         ),
       ),
       body: Stack(
-        children: const [
+        children: [
           MapWidget(),
           NavigationCard(),
         ],
