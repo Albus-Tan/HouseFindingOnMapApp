@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'house_list_page.dart';
 
 class SearchBarViewDelegate extends SearchDelegate<String> {
+
   String searchHint = "请输入搜索内容...";
 
   /// 待搜索的所有条目

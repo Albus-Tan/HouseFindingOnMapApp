@@ -172,7 +172,15 @@ class HouseDetailPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MapNavigationPage(),
+                builder: (context) => MapNavigationPage(
+                  // TODO
+                  oriLat: '39.989643',
+                  oriLng: '116.481028',
+                  desLat: '39.90816',
+                  desLng: '116.434446',
+                  oriText: '天安门',
+                  desText: '清华大学',
+                ),
               ),
             );
           },

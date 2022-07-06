@@ -5,17 +5,25 @@ import 'package:flutter/material.dart';
 import '../widgets/navigation_card.dart';
 
 class MapNavigationPage extends StatefulWidget {
-  MapNavigationPage({Key? key}) : super(key: key);
+  MapNavigationPage(
+      {Key? key,
+      required this.oriLng,
+      required this.oriLat,
+      required this.desLng,
+      required this.desLat,
+      required this.oriText,
+      required this.desText})
+      : super(key: key);
 
   /// 导航的起始点终止点经纬度
-  final String _oriLng = "116.484307";
-  final String _oriLat = "39.90909";
-  final String _desLng = "116.434446";
-  final String _desLat = "39.90816";
+  final String oriLng;
+  final String oriLat;
+  final String desLng;
+  final String desLat;
 
   /// 导航的起始点终止点名称
-  final String _oriText = "天安门";
-  final String _desText = "一个目的地名字";
+  final String oriText;
+  final String desText;
 
   @override
   State<MapNavigationPage> createState() => _MapNavigationPageState();
@@ -41,9 +49,9 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
       return;
     }
     final LatLng oriMarkerPosition =
-        LatLng(double.parse(widget._oriLat), double.parse(widget._oriLng));
+        LatLng(double.parse(widget.oriLat), double.parse(widget.oriLng));
     final LatLng desMarkerPosition =
-        LatLng(double.parse(widget._desLat), double.parse(widget._desLng));
+        LatLng(double.parse(widget.desLat), double.parse(widget.desLng));
     Marker oriMarker = Marker(
         position: oriMarkerPosition,
         icon: BitmapDescriptor.fromIconPath(_startIconPath));
@@ -98,14 +106,15 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
         children: [
           AMapWidget(
             initialCameraPosition: CameraPosition(
-              // TODO: calculate zoom and center pos
-              zoom: 12,
+                // TODO: calculate zoom and center pos
+                zoom: 12,
                 target: LatLng(
-                    (double.parse(widget._oriLat) +
-                            double.parse(widget._desLat)) /
-                        2 - 0.05,
-                    (double.parse(widget._oriLng) +
-                            double.parse(widget._desLng)) /
+                    (double.parse(widget.oriLat) +
+                                double.parse(widget.desLat)) /
+                            2 -
+                        0.05,
+                    (double.parse(widget.oriLng) +
+                            double.parse(widget.desLng)) /
                         2)),
             markers: Set<Marker>.of(_initMarkerMap.values),
             polylines: _polylinePoints.isEmpty
@@ -123,12 +132,12 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
           NavigationCard(
             polyline: _polyline,
             onNavigate: _handleNavigation,
-            oriLat: widget._oriLat,
-            oriLng: widget._oriLng,
-            desLat: widget._desLat,
-            desLng: widget._desLng,
-            oriText: widget._oriText,
-            desText: widget._desText,
+            oriLat: widget.oriLat,
+            oriLng: widget.oriLng,
+            desLat: widget.desLat,
+            desLng: widget.desLng,
+            oriText: widget.oriText,
+            desText: widget.desText,
           ),
         ],
       ),

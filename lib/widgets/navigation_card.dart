@@ -1,13 +1,7 @@
+import 'package:app/routes/location_search_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../constant/enum.dart';
 import '../service/amap_api_service/amap_api_service.dart';
-
-enum NavigationType {
-  driving,
-  walking,
-  public,
-  bicycle,
-}
 
 class NavigationCard extends StatefulWidget {
   final String polyline; // 当前显示在界面上的
@@ -294,6 +288,13 @@ class _NavigationCardState extends State<NavigationCard> {
                       prefixIconColor: Colors.green,
                       onInputTextChanged: _handleOriTextChanged,
                       inputText: _oriText,
+                      locationType: LocationType.origin,
+                      oriLat: widget.oriLat,
+                      oriLng: widget.oriLng,
+                      desLat: widget.desLat,
+                      desLng: widget.oriLng,
+                      oriText: widget.oriText,
+                      desText: widget.desText,
                     ),
                     TextFieldDemo(
                       labelText: _desText,
@@ -301,6 +302,13 @@ class _NavigationCardState extends State<NavigationCard> {
                       prefixIconColor: Colors.red,
                       onInputTextChanged: _handleDesTextChanged,
                       inputText: _desText,
+                      locationType: LocationType.destination,
+                      oriLat: widget.oriLat,
+                      oriLng: widget.oriLng,
+                      desLat: widget.desLat,
+                      desLng: widget.oriLng,
+                      oriText: widget.oriText,
+                      desText: widget.desText,
                     ),
                   ],
                 ),
@@ -313,8 +321,9 @@ class _NavigationCardState extends State<NavigationCard> {
                   color: Colors.white70,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      print("按钮 导航 pressed");
-                      _updateNavigationType(_navigationType);
+                      print("按钮 pressed");
+
+                      // TODO 在应用内导航
                     },
                     icon: const Icon(Icons.near_me),
                     label: const Text("导航"),
@@ -372,7 +381,6 @@ class _NavigationCardState extends State<NavigationCard> {
                       } else if (snapShot.connectionState ==
                           ConnectionState.done) {
                         print(snapShot.hasError);
-                        print('data:${snapShot.data}');
                         if (snapShot.hasError) {
                           return Text('Error: ${snapShot.error}');
                         }
@@ -586,12 +594,23 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
 }
 
 class TextFieldDemo extends StatefulWidget {
+  final LocationType locationType;
   final String labelText;
   final String hintText;
   final MaterialColor prefixIconColor;
 
   final String inputText;
   final ValueChanged<String> onInputTextChanged;
+
+  /// 导航的起始点终止点经纬度
+  final String oriLng;
+  final String oriLat;
+  final String desLng;
+  final String desLat;
+
+  /// 导航的起始点终止点名称
+  final String oriText;
+  final String desText;
 
   const TextFieldDemo({
     Key? key,
@@ -600,6 +619,13 @@ class TextFieldDemo extends StatefulWidget {
     this.prefixIconColor = Colors.grey,
     this.inputText = '',
     required this.onInputTextChanged,
+    required this.locationType,
+    required this.oriLng,
+    required this.oriLat,
+    required this.desLng,
+    required this.desLat,
+    required this.oriText,
+    required this.desText,
   }) : super(key: key);
 
   @override
@@ -612,6 +638,22 @@ class _TextFieldDemoState extends State<TextFieldDemo> {
     return SizedBox(
       height: 30,
       child: TextField(
+        maxLines: 1,
+        readOnly: true,
+        onTap: () {
+          showSearch(
+            context: context,
+            delegate: LocationSearchPage(
+              type: widget.locationType,
+              oriLat: widget.oriLat,
+              oriLng: widget.oriLng,
+              desLat: widget.desLat,
+              desLng: widget.oriLng,
+              oriText: widget.oriText,
+              desText: widget.desText,
+            ),
+          );
+        },
         onChanged: (value) {
           widget.onInputTextChanged(value);
         },
