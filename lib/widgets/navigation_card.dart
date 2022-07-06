@@ -115,25 +115,27 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.public] = [],
           _distanceCostMap[NavigationType.public] = [],
           _timeCostMap[NavigationType.public] = [],
-          value.route.transits.forEach((path) => {
-                publicPolyline = "",
-                _distanceCostMap[NavigationType.public]
-                    ?.add(int.parse(path.distance)),
-                _timeCostMap[NavigationType.public]
-                    ?.add(int.parse(path.cost.duration ?? '0')),
-                path.segments.forEach((segment) => {
-                      segment.walking.steps.forEach((step) => {
-                            publicPolyline =
-                                "$publicPolyline${step.polyline.polyline};",
-                          }),
-                      segment.bus.buslines.forEach((step) => {
-                            publicPolyline =
-                                "$publicPolyline${step.polyline.polyline};",
-                          }),
-                    }),
-                _polylinesMap[NavigationType.public]?.add(
-                    publicPolyline.substring(0, publicPolyline.length - 1)),
+          if(value.status == '1'){
+            value.route.transits.forEach((path) => {
+              publicPolyline = "",
+              _distanceCostMap[NavigationType.public]
+                  ?.add(int.parse(path.distance)),
+              _timeCostMap[NavigationType.public]
+                  ?.add(int.parse(path.cost.duration ?? '0')),
+              path.segments.forEach((segment) => {
+                segment.walking.steps.forEach((step) => {
+                  publicPolyline =
+                  "$publicPolyline${step.polyline.polyline};",
+                }),
+                segment.bus.buslines.forEach((step) => {
+                  publicPolyline =
+                  "$publicPolyline${step.polyline.polyline};",
+                }),
               }),
+              _polylinesMap[NavigationType.public]?.add(
+                  publicPolyline.substring(0, publicPolyline.length - 1)),
+            }),
+          },
           widget.onNavigate(_polylinesMap[NavigationType.public]?[0] ?? ''),
         },
       );
@@ -149,23 +151,23 @@ class _NavigationCardState extends State<NavigationCard> {
       await fetchDrivingRoutePlan(oriLng, oriLat, desLng, desLat).then(
         (value) => {
           print("fetchDrivingRoutePlan"),
-          print(value.count),
-          print(value.route.taxiCost),
           _polylinesMap[NavigationType.driving] = [],
           _distanceCostMap[NavigationType.driving] = [],
           _timeCostMap[NavigationType.driving] = [],
-          value.route.paths.forEach((path) => {
-                drivingPolyline = "",
-                _distanceCostMap[NavigationType.driving]
-                    ?.add(int.parse(path.distance)),
-                _timeCostMap[NavigationType.driving]
-                    ?.add(int.parse(path.cost.duration)),
-                path.steps.forEach((step) => {
-                      drivingPolyline = "$drivingPolyline${step.polyline};",
-                    }),
-                _polylinesMap[NavigationType.driving]?.add(
-                    drivingPolyline.substring(0, drivingPolyline.length - 1)),
+          if(value.status == '1'){
+            value.route.paths.forEach((path) => {
+              drivingPolyline = "",
+              _distanceCostMap[NavigationType.driving]
+                  ?.add(int.parse(path.distance)),
+              _timeCostMap[NavigationType.driving]
+                  ?.add(int.parse(path.cost.duration)),
+              path.steps.forEach((step) => {
+                drivingPolyline = "$drivingPolyline${step.polyline};",
               }),
+              _polylinesMap[NavigationType.driving]?.add(
+                  drivingPolyline.substring(0, drivingPolyline.length - 1)),
+            }),
+          },
           widget.onNavigate(_polylinesMap[NavigationType.driving]?[0] ?? ''),
         },
       );
@@ -185,18 +187,20 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.walking] = [],
           _distanceCostMap[NavigationType.walking] = [],
           _timeCostMap[NavigationType.walking] = [],
-          value.route.paths.forEach((path) => {
-                walkingPolyline = "",
-                _distanceCostMap[NavigationType.walking]
-                    ?.add(int.parse(path.distance)),
-                _timeCostMap[NavigationType.walking]
-                    ?.add(int.parse(path.cost.duration)),
-                path.steps.forEach((step) => {
-                      walkingPolyline = "$walkingPolyline${step.polyline};",
-                    }),
+          if(value.status == '1'){
+            value.route.paths.forEach((path) => {
+              walkingPolyline = "",
+              _distanceCostMap[NavigationType.walking]
+                  ?.add(int.parse(path.distance)),
+              _timeCostMap[NavigationType.walking]
+                  ?.add(int.parse(path.cost.duration)),
+              path.steps.forEach((step) => {
+                walkingPolyline = "$walkingPolyline${step.polyline};",
               }),
-          _polylinesMap[NavigationType.walking]
-              ?.add(walkingPolyline.substring(0, walkingPolyline.length - 1)),
+            }),
+            _polylinesMap[NavigationType.walking]
+                ?.add(walkingPolyline.substring(0, walkingPolyline.length - 1)),
+          },
           widget.onNavigate(_polylinesMap[NavigationType.walking]?[0] ?? ''),
         },
       );
@@ -215,18 +219,20 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.bicycle] = [],
           _distanceCostMap[NavigationType.bicycle] = [],
           _timeCostMap[NavigationType.bicycle] = [],
-          value.route.paths.forEach((path) => {
-                bicyclePolyline = "",
-                _distanceCostMap[NavigationType.bicycle]
-                    ?.add(int.parse(path.distance)),
-                _timeCostMap[NavigationType.bicycle]
-                    ?.add(int.parse(path.duration)),
-                path.steps.forEach((step) => {
-                      bicyclePolyline = "$bicyclePolyline${step.polyline};",
-                    }),
+          if(value.status == '1'){
+            value.route.paths.forEach((path) => {
+              bicyclePolyline = "",
+              _distanceCostMap[NavigationType.bicycle]
+                  ?.add(int.parse(path.distance)),
+              _timeCostMap[NavigationType.bicycle]
+                  ?.add(int.parse(path.duration)),
+              path.steps.forEach((step) => {
+                bicyclePolyline = "$bicyclePolyline${step.polyline};",
               }),
-          _polylinesMap[NavigationType.bicycle]
-              ?.add(bicyclePolyline.substring(0, bicyclePolyline.length - 1)),
+            }),
+            _polylinesMap[NavigationType.bicycle]
+                ?.add(bicyclePolyline.substring(0, bicyclePolyline.length - 1)),
+          },
           widget.onNavigate(_polylinesMap[NavigationType.bicycle]?[0] ?? ''),
         },
       );
@@ -381,9 +387,6 @@ class _NavigationCardState extends State<NavigationCard> {
                       } else if (snapShot.connectionState ==
                           ConnectionState.done) {
                         print(snapShot.hasError);
-                        if (snapShot.hasError) {
-                          return Text('Error: ${snapShot.error}');
-                        }
                         return NavigationResultBar(
                           navigationType: _navigationType,
                           onNavigationTypeChanged:
@@ -488,7 +491,9 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
   }
 
   Widget buildNavigationResultListView(NavigationType type) {
-    return ListView.builder(
+    return (widget.timeCostMap[type]?.length == null) ? const Center(
+      child: Text("暂无数据", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 15),),
+    ) : ListView.builder(
       controller: widget.scrollController,
       itemCount: widget.timeCostMap[type]?.length,
       itemBuilder: (BuildContext context, int index) {
