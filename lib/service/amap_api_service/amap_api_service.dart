@@ -5,6 +5,7 @@ import 'package:app/service/amap_api_service/route_plan/bicycle_route_plan.dart'
 import 'package:app/service/amap_api_service/route_plan/driving_route_plan.dart';
 import 'package:app/service/amap_api_service/route_plan/public_route_plan.dart';
 import 'package:app/service/amap_api_service/route_plan/walking_route_plan.dart';
+import 'package:app/service/amap_api_service/search/input_tips.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -50,3 +51,12 @@ Future<BicycleRoutePlan> fetchBicycleRoutePlan(String oriLng, String oriLat, Str
   final responseJson = jsonDecode(response.body);
   return BicycleRoutePlan.fromJson(responseJson);
 }
+
+Future<InputTips> fetchInputTips(String keyword, {String city = '021'}) async {
+  final response = await http.get(
+    Uri.parse('https://restapi.amap.com/v3/assistant/inputtips?keywords=$keyword&key=beba67dedb3de25a4f91da96b33c62c0&city=$city'),
+  );
+  final responseJson = jsonDecode(response.body);
+  return InputTips.fromJson(responseJson);
+}
+
