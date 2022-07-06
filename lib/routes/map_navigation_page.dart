@@ -1,25 +1,84 @@
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:flutter/material.dart';
-import 'package:redux/redux.dart';
 
-import '../widgets/map.dart';
-import '../widgets/map/reducer.dart';
-import '../widgets/map/state.dart';
 import '../widgets/navigation_card.dart';
 
 class MapNavigationPage extends StatefulWidget {
-  const MapNavigationPage({Key? key}) : super(key: key);
+  MapNavigationPage(
+      {Key? key,
+      required this.oriLng,
+      required this.oriLat,
+      required this.desLng,
+      required this.desLat,
+      required this.oriText,
+      required this.desText})
+      : super(key: key);
+
+  /// 导航的起始点终止点经纬度
+  final String oriLng;
+  final String oriLat;
+  final String desLng;
+  final String desLat;
+
+  /// 导航的起始点终止点名称
+  final String oriText;
+  final String desText;
 
   @override
   State<MapNavigationPage> createState() => _MapNavigationPageState();
 }
 
 class _MapNavigationPageState extends State<MapNavigationPage> {
-  late Store<MapState> store;
+  String _polyline = "";
+  List<LatLng> _polylinePoints = [];
+
+  final Map<String, Marker> _initMarkerMap = <String, Marker>{};
+  bool _hasInitMarker = false;
+  static final String _startIconPath = 'assets/map/start.png';
+  static final String _endIconPath = 'assets/map/end.png';
 
   @override
   void initState() {
+    _initMarker();
     super.initState();
-    store = Store(mapReducer, initialState: MapState.initialState());
+  }
+
+  void _initMarker() async {
+    if (_hasInitMarker) {
+      return;
+    }
+    final LatLng oriMarkerPosition =
+        LatLng(double.parse(widget.oriLat), double.parse(widget.oriLng));
+    final LatLng desMarkerPosition =
+        LatLng(double.parse(widget.desLat), double.parse(widget.desLng));
+    Marker oriMarker = Marker(
+        position: oriMarkerPosition,
+        icon: BitmapDescriptor.fromIconPath(_startIconPath));
+    Marker desMarker = Marker(
+        position: desMarkerPosition,
+        icon: BitmapDescriptor.fromIconPath(_endIconPath));
+    setState(() {
+      _hasInitMarker = true;
+      _initMarkerMap[oriMarker.id] = oriMarker;
+      _initMarkerMap[desMarker.id] = desMarker;
+    });
+  }
+
+  void _handleNavigation(String newPolyline) {
+    _polylinePoints.clear();
+    print("_handleNavigation: $newPolyline");
+    List<String> pointsStrs = newPolyline.split(";");
+    for (int i = 0; i < pointsStrs.length; ++i) {
+      List<String> latlng = pointsStrs[i].split(",");
+      double lng = double.parse(latlng[0]);
+      double lat = double.parse(latlng[1]);
+      _polylinePoints.add(LatLng(lat, lng));
+    }
+    print(_polylinePoints);
+    setState(() {
+      _polyline = newPolyline;
+    });
   }
 
   @override
@@ -45,8 +104,41 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
       ),
       body: Stack(
         children: [
-          MapWidget(),
-          NavigationCard(),
+          AMapWidget(
+            initialCameraPosition: CameraPosition(
+                // TODO: calculate zoom and center pos
+                zoom: 12,
+                target: LatLng(
+                    (double.parse(widget.oriLat) +
+                                double.parse(widget.desLat)) /
+                            2 -
+                        0.05,
+                    (double.parse(widget.oriLng) +
+                            double.parse(widget.desLng)) /
+                        2)),
+            markers: Set<Marker>.of(_initMarkerMap.values),
+            polylines: _polylinePoints.isEmpty
+                ? {}
+                : {
+                    Polyline(
+                      width: 20,
+                      customTexture: BitmapDescriptor.fromIconPath(
+                          'assets/map/texture_green.png'),
+                      joinType: JoinType.round,
+                      points: _polylinePoints,
+                    )
+                  },
+          ),
+          NavigationCard(
+            polyline: _polyline,
+            onNavigate: _handleNavigation,
+            oriLat: widget.oriLat,
+            oriLng: widget.oriLng,
+            desLat: widget.desLat,
+            desLng: widget.desLng,
+            oriText: widget.oriText,
+            desText: widget.desText,
+          ),
         ],
       ),
     );

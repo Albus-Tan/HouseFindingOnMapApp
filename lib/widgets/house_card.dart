@@ -40,6 +40,7 @@ class HouseCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+                    settings: const RouteSettings(name:"last_detail"),
                     builder: (context) => HouseDetailPage(
                       houseDetail: HouseDetail(
                         title: title,
