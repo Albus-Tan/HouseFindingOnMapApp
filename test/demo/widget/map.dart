@@ -1,55 +1,113 @@
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:app/widgets/map.dart';
+import 'package:app/widgets/map/action.dart';
+import 'package:app/widgets/map/reducer.dart';
+import 'package:app/widgets/map/state.dart';
 import 'package:flutter/material.dart';
-import 'package:amap_flutter_location/amap_flutter_location.dart';
-import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 void main() {
-  runApp(const App(
-    title: 'Flutter Redux Demo',
-  ));
+  final store = Store(
+    mapReducer,
+    initialState: MapState.initialState(),
+  );
+
+  runApp(
+    StoreProvider(
+      store: store,
+      child: App(
+      ),
+    ),
+  );
   AMapFlutterLocation.updatePrivacyAgree(true);
   AMapFlutterLocation.updatePrivacyShow(true, true);
-  const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
+  const AMapPrivacyStatement(
+    hasContains: true,
+    hasShow: true,
+    hasAgree: true,
+  );
 }
 
 class App extends StatelessWidget {
-  final String title;
 
-  const App({Key? key, required this.title}) : super(key: key);
+  const App({
+    Key? key,
+  }) : super(
+          key: key,
+        );
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final marker = WidgetMarker(
-        position: const LatLng(40, 116.397451),
-        id: '123',
-        widget: const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Text(
-            "Hello World",
-            style: TextStyle(
-              color: Color(0xFF000000),
-              fontSize: 100,
-              backgroundColor: Color(0x00000000),
+    return StoreBuilder<MapState>(
+      builder: (context, store) {
+        final marker = Marker(
+          position: const LatLng(
+            40,
+            116.397451,
+          ),
+          draggable: true,
+          onDragEnd: (
+            String id,
+            LatLng position,
+          ) {
+            debugPrint("${id}dragged to $position");
+          },
+        );
+        store.dispatch(
+          AddMarker(
+            mapId: store.state.id,
+            marker: marker,
+          ),
+        );
+        return MaterialApp(
+          home: Scaffold(
+            body: StoreProvider(
+              store: store,
+              child: Stack(
+                children: [
+                  MapWidget(),
+                  Column(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          store.dispatch(
+                            CheckPointsInPolygon(mapId: store.state.id),
+                          );
+                          for (final element in store.state.markersInPolygon) {
+                            store.dispatch(
+                              UpdateMarker(
+                                mapId: store.state.id,
+                                id: element.id,
+                                iconParam:
+                                    BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueOrange,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text("Check"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          store.dispatch(
+                            StartDrawPolygon(mapId: store.state.id),
+                          );
+                        },
+                        child: Text("Draw"),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-        draggable: true,
-        onDragEnd: (String id, LatLng position) {
-          debugPrint("${id}dragged to $position");
-        });
-
-    return MaterialApp(
-      title: title,
-      home: MapWidget(
-        markers: {marker},
-        polyLines: {
-          Polyline(
-              points: [const LatLng(39, 116.397451), const LatLng(40, 117)],
-              color: Colors.red)
-        },
-      ),
+        );
+      },
     );
   }
 }

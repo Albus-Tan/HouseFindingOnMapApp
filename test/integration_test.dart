@@ -4,16 +4,24 @@ import 'package:app/routes/house_list_page.dart';
 import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_card.dart';
 import 'package:app/widgets/house_list.dart';
+import 'package:app/widgets/map/reducer.dart';
+import 'package:app/widgets/map/state.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:redux/redux.dart';
 
 import 'demo/house_detail_page_demo/house_detail_page_demo.dart';
 
 void main() {
-  group('all test', ()
-  {
+  Store<MapState> store = Store(
+    mapReducer,
+    initialState: MapState.initialState(),
+  );
+
+  group('all test', () {
     testWidgets('house list page test 1', (WidgetTester tester) async {
       mockNetworkImagesFor(() async {
         // necessary for http request
@@ -28,9 +36,7 @@ void main() {
         expect(find.text("地区"), findsOneWidget);
 
         expect(find.bySubtype<HouseCard>(), findsWidgets);
-        final card = find
-            .bySubtype<HouseCard>()
-            .first;
+        final card = find.bySubtype<HouseCard>().first;
         await tester.tap(card);
         for (int i = 0; i < 3; i++) {
           await tester.pump(Duration(seconds: 1));
@@ -57,9 +63,7 @@ void main() {
         expect(find.bySubtype<BrnAppBar>(), findsOneWidget);
         // expect(find.byElementType(BrnSelectionView), findsOneWidget);
 
-        final search = find
-            .bySubtype<BrnIconAction>()
-            .first;
+        final search = find.bySubtype<BrnIconAction>().first;
         await tester.tap(search);
       });
     });
@@ -88,7 +92,8 @@ void main() {
         expect(find.byKey(const Key('nearbyTabView')), findsOneWidget);
         expect(find.byKey(const Key('rentWholeTabView')), findsNothing);
         expect(find.byKey(const Key('rentTogetherTabView')), findsNothing);
-        await tester.drag(find.byKey(const Key('nearbyTabView')), const Offset(-500.0, 0.0));
+        await tester.drag(
+            find.byKey(const Key('nearbyTabView')), const Offset(-500.0, 0.0));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('recommendTabView')), findsNothing);
         expect(find.byKey(const Key('nearbyTabView')), findsNothing);
@@ -99,7 +104,8 @@ void main() {
         expect(find.byType(Carousel), findsOneWidget);
         expect(find.text('海量房源'), findsNothing);
         expect(find.text('启航租房节'), findsOneWidget);
-        await tester.drag(find.byKey(const Key('home page Carousel')), const Offset(-500.0, 0.0));
+        await tester.drag(find.byKey(const Key('home page Carousel')),
+            const Offset(-500.0, 0.0));
         await tester.pumpAndSettle();
         expect(find.text('海量房源'), findsOneWidget);
         expect(find.text('启航租房节'), findsNothing);
@@ -109,7 +115,6 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('房源推荐'), findsOneWidget);
         expect(find.text('历史记录'), findsOneWidget);
-
       });
     });
     testWidgets('test search flow', (WidgetTester tester) async {
@@ -130,13 +135,14 @@ void main() {
 
         // click favorite button
         final Finder favorite =
-        find.byKey(const ValueKey('detail_favorite_button'));
+            find.byKey(const ValueKey('detail_favorite_button'));
         expect(favorite, findsOneWidget);
         await tester.tap(favorite);
         await tester.pumpAndSettle();
 
         // click search button
-        final Finder search = find.byKey(const ValueKey('detail_search_button'));
+        final Finder search =
+            find.byKey(const ValueKey('detail_search_button'));
         await tester.tap(search);
         await tester.pumpAndSettle();
 
@@ -166,7 +172,10 @@ void main() {
 
     testWidgets("test navigation button", (WidgetTester tester) async {
       mockNetworkImagesFor(() async {
-        await tester.pumpWidget(const HouseDetailPageApp());
+        await tester.pumpWidget(StoreProvider(
+          store: store,
+          child: HouseDetailPageApp(),
+        ));
         await tester.pumpAndSettle();
 
         // unit test
@@ -179,7 +188,7 @@ void main() {
         expect(find.text(houseDetail.direction), findsOneWidget);
 
         final Finder navigator =
-        find.byKey(const ValueKey("detail_navigation_icon"));
+            find.byKey(const ValueKey("detail_navigation_icon"));
         await tester.tap(navigator);
         await tester.pumpAndSettle();
 
@@ -206,19 +215,19 @@ void main() {
         expect(find.text('房源推荐'), findsOneWidget);
         expect(find.text('历史记录'), findsOneWidget);
 
-        await tester.enterText(find.byType(EditableText),'s');
+        await tester.enterText(find.byType(EditableText), 's');
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('sss')), findsOneWidget);
         expect(find.byKey(const Key('sousuo')), findsOneWidget);
         expect(find.byKey(const Key('sobk')), findsOneWidget);
 
-        await tester.enterText(find.byType(EditableText),'so');
+        await tester.enterText(find.byType(EditableText), 'so');
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('sss')), findsNothing);
         expect(find.byKey(const Key('sousuo')), findsOneWidget);
         expect(find.byKey(const Key('sobk')), findsOneWidget);
 
-        await tester.enterText(find.byType(EditableText),'sob');
+        await tester.enterText(find.byType(EditableText), 'sob');
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('sss')), findsNothing);
         expect(find.byKey(const Key('sousuo')), findsNothing);
@@ -243,7 +252,6 @@ void main() {
 
         await tester.tap(find.text('汤臣一品').first);
         await tester.pumpAndSettle();
-
       });
     });
     testWidgets('Widget detail page search test', (WidgetTester tester) async {
@@ -258,7 +266,6 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('房源推荐'), findsOneWidget);
         expect(find.text('历史记录'), findsOneWidget);
-
       });
     });
   });

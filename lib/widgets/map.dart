@@ -1,7 +1,12 @@
+import 'dart:math';
+
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
-import 'package:app/widgets/map/widget_to_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+
+import 'map/action.dart';
+import 'map/state.dart';
 
 class WidgetMarker {
   final String id;
@@ -23,145 +28,90 @@ class WidgetMarker {
   });
 }
 
-class MapWidget extends StatefulWidget {
-  final bool scrollable;
-  final bool drawable;
-  final Iterable<WidgetMarker> markers;
-  final Set<Polyline> polyLines;
-
+class MapWidget extends StatelessWidget {
   const MapWidget({
     Key? key,
-    this.scrollable = true,
-    this.drawable = false,
-    this.markers = const <WidgetMarker>{},
-    this.polyLines = const <Polyline>{},
   }) : super(key: key);
 
   @override
-  State<MapWidget> createState() => _MapPageState();
-}
-
-class _MapPageState extends State<MapWidget> {
-  final _markers = <String, Marker>{};
-  final _polygonMarkers = <String, Marker>{};
-  final _tags = <String, String>{};
-
-  void _importExternalMarkers(Iterable<WidgetMarker> markers) {
-    for (final element in markers) {
-      final widget = element.widget;
-      final onTap = element.onTap;
-      final onTapConvert = onTap == null
-          ? null
-          : (String id) {
-              String aid = _tags[id]!;
-              onTap(aid);
-            };
-      final onDragEnd = element.onDragEnd;
-      final onDragEndConvert = onDragEnd == null
-          ? null
-          : (String updateId, LatLng position) {
-              String createId = _tags[updateId]!;
-              final oldMarker = _markers[createId]!;
-              final newMarker = Marker(
-                position: position,
-                clickable: oldMarker.clickable,
-                draggable: oldMarker.draggable,
-                icon: oldMarker.icon,
-                onTap: oldMarker.onTap,
-                onDragEnd: oldMarker.onDragEnd,
-              );
-              setState(() {
-                _markers[createId] = newMarker;
-                _tags.remove(updateId);
-                _tags[_markers[createId]!.id] = createId;
-              });
-
-              onDragEnd(createId, position);
-            };
-
-      if (widget != null) {
-        widgetToImage(widget: widget).then((value) {
-          final marker = Marker(
-            position: element.position,
-            clickable: element.clickable,
-            onTap: onTapConvert,
-            draggable: element.draggable,
-            onDragEnd: onDragEndConvert,
-            icon: BitmapDescriptor.fromBytes(value!),
-          );
-          _tags[marker.id] = '${element.id}external';
-          _markers['${element.id}external'] = marker;
-        });
-      } else {
-        final marker = Marker(
-          position: element.position,
-          clickable: element.clickable,
-          onTap: onTapConvert,
-          draggable: element.draggable,
-          onDragEnd: onDragEndConvert,
-        );
-
-        _tags[marker.id] = '${element.id}external';
-        _markers['${element.id}external'] = marker;
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _importExternalMarkers(widget.markers);
-    final map = widget.drawable
-        ? AMapWidget(
-            scrollGesturesEnabled: widget.scrollable,
-            markers: Set.of(_markers.values),
-            onTap: (LatLng position) {
-              final marker = Marker(
-                position: position,
-                draggable: true,
-                onDragEnd: (String updateId, LatLng position) {
-                  String createId = _tags[updateId]!;
-                  final oldMarker = _markers[createId]!;
-                  setState(() {
-                    final newMarker = Marker(
-                      position: position,
-                      clickable: oldMarker.clickable,
-                      draggable: oldMarker.draggable,
-                      icon: oldMarker.icon,
-                      onTap: oldMarker.onTap,
-                      onDragEnd: oldMarker.onDragEnd,
-                    );
-                    if (_polygonMarkers.containsKey(createId)) {
-                      _polygonMarkers[createId] = newMarker;
-                    }
-                    _markers[createId] = newMarker;
-
-                    _tags.remove(createId);
-                    _tags[_markers[createId]!.id] = createId;
-                  });
-                },
-              );
-              setState(() {
-                _polygonMarkers[marker.id] = marker;
-                _markers[marker.id] = marker;
-                _tags[marker.id] = marker.id;
-              });
-            },
-            polygons: _polygonMarkers.isEmpty
-                ? {}
-                : {
-                    Polygon(
-                      points: List.of(
-                        _polygonMarkers.values.map((e) => e.position),
+    return StoreBuilder<MapState>(
+      builder: (context, store) {
+        final state = store.state;
+        return Stack(
+          children: [
+            AMapWidget(
+              polylines: Set.of(state.polyLines),
+              polygons: state.polygon.isEmpty
+                  ? <Polygon>{}
+                  : <Polygon>{
+                      Polygon(
+                        points: state.polygon,
                       ),
-                    ),
-                  },
-            polylines: widget.polyLines,
-          )
-        : AMapWidget(
-            scrollGesturesEnabled: widget.scrollable,
-            markers: Set.of(_markers.values),
-            polylines: widget.polyLines,
-          );
-    return map;
+                    },
+              markers: Set.of(state.markers),
+              onMapCreated: (controller) => store.dispatch(
+                SetController(
+                  mapId: state.id,
+                  controller: controller,
+                ),
+              ),
+              rotateGesturesEnabled: false,
+              onCameraMoveEnd: (cameraPosition) {
+                store.dispatch(
+                  UpdateCameraPosition(
+                    mapId: state.id,
+                    cameraPosition: cameraPosition,
+                  ),
+                );
+              },
+            ),
+            GestureDetector(
+              onPanUpdate: state.drawing
+                  ? (details) {
+                      final screenPosition = details.localPosition;
+
+                      final centerLatitude =
+                          state.cameraPosition.target.latitude;
+                      final centerLongitude =
+                          state.cameraPosition.target.longitude;
+                      final height = context.size!.height;
+                      final width = context.size!.width;
+                      final centerHeight = height / 2;
+                      final centerWidth = width / 2;
+                      final ratio = 1 / cos(centerLatitude * pi / 180);
+                      final limitWidth = min(height, width);
+                      // actualLatitude = pixel * a * exp( 2 * zoom )
+                      final a = 2.0 - limitWidth / 2000;
+                      store.dispatch(
+                        AddPolygonPoint(
+                          mapId: state.id,
+                          position: LatLng(
+                            (-a *
+                                    (screenPosition.dy - centerHeight) *
+                                    pow(2, -state.cameraPosition.zoom) /
+                                    ratio +
+                                centerLatitude),
+                            (a *
+                                    (screenPosition.dx - centerWidth) *
+                                    pow(2, -state.cameraPosition.zoom) +
+                                centerLongitude),
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
+              onPanEnd: state.drawing
+                  ? (detail) => store.dispatch(
+                        EndDrawPolygon(
+                          mapId: state.id,
+                        ),
+                      )
+                  : null,
+            )
+          ],
+        );
+      },
+    );
   }
 }
