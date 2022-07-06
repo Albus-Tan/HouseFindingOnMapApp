@@ -110,7 +110,7 @@ class LocationSearchPage extends SearchDelegate {
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                               builder: (context){
@@ -132,6 +132,7 @@ class LocationSearchPage extends SearchDelegate {
                                 );
                               }
                             ),
+                            ModalRoute.withName('last_detail'),
                           );
                         },
                         child: ListTile(

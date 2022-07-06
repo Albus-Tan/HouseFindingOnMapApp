@@ -172,6 +172,7 @@ class HouseDetailPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
+                settings: const RouteSettings(name:"navigation"),
                 builder: (context) => MapNavigationPage(
                   // TODO
                   oriLat: '39.989643',
