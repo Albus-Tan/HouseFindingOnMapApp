@@ -87,10 +87,13 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                               delegate: SearchBarViewDelegate());
                         },
                         readOnly: true,
+
                         decoration: InputDecoration(
                           labelText: '点击搜索小区',
                           border: InputBorder.none,
-
+                          filled: true,
+                          //启用背景颜色边框，可用color属性设置颜色
+                          fillColor: Colors.white70,
                           //隐藏边框
                           // border: OutlineInputBorder(),//有边框
                           //启用背景颜色边框，可用color属性设置颜色

@@ -55,10 +55,7 @@ class _MapFindPageState extends State<MapFindPage> {
     );
     Marker(
       onTap: (id) => _markerOnTap(id, store, context),
-      position: const LatLng(
-        40,
-        116.397451,
-      ),
+      position: const LatLng(31.2372, 121.4923),
       draggable: false,
     )
         .copyWithWidget(
@@ -144,47 +141,91 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 
-  Widget buildOperationsWhenNotDrawing(Store<MapState> store){
-    return Column(
-      children: [
-        TextButton(
-          onPressed: () {
-            store.dispatch(
-              CheckPointsInPolygon(mapId: store.state.id),
-            );
-            for (final element
-            in store.state.markersInPolygon) {
-              store.dispatch(
-                UpdateMarker(
-                  mapId: store.state.id,
-                  id: element.id,
-                  iconParam:
-                  BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueOrange,
-                  ),
-                ),
-              );
-            }
-          },
-          child: Text("Check"),
+  void _updateMarkersInPolygon(Store<MapState> store) {
+    // TODO:
+    store.dispatch(
+      CheckPointsInPolygon(mapId: store.state.id),
+    );
+    for (final element in store.state.markersInPolygon) {
+      store.dispatch(
+        UpdateMarker(
+          mapId: store.state.id,
+          id: element.id,
+          iconParam: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueOrange,
+          ),
         ),
-        TextButton(
-          onPressed: () {
+      );
+    }
+  }
+
+  Widget buildOperationsWhenDrawing(Store<MapState> store) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '重画',
+          iconWidget: Icon(Icons.gesture),
+          onTap: () {
+            store.dispatch(
+              ClearPolygon(mapId: store.state.id),
+            );
             store.dispatch(
               StartDrawPolygon(mapId: store.state.id),
-              //EndDrawPolygon(mapId: store.state.id),
             );
           },
-          child: Text("Draw"),
         ),
-        BrnVerticalIconButton(
-            name: '画区域',
-            iconWidget: Icon(Icons.gesture),
-            onTap: () {
-              BrnToast.show('画区域按钮被点击', context);
-            }
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '退出',
+          iconWidget: Icon(Icons.arrow_back),
+          onTap: () {
+            store.dispatch(
+              ClearPolygon(mapId: store.state.id),
+            );
+            setState(() {
+              isDrawing = false;
+            });
+          },
         ),
+      ],
+    );
+  }
 
+  Widget buildOperationsWhenNotDrawing(Store<MapState> store) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '画区域',
+          iconWidget: const Icon(Icons.gesture),
+          onTap: () {
+            BrnToast.show('请在地图上绘制区域', context);
+            store.dispatch(
+              ClearPolygon(mapId: store.state.id),
+            );
+            store.dispatch(
+              StartDrawPolygon(mapId: store.state.id),
+            );
+            setState(() {
+              isDrawing = true;
+            });
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '当前位置',
+          iconWidget: const Icon(Icons.my_location),
+          onTap: () {
+
+          },
+        ),
       ],
     );
   }
@@ -222,22 +263,55 @@ class _MapFindPageState extends State<MapFindPage> {
             );
 
             _initResidentialMarkers(store);
+            store.dispatch(
+              UpdateCameraPosition(
+                mapId: store.state.id,
+                cameraPosition: const CameraPosition(
+                  // 初始化至上海市
+                  target: LatLng(31.2382, 121.4913),
+                  zoom: 11,
+                ),
+              ),
+            );
           },
           builder: (context, store) {
             return MaterialApp(
               home: Scaffold(
-                appBar: isDrawing ? AppBar() : AppBar(
-                  backgroundColor: Colors.white,
-                  title: selectionInitialized ? selection : Container(),
-                  centerTitle: true,
-                  titleSpacing: 0.0,
-                ),
+                appBar: isDrawing
+                    ? AppBar(
+                        backgroundColor: Colors.white,
+                        title: const Text(
+                          "画图找房",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        centerTitle: true,
+                        titleSpacing: 0.0,
+                      )
+                    : AppBar(
+                        backgroundColor: Colors.white,
+                        title: selectionInitialized ? selection : Container(),
+                        centerTitle: true,
+                        titleSpacing: 0.0,
+                      ),
                 body: StoreProvider(
                   store: store,
                   child: Stack(
                     children: [
                       MapWidget(),
-                      buildOperationsWhenNotDrawing(store),
+                      Positioned(
+                        top: 25,
+                        right: 20,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          child: isDrawing
+                              ? buildOperationsWhenDrawing(store)
+                              : buildOperationsWhenNotDrawing(store),
+                        ),
+                      ),
                     ],
                   ),
                 ),
