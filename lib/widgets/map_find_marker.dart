@@ -12,6 +12,7 @@ class ResidentialMapFindMarker extends StatelessWidget {
   final unfocusedTextColor = Colors.black;
   final unfocusedBackgroundColor = Colors.white;
 
+
   @override
   Widget build(BuildContext context) {
     return Container(

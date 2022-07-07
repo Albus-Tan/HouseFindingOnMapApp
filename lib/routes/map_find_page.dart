@@ -1,4 +1,5 @@
 import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:app/common/extension/marker.dart';
 import 'package:app/common/extension/widget.dart';
@@ -28,6 +29,7 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 筛选条件组件
   late Widget selection;
   bool selectionInitialized = false;
+  late final LatLng currentPosition;
 
   @override
   void initState() {
@@ -39,6 +41,17 @@ class _MapFindPageState extends State<MapFindPage> {
           selectionInitialized = true;
         },
       ),
+    );
+    AMapFlutterLocation().startLocation();
+    AMapFlutterLocation().onLocationChanged().listen(
+      (Map<String, Object> result) {
+        debugPrint(result.toString());
+        currentPosition = LatLng(
+            double.parse(result['latitude'].toString()),
+            double.parse(
+              result['longitude'].toString(),
+            ));
+      },
     );
   }
 
