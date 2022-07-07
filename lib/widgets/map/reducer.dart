@@ -16,6 +16,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_setController),
     TypedReducer(_updateCameraPosition),
     TypedReducer(_clear),
+    TypedReducer(_clearPolygon),
   ],
 );
 
@@ -118,6 +119,16 @@ MapState _endDrawPolygon(MapState state, EndDrawPolygon action) {
   if (state.id == action.mapId) {
     return state.copyWith(
       drawing: false,
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _clearPolygon(MapState state, ClearPolygon action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      polygon: [],
     );
   } else {
     return state;
