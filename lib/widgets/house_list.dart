@@ -22,17 +22,18 @@ class _HouseListState extends State<HouseList> {
 
   String district = "",
       rentType = "",
-      rooms = "1",
+      rooms = "",
       metroLine = "",
       metroStation = "",
       price1 = "",
-      price2 = "",
-      page = "",
-      pageSize = "5";
+      price2 = "";
+  int page = 0, pageSize = 5;
+  bool isLast = false;
 
-  List<HouseCard> generateHouseCard(int num) {
+  List<HouseCard> getHouseCard() {
     List<HouseCard> tmp = [];
-    for (int i = 0; i < num; i++) {
+    if (isLast) return tmp;
+    for (int i = 0; i < 5; i++) {
       tmp.add(
         houseCardExample[Random().nextInt(houseCardExample.length)],
       );
@@ -54,10 +55,13 @@ class _HouseListState extends State<HouseList> {
         .then((value) => {
               debugPrint("fetchHousePage: "),
               debugPrint(jsonEncode(value.toJson())),
-              value.content?.forEach((element) { debugPrint(jsonEncode(element.toJson()));}),
-              _houseCards.clear(),
-      //TODO:
-              // _houseCards.addAll(value.tips),
+              value.content?.forEach((element) {
+                debugPrint(jsonEncode(element.toJson()));
+              }),
+              value.content?.forEach((e) {
+                _houseCards.add(e.toHouseCard());
+              }),
+              isLast = value.last!,
             });
   }
 
@@ -79,7 +83,7 @@ class _HouseListState extends State<HouseList> {
                 final index = i ~/ 2; /*3*/
                 if (index >= _houseCards.length) {
                   _houseCards.addAll(
-                    generateHouseCard(2),
+                    getHouseCard(),
                   ); /*4*/
                 }
                 return _houseCards[index];

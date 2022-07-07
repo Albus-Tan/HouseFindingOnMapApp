@@ -16,6 +16,7 @@ class HouseDetail {
   final int weiNumber;
   final String image;
   final bool isStatic;
+  final String community;
 
   HouseDetail({
     required this.title,
@@ -27,6 +28,7 @@ class HouseDetail {
     this.weiNumber = 0,
     this.image = "",
     this.isStatic = false,
+    required this.community,
   });
 }
 

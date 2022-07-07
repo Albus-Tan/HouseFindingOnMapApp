@@ -1,3 +1,6 @@
+import 'package:app/routes/house_detail_page.dart';
+import 'package:app/widgets/house_card.dart';
+
 class HousePageEntity {
   List<Content>? content;
   Pageable? pageable;
@@ -13,16 +16,16 @@ class HousePageEntity {
 
   HousePageEntity(
       {this.content,
-        this.pageable,
-        this.last,
-        this.totalElements,
-        this.totalPages,
-        this.size,
-        this.number,
-        this.sort,
-        this.numberOfElements,
-        this.first,
-        this.empty});
+      this.pageable,
+      this.last,
+      this.totalElements,
+      this.totalPages,
+      this.size,
+      this.number,
+      this.sort,
+      this.numberOfElements,
+      this.first,
+      this.empty});
 
   HousePageEntity.fromJson(Map<String, dynamic> json) {
     if (json['content'] != null) {
@@ -98,31 +101,31 @@ class Content {
 
   Content(
       {this.id,
-        this.createTime,
-        this.displaySource,
-        this.displayRentType,
-        this.icon,
-        this.publishDate,
-        this.pictures,
-        this.title,
-        this.location,
-        this.longitude,
-        this.latitude,
-        this.rentType,
-        this.onlineUrl,
-        this.district,
-        this.city,
-        this.price,
-        this.source,
-        this.residential,
-        this.squares,
-        this.layout,
-        this.shi,
-        this.ting,
-        this.wei,
-        this.metroLine,
-        this.metroStation,
-        this.firstPicUrl});
+      this.createTime,
+      this.displaySource,
+      this.displayRentType,
+      this.icon,
+      this.publishDate,
+      this.pictures,
+      this.title,
+      this.location,
+      this.longitude,
+      this.latitude,
+      this.rentType,
+      this.onlineUrl,
+      this.district,
+      this.city,
+      this.price,
+      this.source,
+      this.residential,
+      this.squares,
+      this.layout,
+      this.shi,
+      this.ting,
+      this.wei,
+      this.metroLine,
+      this.metroStation,
+      this.firstPicUrl});
 
   Content.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -183,6 +186,27 @@ class Content {
     data['firstPicUrl'] = this.firstPicUrl;
     return data;
   }
+
+  HouseCard toHouseCard() {
+    var data = HouseCard(
+      houseDetail: toHouseDetail(),
+    );
+    return data;
+  }
+
+  HouseDetail toHouseDetail() {
+    var data = HouseDetail(
+      title: title ?? "",
+      pricePerMonth: price ?? -1,
+      squares: squares ?? -1,
+      shiNumber: shi ?? -1,
+      tingNumber: ting ?? -1,
+      weiNumber: wei ?? -1,
+      community: residential ?? "",
+      image: firstPicUrl ?? "",
+    );
+    return data;
+  }
 }
 
 class Pageable {
@@ -195,11 +219,11 @@ class Pageable {
 
   Pageable(
       {this.sort,
-        this.offset,
-        this.pageNumber,
-        this.pageSize,
-        this.paged,
-        this.unpaged});
+      this.offset,
+      this.pageNumber,
+      this.pageSize,
+      this.paged,
+      this.unpaged});
 
   Pageable.fromJson(Map<String, dynamic> json) {
     sort = json['sort'] != null ? new Sort.fromJson(json['sort']) : null;
