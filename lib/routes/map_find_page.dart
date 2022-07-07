@@ -22,18 +22,11 @@ class MapFindPage extends StatefulWidget {
 }
 
 class _MapFindPageState extends State<MapFindPage> {
-  late Store<MapState> store;
 
   Map<String, ResidentialMapFindMarker> residentialMarkers = {};
   String focusingMarkerId = "";
 
-  @override
-  void initState() {
-    super.initState();
-    store = Store(mapReducer, initialState: MapState.initialState());
-  }
-
-  void _initResidentialMarkers(Store<MapState> store) {
+  void _initResidentialMarkers(Store<MapState> store,BuildContext context) {
     var residentialMarkerWidget = ResidentialMapFindMarker(
       residential: '丽景大厦',
       num: 12,
@@ -135,7 +128,7 @@ class _MapFindPageState extends State<MapFindPage> {
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
-            _initResidentialMarkers(store);
+            _initResidentialMarkers(store,context);
           },
           builder: (context, store) {
             return MaterialApp(
