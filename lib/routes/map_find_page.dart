@@ -22,7 +22,6 @@ class MapFindPage extends StatefulWidget {
 }
 
 class _MapFindPageState extends State<MapFindPage> {
-
   /// 正在画圈
   bool isDrawing = false;
 
@@ -220,10 +219,17 @@ class _MapFindPageState extends State<MapFindPage> {
         BrnIconButton(
           widgetHeight: 60,
           widgetWidth: 40,
-          name: '当前位置',
+          name: '定位',
           iconWidget: const Icon(Icons.my_location),
           onTap: () {
-
+            store.dispatch(
+              MoveCamera(
+                mapId: store.state.id,
+                cameraPosition: CameraPosition(
+                  target: currentPosition,
+                ),
+              ),
+            );
           },
         ),
       ],
@@ -246,17 +252,11 @@ class _MapFindPageState extends State<MapFindPage> {
               (Map<String, Object> result) {
                 debugPrint(result.toString());
                 currentPosition = LatLng(
-                  double.parse(result['latitude'].toString()),
+                  double.parse(
+                    result['latitude'].toString(),
+                  ),
                   double.parse(
                     result['longitude'].toString(),
-                  ),
-                );
-                store.dispatch(
-                  MoveCamera(
-                    mapId: store.state.id,
-                    cameraPosition: CameraPosition(
-                      target: currentPosition,
-                    ),
                   ),
                 );
               },
