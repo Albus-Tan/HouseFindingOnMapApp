@@ -9,7 +9,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 import '../widgets/house_card.dart';
-import '../widgets/house_detail_bottom_sheet_on_map.dart';
 import '../widgets/map.dart';
 import '../widgets/map/state.dart';
 import '../widgets/selection.dart';
@@ -22,7 +21,6 @@ class MapFindPage extends StatefulWidget {
 }
 
 class _MapFindPageState extends State<MapFindPage> {
-
   /// 地图上房源小区 Marker
   Map<String, ResidentialMapFindMarker> residentialMarkers = {};
   String focusingMarkerId = "";
@@ -35,8 +33,8 @@ class _MapFindPageState extends State<MapFindPage> {
   void initState() {
     super.initState();
     selectionView('assets/json/selection.json').then(
-          (value) => setState(
-            () {
+      (value) => setState(
+        () {
           selection = value;
           selectionInitialized = true;
         },
@@ -198,7 +196,6 @@ class _MapFindPageState extends State<MapFindPage> {
                             },
                             child: Text("Draw"),
                           ),
-
                         ],
                       )
                     ],
