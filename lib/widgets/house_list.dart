@@ -1,17 +1,30 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../service/backend_service/select_house.dart';
 import 'house_card.dart';
-import 'house_list/house_data.dart';
 
 class HouseList extends StatefulWidget {
-  final Map<String, String>? filter;
+  // final Map<String, String>? filter;
+  final String district,
+      rentType,
+      rooms,
+      metroLine,
+      metroStation,
+      price1,
+      price2;
 
-  const HouseList({this.filter, Key? key}) : super(key: key);
+  const HouseList({
+    // this.filter,
+    this.district = "",
+    this.rentType = "",
+    this.rooms = "",
+    this.metroLine = "",
+    this.metroStation = "",
+    this.price1 = "",
+    this.price2 = "",
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HouseList> createState() => _HouseListState();
@@ -19,26 +32,25 @@ class HouseList extends StatefulWidget {
 
 class _HouseListState extends State<HouseList> {
   final List<HouseCard> _houseCards = <HouseCard>[];
-
-  String district = "",
-      rentType = "",
-      rooms = "",
-      metroLine = "",
-      metroStation = "",
-      price1 = "",
-      price2 = "";
   int page = 0, pageSize = 5;
-  bool isLast = false;
 
-  List<HouseCard> getHouseCard() {
-    List<HouseCard> tmp = [];
-    if (isLast) return tmp;
-    for (int i = 0; i < 5; i++) {
-      tmp.add(
-        houseCardExample[Random().nextInt(houseCardExample.length)],
-      );
-    }
-    return tmp;
+  bool _isLastPage = false, isLoading = false;
+
+  // List<HouseCard> getHouseCard() {
+  //   List<HouseCard> tmp = [];
+  //   if (isLast) return tmp;
+  //   for (int i = 0; i < 5; i++) {
+  //     tmp.add(
+  //       houseCardExample[Random().nextInt(houseCardExample.length)],
+  //     );
+  //   }
+  //   return tmp;
+  // }
+
+  void getPageOfHouseCard() async {
+    if (_isLastPage) return;
+    isLoading = true;
+    await getHousePages();
   }
 
   Future getDatas() async {
@@ -50,18 +62,29 @@ class _HouseListState extends State<HouseList> {
   }
 
   Future<void> getHousePages() async {
-    await fetchHousePage(district, price1, price2, rentType, rooms, metroLine,
-            metroStation, page, pageSize)
+    await fetchHousePage(
+            widget.district,
+            widget.price1,
+            widget.price2,
+            widget.rentType,
+            widget.rooms,
+            widget.metroLine,
+            widget.metroStation,
+            page,
+            pageSize)
         .then((value) => {
-              debugPrint("fetchHousePage: "),
-              debugPrint(jsonEncode(value.toJson())),
-              value.content?.forEach((element) {
-                debugPrint(jsonEncode(element.toJson()));
-              }),
+              debugPrint("fetchHousePage: $page"),
+              // debugPrint(jsonEncode(value.toJson())),
+              // value.content?.forEach((element) {
+              //   debugPrint(jsonEncode(element.toJson()));
+              // }),
+
               value.content?.forEach((e) {
                 _houseCards.add(e.toHouseCard());
               }),
-              isLast = value.last!,
+              _isLastPage = value.last!,
+              isLoading = false,
+              page++,
             });
   }
 
@@ -82,10 +105,12 @@ class _HouseListState extends State<HouseList> {
 
                 final index = i ~/ 2; /*3*/
                 if (index >= _houseCards.length) {
-                  _houseCards.addAll(
-                    getHouseCard(),
-                  ); /*4*/
+                  getPageOfHouseCard();
+                  // _houseCards.addAll(
+                  //   getHouseCard(),
+                  // ); /*4*/
                 }
+                if (isLoading) return const Text("Loading~");
                 return _houseCards[index];
               },
             );

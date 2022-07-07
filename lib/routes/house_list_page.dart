@@ -42,6 +42,13 @@ class _HouseListPageState extends State<HouseListPage> {
   late Widget selection;
   bool selectionInitialized = false;
   Map<String, String>? filter;
+  String district = "",
+      rentType = "",
+      rooms = "",
+      metroLine = "",
+      metroStation = "",
+      price1 = "",
+      price2 = "";
 
   void callback(
       int menuIndex,
@@ -50,7 +57,24 @@ class _HouseListPageState extends State<HouseListPage> {
       BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
     setState(() {
       filter = filterParams;
-      debugPrint(filterParams["price"]);
+      debugPrint(filterParams.toString());
+      // debugPrint(filterParams["price"]);
+      // debugPrint(filterParams["户型"]);
+      // debugPrint(filterParams["region"]);
+      if (filter != null) {
+        district = filter!["region"] ?? "";
+        rooms = filter!["户型"] ?? "";
+        metroLine = filter!["subway"] ?? "";
+        if (filter!["price"] != null) {
+          String s = filter!["price"]!;
+          List<String> x = s.split(':');
+          price1 = x[0];
+          price2 = x[1];
+        } else {
+          price1 = "";
+          price2 = "";
+        }
+      }
     });
   }
 
@@ -79,7 +103,15 @@ class _HouseListPageState extends State<HouseListPage> {
     }
     list.add(
       Expanded(
-        child: HouseList(filter: filter,),
+        child: HouseList(
+          district: district,
+          rentType: rentType,
+          rooms: rooms,
+          metroLine: metroLine,
+          metroStation: metroStation,
+          price1: price1,
+          price2: price2,
+        ),
       ),
     );
     return Scaffold(
