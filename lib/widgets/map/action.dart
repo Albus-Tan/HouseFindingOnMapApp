@@ -114,11 +114,11 @@ class UpdateCameraPosition extends MapAction {
 }
 
 class MoveCamera extends MapAction {
-  final CameraUpdate cameraUpdate;
+  final CameraPosition cameraPosition;
 
   MoveCamera({
     required super.mapId,
-    required this.cameraUpdate,
+    required this.cameraPosition,
   });
 }
 
