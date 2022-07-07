@@ -41,13 +41,25 @@ class HouseListPage extends StatefulWidget {
 class _HouseListPageState extends State<HouseListPage> {
   late Widget selection;
   bool selectionInitialized = false;
+  Map<String, String>? filter;
+
+  void callback(
+      int menuIndex,
+      Map<String, String> filterParams,
+      Map<String, String> customParams,
+      BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
+    setState(() {
+      filter = filterParams;
+      debugPrint(filterParams["price"]);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    selectionView('assets/json/selection.json').then(
-          (value) => setState(
-            () {
+    selectionView('assets/json/selection.json', callback).then(
+      (value) => setState(
+        () {
           selection = value;
           selectionInitialized = true;
         },
@@ -59,15 +71,15 @@ class _HouseListPageState extends State<HouseListPage> {
   Widget build(BuildContext context) {
     final list = widget.needAppBar
         ? <Widget>[
-      _renderAppBar(context),
-    ]
+            _renderAppBar(context),
+          ]
         : <Widget>[];
     if (selectionInitialized) {
       list.add(selection);
     }
     list.add(
-      const Expanded(
-        child: HouseList(),
+      Expanded(
+        child: HouseList(filter: filter,),
       ),
     );
     return Scaffold(
