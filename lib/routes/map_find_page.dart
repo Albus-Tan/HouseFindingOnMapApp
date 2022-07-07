@@ -1,7 +1,9 @@
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:app/common/extension/marker.dart';
+import 'package:app/common/extension/widget.dart';
 import 'package:app/widgets/map/action.dart';
+import 'package:app/widgets/map_find_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -21,10 +23,53 @@ class MapFindPage extends StatefulWidget {
 class _MapFindPageState extends State<MapFindPage> {
   late Store<MapState> store;
 
+  Map<String, ResidentialMapFindMarker> residentialMarkers = {};
+
   @override
   void initState() {
     super.initState();
     store = Store(mapReducer, initialState: MapState.initialState());
+  }
+
+  void _initResidentialMarkers(Store<MapState> store) {
+    var residentialMarkerWidget = ResidentialMapFindMarker(
+      residential: '丽景大厦',
+      num: 12,
+    );
+    final marker = Marker(
+      onTap: (id) {
+        /// 依据 id 从 residentialMarkers 中取出对应 widget
+        print("onTap$id");
+        print(residentialMarkers[id]?.focus);
+        residentialMarkers[id]?.focus = true;
+        print(residentialMarkers[id]?.focus);
+        residentialMarkers[id]?.toUint8List().then(
+              (value) => UpdateMarker(
+                mapId: store.state.id,
+                id: id,
+                iconParam: BitmapDescriptor.fromBytes(value!),
+              ),
+            );
+      },
+      position: const LatLng(
+        40,
+        116.397451,
+      ),
+      draggable: false,
+    )
+        .copyWithWidget(
+          widget: residentialMarkerWidget,
+        )
+        .then((value) {
+      store.dispatch(
+        AddMarker(
+          mapId: store.state.id,
+          marker: value,
+        ),
+      );
+      /// 依据 id 向 residentialMarkers 中添加对应 widget
+      residentialMarkers[value.id] = residentialMarkerWidget;
+    });
   }
 
   @override
@@ -32,37 +77,10 @@ class _MapFindPageState extends State<MapFindPage> {
     return Stack(
       children: [
         StoreBuilder<MapState>(
+          onInit: (store) {
+            _initResidentialMarkers(store);
+          },
           builder: (context, store) {
-            final marker = Marker(
-              position: const LatLng(
-                40,
-                116.397451,
-              ),
-              draggable: true,
-              onDragEnd: (
-                String id,
-                LatLng position,
-              ) {
-                debugPrint("${id}dragged to $position");
-              },
-            )
-                .copyWithWidget(
-                  widget: Container(
-                    child: Text(
-                      '111',
-                      style: TextStyle(fontSize: 100),
-                    ),
-                  ),
-                )
-                .then(
-                  (value) => store.dispatch(
-                    AddMarker(
-                      mapId: store.state.id,
-                      marker: value,
-                    ),
-                  ),
-                );
-
             return MaterialApp(
               home: Scaffold(
                 body: StoreProvider(
