@@ -58,7 +58,7 @@ class _AppState extends State<App> {
         AppNavigatorObserver()
       ],
       title: _title,
-      theme: ThemeData.dark(),
+      //theme: ThemeData.dark(),
       home: Scaffold(
         body: allPages[currentPageIndex],
         bottomNavigationBar: BottomNavigationBar(

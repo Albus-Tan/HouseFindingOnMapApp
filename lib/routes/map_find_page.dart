@@ -7,7 +7,7 @@ import 'package:app/widgets/map_find_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-
+import 'package:bruno/bruno.dart';
 import '../widgets/house_card.dart';
 import '../widgets/map.dart';
 import '../widgets/map/state.dart';
@@ -21,6 +21,10 @@ class MapFindPage extends StatefulWidget {
 }
 
 class _MapFindPageState extends State<MapFindPage> {
+
+  /// 正在画圈
+  bool isDrawing = false;
+
   /// 地图上房源小区 Marker
   Map<String, ResidentialMapFindMarker> residentialMarkers = {};
   String focusingMarkerId = "";
@@ -138,6 +142,51 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 
+  Widget buildOperationsWhenNotDrawing(Store<MapState> store){
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () {
+            store.dispatch(
+              CheckPointsInPolygon(mapId: store.state.id),
+            );
+            for (final element
+            in store.state.markersInPolygon) {
+              store.dispatch(
+                UpdateMarker(
+                  mapId: store.state.id,
+                  id: element.id,
+                  iconParam:
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueOrange,
+                  ),
+                ),
+              );
+            }
+          },
+          child: Text("Check"),
+        ),
+        TextButton(
+          onPressed: () {
+            store.dispatch(
+              StartDrawPolygon(mapId: store.state.id),
+              //EndDrawPolygon(mapId: store.state.id),
+            );
+          },
+          child: Text("Draw"),
+        ),
+        BrnVerticalIconButton(
+            name: '画区域',
+            iconWidget: Icon(Icons.gesture),
+            onTap: () {
+              BrnToast.show('画区域按钮被点击', context);
+            }
+        ),
+
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -154,7 +203,7 @@ class _MapFindPageState extends State<MapFindPage> {
           builder: (context, store) {
             return MaterialApp(
               home: Scaffold(
-                appBar: AppBar(
+                appBar: isDrawing ? AppBar() : AppBar(
                   backgroundColor: Colors.white,
                   title: selectionInitialized ? selection : Container(),
                   centerTitle: true,
@@ -165,39 +214,7 @@ class _MapFindPageState extends State<MapFindPage> {
                   child: Stack(
                     children: [
                       MapWidget(),
-                      Column(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              store.dispatch(
-                                CheckPointsInPolygon(mapId: store.state.id),
-                              );
-                              for (final element
-                                  in store.state.markersInPolygon) {
-                                store.dispatch(
-                                  UpdateMarker(
-                                    mapId: store.state.id,
-                                    id: element.id,
-                                    iconParam:
-                                        BitmapDescriptor.defaultMarkerWithHue(
-                                      BitmapDescriptor.hueOrange,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Text("Check"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              store.dispatch(
-                                StartDrawPolygon(mapId: store.state.id),
-                              );
-                            },
-                            child: Text("Draw"),
-                          ),
-                        ],
-                      )
+                      buildOperationsWhenNotDrawing(store),
                     ],
                   ),
                 ),

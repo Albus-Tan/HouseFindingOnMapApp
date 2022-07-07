@@ -86,10 +86,11 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                               context: context,
                               delegate: SearchBarViewDelegate());
                         },
-                        enabled: false,
+                        readOnly: true,
                         decoration: InputDecoration(
-                          labelText: '点击图标搜索小区',
+                          labelText: '点击搜索小区',
                           border: InputBorder.none,
+
                           //隐藏边框
                           // border: OutlineInputBorder(),//有边框
                           //启用背景颜色边框，可用color属性设置颜色
@@ -99,7 +100,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                   ],
                 ),
               ),
-
+              backgroundColor: Colors.blueAccent,
               // 背景颜色
               automaticallyImplyLeading: false,
               // 后置控件
@@ -125,7 +126,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
             TabBar(
               unselectedLabelColor: Colors.black,
               labelColor: Colors.blueAccent,
-              tabs: [
+              tabs: const [
                 Tab(
                   text: '推荐',
                 ),
