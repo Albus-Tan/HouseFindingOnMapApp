@@ -3,6 +3,7 @@ import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:app/routes/home_page.dart';
 import 'package:app/routes/map_find_page.dart';
 import 'package:app/routes/my_profile_page.dart';
+import 'package:app/utils/route_observer.dart';
 import 'package:app/widgets/map/reducer.dart';
 import 'package:app/widgets/map/state.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,9 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [
+        AppNavigatorObserver()
+      ],
       title: _title,
       home: Scaffold(
         body: allPages[currentPageIndex],

@@ -13,6 +13,7 @@ import '../widgets/house_detail_bottom_sheet_on_map.dart';
 import '../widgets/map.dart';
 import '../widgets/map/reducer.dart';
 import '../widgets/map/state.dart';
+import '../widgets/selection.dart';
 
 class MapFindPage extends StatefulWidget {
   const MapFindPage({Key? key}) : super(key: key);
@@ -23,10 +24,28 @@ class MapFindPage extends StatefulWidget {
 
 class _MapFindPageState extends State<MapFindPage> {
 
+  /// 地图上房源小区 Marker
   Map<String, ResidentialMapFindMarker> residentialMarkers = {};
   String focusingMarkerId = "";
 
-  void _initResidentialMarkers(Store<MapState> store,BuildContext context) {
+  /// 筛选条件组件
+  late Widget selection;
+  bool selectionInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    selectionView('assets/json/selection.json').then(
+          (value) => setState(
+            () {
+          selection = value;
+          selectionInitialized = true;
+        },
+      ),
+    );
+  }
+
+  void _initResidentialMarkers(Store<MapState> store) {
     var residentialMarkerWidget = ResidentialMapFindMarker(
       residential: '丽景大厦',
       num: 12,
@@ -45,7 +64,6 @@ class _MapFindPageState extends State<MapFindPage> {
               iconParam: BitmapDescriptor.fromBytes(value!),
             ),
           );
-          _showHouseDetailListSheet(context);
         });
       },
       position: const LatLng(
@@ -69,7 +87,6 @@ class _MapFindPageState extends State<MapFindPage> {
       residentialMarkers[value.id] = residentialMarkerWidget;
     });
   }
-
 
   void _showHouseDetailListSheet(BuildContext context) {
     showModalBottomSheet(
@@ -121,18 +138,23 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
-            _initResidentialMarkers(store,context);
+            _initResidentialMarkers(store);
           },
           builder: (context, store) {
             return MaterialApp(
               home: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  title: selectionInitialized ? selection : Container(),
+                  centerTitle: true,
+                  titleSpacing: 0.0,
+                ),
                 body: StoreProvider(
                   store: store,
                   child: Stack(
@@ -169,6 +191,7 @@ class _MapFindPageState extends State<MapFindPage> {
                             },
                             child: Text("Draw"),
                           ),
+
                         ],
                       )
                     ],
@@ -178,15 +201,7 @@ class _MapFindPageState extends State<MapFindPage> {
             );
           },
         ),
-        Column(
-          children: const [
-            Text('这是为了占用空间的一行字'),
-            HouseDetailBottomSheet(),
-          ],
-        ),
       ],
     );
   }
 }
-
-
