@@ -41,6 +41,7 @@ class MapWidget extends StatelessWidget {
         return Stack(
           children: [
             AMapWidget(
+              initialCameraPosition: state.cameraPosition,
               polylines: Set.of(state.polyLines),
               polygons: state.polygon.isEmpty
                   ? <Polygon>{}
