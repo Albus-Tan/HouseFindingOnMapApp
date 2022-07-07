@@ -89,6 +89,12 @@ class EndDrawPolygon extends MapAction {
   });
 }
 
+class ClearPolygon extends MapAction {
+  ClearPolygon({
+    required super.mapId,
+  });
+}
+
 class SetController extends MapAction {
   final AMapController controller;
 
