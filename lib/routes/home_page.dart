@@ -33,7 +33,10 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
 
   @override
   void initState() {
-    _tabController = new TabController(length: 4, vsync: this);
+    _tabController = new TabController(
+      length: 4,
+      vsync: this,
+    );
     super.initState();
   }
 
@@ -53,7 +56,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                       flex: 5,
                       child: Container(
                         // padding: EdgeInsets.only(left: 10.0),
-                        child: const Align(
+                        child: Align(
                           alignment: Alignment.center,
                           child: Text(
                             "搜租房",
@@ -61,7 +64,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                             maxLines: 1,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Theme.of(context).secondaryHeaderColor,
                               fontSize: 15,
                             ),
                           ),
@@ -89,9 +92,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                           border: InputBorder.none,
                           //隐藏边框
                           // border: OutlineInputBorder(),//有边框
-                          filled: true,
                           //启用背景颜色边框，可用color属性设置颜色
-                          fillColor: Colors.white70,
                         ),
                       ),
                     ),
@@ -100,7 +101,6 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
               ),
 
               // 背景颜色
-              backgroundColor: Colors.blueAccent,
               automaticallyImplyLeading: false,
               // 后置控件
               actions: <Widget>[

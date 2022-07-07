@@ -11,7 +11,6 @@ import 'package:redux/redux.dart';
 import '../widgets/house_card.dart';
 import '../widgets/house_detail_bottom_sheet_on_map.dart';
 import '../widgets/map.dart';
-import '../widgets/map/reducer.dart';
 import '../widgets/map/state.dart';
 import '../widgets/selection.dart';
 
@@ -50,22 +49,8 @@ class _MapFindPageState extends State<MapFindPage> {
       residential: '丽景大厦',
       num: 12,
     );
-    final marker = Marker(
-      onTap: (id) {
-        /// 依据 id 从 residentialMarkers 中取出对应 widget
-        print("onTap$id");
-        residentialMarkers[id]?.focus = true;
-        focusingMarkerId = id;
-        residentialMarkers[id]?.toUint8List().then((value) {
-          store.dispatch(
-            UpdateMarker(
-              mapId: store.state.id,
-              id: id,
-              iconParam: BitmapDescriptor.fromBytes(value!),
-            ),
-          );
-        });
-      },
+    Marker(
+      onTap: (id) => _markerOnTap(id, store, context),
       position: const LatLng(
         40,
         116.397451,
@@ -88,53 +73,70 @@ class _MapFindPageState extends State<MapFindPage> {
     });
   }
 
+  void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
+    /// 依据 id 从 residentialMarkers 中取出对应 widget
+    print("onTap$id");
+    residentialMarkers[id]?.focus = true;
+    focusingMarkerId = id;
+    residentialMarkers[id]?.toUint8List().then(
+      (value) {
+        store.dispatch(
+          UpdateMarker(
+            mapId: store.state.id,
+            id: id,
+            iconParam: BitmapDescriptor.fromBytes(value!),
+          ),
+        );
+      },
+    );
+    _showHouseDetailListSheet(context);
+  }
+
   void _showHouseDetailListSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // set this to true
-      builder: (_) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          // 设置父容器的高度 1 ~ 0, initialChildSize必须 <= maxChildSize
-          expand: false,
-          builder: (_, controller) {
-            return Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  const ListTile(
-                    title: Text(
-                      '小区名称',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    subtitle: Text('均价·房源套数等信息'),
-                    trailing: Icon(Icons.keyboard_arrow_down),
-                  ),
-                  const Divider(),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: controller, // set this too
-                      // 长度
-                      itemCount: 15,
-                      itemBuilder: (_, i) => const HouseCard(
-                        title: "title",
-                        rooms: 3,
-                        squares: 33,
-                        community: "community",
-                        price: 250,
-                        url: '',
-                      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        // 设置父容器的高度 1 ~ 0, initialChildSize必须 <= maxChildSize
+        expand: false,
+        builder: (_, controller) {
+          return Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                const ListTile(
+                  title: Text(
+                    '小区名称',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+                  subtitle: Text('均价·房源套数等信息'),
+                  trailing: Icon(Icons.keyboard_arrow_down),
+                ),
+                const Divider(),
+                Expanded(
+                  child: ListView.builder(
+                    controller: controller, // set this too
+                    // 长度
+                    itemCount: 15,
+                    itemBuilder: (_, i) => const HouseCard(
+                      title: "title",
+                      rooms: 3,
+                      squares: 33,
+                      community: "community",
+                      price: 250,
+                      url: '',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -144,6 +146,11 @@ class _MapFindPageState extends State<MapFindPage> {
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
+            store.dispatch(
+              Clear(
+                mapId: store.state.id,
+              ),
+            );
             _initResidentialMarkers(store);
           },
           builder: (context, store) {

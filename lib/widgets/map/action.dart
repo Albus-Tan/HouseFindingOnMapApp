@@ -106,3 +106,9 @@ class UpdateCameraPosition extends MapAction {
     required this.cameraPosition,
   });
 }
+
+class Clear extends MapAction {
+  Clear({
+    required super.mapId,
+  });
+}

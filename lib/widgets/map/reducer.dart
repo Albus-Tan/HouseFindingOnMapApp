@@ -15,6 +15,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_endDrawPolygon),
     TypedReducer(_setController),
     TypedReducer(_updateCameraPosition),
+    TypedReducer(_clear),
   ],
 );
 
@@ -87,6 +88,7 @@ MapState _checkPointsInPolygon(MapState state, CheckPointsInPolygon action) {
     return state;
   }
 }
+
 MapState _startDrawPolygon(MapState state, StartDrawPolygon action) {
   if (state.id == action.mapId) {
     return state.copyWith(
@@ -136,6 +138,18 @@ MapState _updateCameraPosition(MapState state, UpdateCameraPosition action) {
   if (state.id == action.mapId) {
     return state.copyWith(
       cameraPosition: action.cameraPosition,
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _clear(MapState state, Clear action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      polygon: [],
+      markers: [],
+      polyLines: [],
     );
   } else {
     return state;
