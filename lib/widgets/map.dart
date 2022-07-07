@@ -103,11 +103,16 @@ class MapWidget extends StatelessWidget {
                     }
                   : null,
               onPanEnd: state.drawing
-                  ? (detail) => store.dispatch(
+                  ? (detail) {
+                      store.dispatch(
                         EndDrawPolygon(
                           mapId: state.id,
                         ),
-                      )
+                      );
+                      store.dispatch(CheckPointsInPolygon(
+                        mapId: state.id,
+                      ));
+                    }
                   : null,
             )
           ],

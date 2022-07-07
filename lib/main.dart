@@ -16,7 +16,6 @@ void main() {
     mapReducer,
     initialState: MapState.initialState(),
   );
-
   runApp(
     StoreProvider(
       store: store,

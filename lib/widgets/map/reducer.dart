@@ -15,6 +15,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_endDrawPolygon),
     TypedReducer(_setController),
     TypedReducer(_updateCameraPosition),
+    TypedReducer(_moveCamera),
     TypedReducer(_clear),
     TypedReducer(_clearPolygon),
   ],
@@ -153,6 +154,13 @@ MapState _updateCameraPosition(MapState state, UpdateCameraPosition action) {
   } else {
     return state;
   }
+}
+
+MapState _moveCamera(MapState state, MoveCamera action) {
+  if (state.id == action.mapId && state.controller != null) {
+    state.controller?.moveCamera(action.cameraUpdate);
+  }
+  return state;
 }
 
 MapState _clear(MapState state, Clear action) {
