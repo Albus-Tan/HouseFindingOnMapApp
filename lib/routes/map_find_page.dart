@@ -29,7 +29,7 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 筛选条件组件
   late Widget selection;
   bool selectionInitialized = false;
-  late final LatLng currentPosition;
+  late LatLng currentPosition;
 
   @override
   void initState() {
@@ -41,17 +41,6 @@ class _MapFindPageState extends State<MapFindPage> {
           selectionInitialized = true;
         },
       ),
-    );
-    AMapFlutterLocation().startLocation();
-    AMapFlutterLocation().onLocationChanged().listen(
-      (Map<String, Object> result) {
-        debugPrint(result.toString());
-        currentPosition = LatLng(
-            double.parse(result['latitude'].toString()),
-            double.parse(
-              result['longitude'].toString(),
-            ));
-      },
     );
   }
 
@@ -162,6 +151,27 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapId: store.state.id,
               ),
             );
+            AMapFlutterLocation().startLocation();
+            AMapFlutterLocation().onLocationChanged().listen(
+              (Map<String, Object> result) {
+                debugPrint(result.toString());
+                currentPosition = LatLng(
+                  double.parse(result['latitude'].toString()),
+                  double.parse(
+                    result['longitude'].toString(),
+                  ),
+                );
+                store.dispatch(
+                  MoveCamera(
+                    mapId: store.state.id,
+                    cameraPosition: CameraPosition(
+                      target: currentPosition,
+                    ),
+                  ),
+                );
+              },
+            );
+
             _initResidentialMarkers(store);
           },
           builder: (context, store) {

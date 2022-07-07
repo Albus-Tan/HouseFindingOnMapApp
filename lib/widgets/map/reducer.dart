@@ -157,8 +157,13 @@ MapState _updateCameraPosition(MapState state, UpdateCameraPosition action) {
 }
 
 MapState _moveCamera(MapState state, MoveCamera action) {
-  if (state.id == action.mapId && state.controller != null) {
-    state.controller?.moveCamera(action.cameraUpdate);
+  if (state.id == action.mapId) {
+    state.controller?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        action.cameraPosition,
+      ),
+    );
+    return state.copyWith(cameraPosition: action.cameraPosition);
   }
   return state;
 }
