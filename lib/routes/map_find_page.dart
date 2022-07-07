@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../widgets/house_card.dart';
 import '../widgets/house_detail_bottom_sheet_on_map.dart';
 import '../widgets/map.dart';
 import '../widgets/map/reducer.dart';
@@ -24,6 +25,7 @@ class _MapFindPageState extends State<MapFindPage> {
   late Store<MapState> store;
 
   Map<String, ResidentialMapFindMarker> residentialMarkers = {};
+  String focusingMarkerId = "";
 
   @override
   void initState() {
@@ -40,16 +42,18 @@ class _MapFindPageState extends State<MapFindPage> {
       onTap: (id) {
         /// 依据 id 从 residentialMarkers 中取出对应 widget
         print("onTap$id");
-        print(residentialMarkers[id]?.focus);
         residentialMarkers[id]?.focus = true;
-        print(residentialMarkers[id]?.focus);
-        residentialMarkers[id]?.toUint8List().then(
-              (value) => UpdateMarker(
-                mapId: store.state.id,
-                id: id,
-                iconParam: BitmapDescriptor.fromBytes(value!),
-              ),
-            );
+        focusingMarkerId = id;
+        residentialMarkers[id]?.toUint8List().then((value) {
+          store.dispatch(
+            UpdateMarker(
+              mapId: store.state.id,
+              id: id,
+              iconParam: BitmapDescriptor.fromBytes(value!),
+            ),
+          );
+          _showHouseDetailListSheet(context);
+        });
       },
       position: const LatLng(
         40,
@@ -58,8 +62,8 @@ class _MapFindPageState extends State<MapFindPage> {
       draggable: false,
     )
         .copyWithWidget(
-          widget: residentialMarkerWidget,
-        )
+      widget: residentialMarkerWidget,
+    )
         .then((value) {
       store.dispatch(
         AddMarker(
@@ -67,10 +71,63 @@ class _MapFindPageState extends State<MapFindPage> {
           marker: value,
         ),
       );
+
       /// 依据 id 向 residentialMarkers 中添加对应 widget
       residentialMarkers[value.id] = residentialMarkerWidget;
     });
   }
+
+
+  void _showHouseDetailListSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // set this to true
+      builder: (_) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          // 设置父容器的高度 1 ~ 0, initialChildSize必须 <= maxChildSize
+          expand: false,
+          builder: (_, controller) {
+            return Container(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  const ListTile(
+                    title: Text(
+                      '小区名称',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    subtitle: Text('均价·房源套数等信息'),
+                    trailing: Icon(Icons.keyboard_arrow_down),
+                  ),
+                  const Divider(),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: controller, // set this too
+                      // 长度
+                      itemCount: 15,
+                      itemBuilder: (_, i) => const HouseCard(
+                        title: "title",
+                        rooms: 3,
+                        squares: 33,
+                        community: "community",
+                        price: 250,
+                        url: '',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -138,3 +195,5 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 }
+
+
