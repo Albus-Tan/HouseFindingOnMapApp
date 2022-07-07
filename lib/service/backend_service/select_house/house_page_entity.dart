@@ -87,7 +87,7 @@ class Content {
   int? price;
   String? source;
   String? residential;
-  int? squares;
+  double? squares;
   String? layout;
   int? shi;
   int? ting;
