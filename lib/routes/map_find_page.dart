@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../service/backend_service/map_find_house.dart';
 import '../widgets/house_card.dart';
 import '../widgets/house_list/house_data.dart';
 import '../widgets/map.dart';
@@ -34,13 +35,62 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 筛选条件组件
   late Widget selection;
   bool selectionInitialized = false;
+  Map<String, String>? filter;
+  String district = "",
+      rentType = "",
+      rooms = "",
+      metroLine = "",
+      metroStation = "",
+      price1 = "",
+      price2 = "";
+
+  /// 位置
   LatLng currentPosition = const LatLng(31.2382, 121.4913);
 
   void callback(
       int menuIndex,
       Map<String, String> filterParams,
       Map<String, String> customParams,
-      BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {}
+      BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
+    setState(() {
+      filter = filterParams;
+      debugPrint(filterParams.toString());
+      if (filter != null) {
+        district = filter!["region"] ?? "";
+        rooms = filter!["户型"] ?? "";
+        metroLine = filter!["subway"] ?? "";
+        if (filter!["price"] != null) {
+          String s = filter!["price"]!;
+          List<String> x = s.split(':');
+          price1 = x[0];
+          price2 = x[1];
+        } else {
+          price1 = "";
+          price2 = "";
+        }
+      }
+    });
+  }
+
+
+  /// 发送请求拿取房源数据
+  Future<void> getAllHouses() async {
+    await fetchAllHouse(
+        district,
+        price1,
+        price2,
+        rentType,
+        rooms,
+        metroLine,
+        metroStation,)
+        .then((value) => {
+      value.content?.forEach((e) {
+        _houseCards.add(e.toHouseCard());
+      }),
+      debugPrint("fetchAllHouse: $page $_houseCards"),
+    });
+  }
+
 
   @override
   void initState() {
@@ -200,42 +250,7 @@ class _MapFindPageState extends State<MapFindPage> {
         }
       },
     );
-    // for (final element in residentialMarkers){
-    //   if(set.contains(element.))
-    //   // if (residentialMarkers[element.id]!.inPolygon = false) {
-    //   //   residentialMarkers[element.id]?.inPolygon = true;
-    //   //   residentialMarkers[element.id]?.toUint8List().then(
-    //   //         (value) {
-    //   //       store.dispatch(
-    //   //         UpdateMarker(
-    //   //           mapId: store.state.id,
-    //   //           id: element.id,
-    //   //           iconParam: BitmapDescriptor.fromBytes(value!),
-    //   //         ),
-    //   //       );
-    //   //     },
-    //   //   );
-    //   // }
-    // }
-    // for (final element in store.state.markersInPolygon) {}
   }
-
-  // void _resetAllMarkersInPolygon(Store<MapState> store) {
-  //   for (final element in store.state.markersInPolygon) {
-  //     residentialMarkers[element.id]?.inPolygon = false;
-  //     residentialMarkers[element.id]?.toUint8List().then(
-  //       (value) {
-  //         store.dispatch(
-  //           UpdateMarker(
-  //             mapId: store.state.id,
-  //             id: element.id,
-  //             iconParam: BitmapDescriptor.fromBytes(value!),
-  //           ),
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
 
   void _resetAllMarkers(Store<MapState> store) {
     for (final element in store.state.markers) {
@@ -255,9 +270,6 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Widget buildOperationsWhenDrawing(Store<MapState> store) {
-    /// update Markers style In Polygon
-    //_updateMarkersInPolygon(store);
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
