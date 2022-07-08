@@ -11,6 +11,7 @@ HouseDetail toDetail(String title, int rooms, double squares, String community,
     shiNumber: rooms,
     community: community,
     image: url,
+    district: "上海",
   );
 }
 

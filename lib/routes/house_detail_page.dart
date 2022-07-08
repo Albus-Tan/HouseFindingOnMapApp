@@ -17,6 +17,7 @@ class HouseDetail {
   final String image;
   final bool isStatic;
   final String community;
+  final String district;
 
   HouseDetail({
     required this.title,
@@ -29,6 +30,7 @@ class HouseDetail {
     this.image = "",
     this.isStatic = false,
     required this.community,
+    required this.district,
   });
 }
 

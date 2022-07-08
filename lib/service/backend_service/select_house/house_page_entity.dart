@@ -204,6 +204,7 @@ class Content {
       weiNumber: wei ?? -1,
       community: residential ?? "",
       image: firstPicUrl ?? "",
+      district: district ?? "上海",
     );
     return data;
   }

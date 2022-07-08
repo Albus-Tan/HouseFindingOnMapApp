@@ -49,7 +49,7 @@ class HouseCard extends StatelessWidget {
               subtitle: RichText(
                 text: TextSpan(
                   text:
-                      '${houseDetail.shiNumber}室·${houseDetail.squares}平·${houseDetail.community}',
+                      '${houseDetail.shiNumber}室·${houseDetail.squares}平·${houseDetail.community}·${houseDetail.district}',
                   style: const TextStyle(
                     color: Colors.black,
                   ),

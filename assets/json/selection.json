@@ -63,7 +63,7 @@
                 "key": "town",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "浦东",
+                "value": "闵行",
                 "children": [
                   {
                     "title": "全闵行",
