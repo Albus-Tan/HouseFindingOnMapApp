@@ -32,7 +32,8 @@ class HouseList extends StatefulWidget {
 
 class _HouseListState extends State<HouseList> {
   final List<HouseCard> _houseCards = <HouseCard>[];
-  int page = 0, pageSize = 5;
+  final Set<int> hasFetched = {};
+  int page = 0, pageSize = 10;
 
   bool _isLastPage = false, isLoading = false;
 
@@ -47,8 +48,9 @@ class _HouseListState extends State<HouseList> {
   //   return tmp;
   // }
 
-  void getPageOfHouseCard() async {
-    if (_isLastPage) return;
+  Future<void> getPageOfHouseCard() async {
+    if (_isLastPage || hasFetched.contains(page)) return;
+    hasFetched.add(page);
     isLoading = true;
     await getHousePages();
   }
@@ -56,7 +58,7 @@ class _HouseListState extends State<HouseList> {
   Future getDatas() async {
     return Future.wait(
       [
-        getHousePages(),
+        getPageOfHouseCard(),
       ],
     );
   }
@@ -90,6 +92,9 @@ class _HouseListState extends State<HouseList> {
 
   @override
   Widget build(BuildContext context) {
+    _houseCards.clear();
+    hasFetched.clear();
+    page=0;
     return FutureBuilder(
         future: getDatas(),
         builder: (context, snapshot) {
@@ -110,7 +115,8 @@ class _HouseListState extends State<HouseList> {
                   //   getHouseCard(),
                   // ); /*4*/
                 }
-                if (isLoading) return const Text("Loading~");
+                // while (isLoading);
+                if (index >= _houseCards.length && isLoading) return const Text("Loading~");
                 return _houseCards[index];
               },
             );
