@@ -2,14 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'rent_house.g.dart';
 
-
-List<RentHouse> getRentHouseList(List<dynamic> list){
-  List<RentHouse> result = [];
-  list.forEach((item){
-    result.add(RentHouse.fromJson(item));
-  });
-  return result;
-}
 @JsonSerializable()
 class RentHouse extends Object {
 
@@ -65,13 +57,13 @@ class RentHouse extends Object {
   String source;
 
   @JsonKey(name: 'residential')
-  String residential;
+  String? residential;
 
   @JsonKey(name: 'squares')
   double squares;
 
   @JsonKey(name: 'layout')
-  String layout;
+  String? layout;
 
   @JsonKey(name: 'shi')
   int shi;

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../service/backend_service/house/rent_house.dart';
 import '../service/backend_service/map_find_house.dart';
 import '../widgets/house_card.dart';
 import '../widgets/house_list/house_data.dart';
@@ -25,6 +26,9 @@ class MapFindPage extends StatefulWidget {
 }
 
 class _MapFindPageState extends State<MapFindPage> {
+  /// 所有房源数据
+  List<RentHouse> houses = [];
+
   /// 正在画圈
   bool isDrawing = false;
 
@@ -73,24 +77,37 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
 
-  /// 发送请求拿取房源数据
-  Future<void> getAllHouses() async {
-    await fetchAllHouse(
-        district,
-        price1,
-        price2,
-        rentType,
-        rooms,
-        metroLine,
-        metroStation,)
-        .then((value) => {
-      value.content?.forEach((e) {
-        _houseCards.add(e.toHouseCard());
-      }),
-      debugPrint("fetchAllHouse: $page $_houseCards"),
+  updateFilteredHouse(Store<MapState> store){
+    residentialMarkers.forEach((key, value) {
+      bool meetRequirement = true;
+
+      store.dispatch(
+        UpdateMarker(
+          mapId: store.state.id,
+          id: key,
+          visibleParam: meetRequirement,
+        ),
+      );
     });
   }
 
+  /// 发送请求拿取房源数据
+  Future<void> getAllHouses() async {
+    await fetchAllHouse(
+      district,
+      price1,
+      price2,
+      rentType,
+      rooms,
+      metroLine,
+      metroStation,
+    ).then((value) => {
+          houses.clear(),
+          houses.addAll(value),
+
+          // debugPrint("fetchAllHouse: $page $_houseCards"),
+        });
+  }
 
   @override
   void initState() {
@@ -120,30 +137,38 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 
-  void _initResidentialMarkers(Store<MapState> store) {
-    var residentialMarkerWidget = ResidentialMapFindMarker(
-      residential: '丽景大厦',
-      num: 12,
-    );
-    Marker(
-      onTap: (id) => _markerOnTap(id, store, context),
-      position: const LatLng(31.2372, 121.4923),
-      draggable: false,
-    )
-        .copyWithWidget(
-      widget: residentialMarkerWidget,
-    )
-        .then((value) {
-      store.dispatch(
-        AddMarker(
-          mapId: store.state.id,
-          marker: value,
-        ),
-      );
+  Future<void> _initResidentialMarkers(Store<MapState> store) async {
 
-      /// 依据 id 向 residentialMarkers 中添加对应 widget
-      residentialMarkers[value.id] = residentialMarkerWidget;
-    });
+    // 从后端拿取所有数据
+    await getAllHouses();
+
+
+    for (var house in houses) {
+      var residentialMarkerWidget = ResidentialMapFindMarker(
+        residential: house.residential ?? '',
+        num: 1,
+      );
+      Marker(
+        onTap: (id) => _markerOnTap(id, store, context),
+        position: LatLng(double.parse(house.latitude), double.parse(house.longitude)),
+        draggable: false,
+      )
+          .copyWithWidget(
+        widget: residentialMarkerWidget,
+      )
+          .then((value) {
+        store.dispatch(
+          AddMarker(
+            mapId: store.state.id,
+            marker: value,
+          ),
+        );
+
+        /// 依据 id 向 residentialMarkers 中添加对应 widget
+        residentialMarkers[value.id] = residentialMarkerWidget;
+      });
+    }
+
   }
 
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
@@ -382,7 +407,7 @@ class _MapFindPageState extends State<MapFindPage> {
                 cameraPosition: const CameraPosition(
                   // 初始化至上海市
                   target: LatLng(31.2382, 121.4913),
-                  zoom: 11,
+                  zoom: 20,
                 ),
               ),
             );
