@@ -10,6 +10,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:bruno/bruno.dart';
 import '../widgets/house_card.dart';
+import '../widgets/house_list/house_data.dart';
 import '../widgets/map.dart';
 import '../widgets/map/state.dart';
 import '../widgets/selection.dart';
@@ -34,6 +35,13 @@ class _MapFindPageState extends State<MapFindPage> {
   bool selectionInitialized = false;
   LatLng currentPosition = const LatLng(31.2382, 121.4913);
 
+  void callback(int menuIndex,
+      Map<String, String> filterParams,
+      Map<String, String> customParams,
+      BrnSetCustomSelectionMenuTitle setCustomTitleFunction){
+
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +60,7 @@ class _MapFindPageState extends State<MapFindPage> {
       },
     );
 
-    selectionView('assets/json/selection.json').then(
+    selectionView('assets/json/selection.json', callback).then(
       (value) => setState(
         () {
           selection = value;
@@ -137,13 +145,15 @@ class _MapFindPageState extends State<MapFindPage> {
                     controller: controller, // set this too
                     // 长度
                     itemCount: 15,
-                    itemBuilder: (_, i) => const HouseCard(
-                      title: "title",
-                      rooms: 3,
-                      squares: 33,
-                      community: "community",
-                      price: 250,
-                      url: '',
+                    itemBuilder: (_, i) => HouseCard(
+                      houseDetail: toDetail(
+                        "整租 | 城市经典高迪 2室2厅1卫 10500元月 108平",
+                        2,
+                        108,
+                        "城市经典高迪",
+                        10500,
+                        "https://pic4.58cdn.com.cn/anjuke_58/036b1dd7f06f0091bea434be71b8eb3b?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
+                      ),
                     ),
                   ),
                 ),
