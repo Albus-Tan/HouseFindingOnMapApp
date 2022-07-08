@@ -223,46 +223,46 @@
             "key": "",
             "type": "radio",
             "defaultValue": "",
-            "value": "1"
+            "value": "0:1500"
           },
           {
             "title": "1500-2000元",
             "key": "",
             "type": "radio",
             "defaultValue": "",
-            "value": "2"
+            "value": "1500:2000"
           },
           {
             "title": "2000-3000元",
             "key": "",
             "type": "radio",
             "defaultValue": "",
-            "value": "3"
+            "value": "2000:3000"
           },
           {
             "title": "3000-5000元",
             "key": "",
             "type": "radio",
             "defaultValue": "",
-            "value": "4"
+            "value": "3000:5000"
           },
           {
             "title": "5000-8000元",
             "key": "",
             "type": "radio",
             "defaultValue": "",
-            "value": "5"
+            "value": "5000:8000"
           },
           {
             "title": "8000元以上",
             "key": "",
             "type": "radio",
             "defaultValue": "",
-            "value": "6"
+            "value": "8000:999999"
           },
           {
             "defaultValue": "",
-            "ext": {"min": 0, "max": 99999, "unit": "元"},
+            "ext": {"min": 0, "max": 999999, "unit": "元"},
             "children": [],
             "key": "",
             "type": "range",

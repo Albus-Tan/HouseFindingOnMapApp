@@ -8,20 +8,10 @@ import '../routes/house_detail_page.dart';
 class HouseCard extends StatelessWidget {
   const HouseCard({
     Key? key,
-    required this.title, //房子简介
-    required this.rooms, //*室
-    required this.squares, // *平
-    required this.community, // 小区
-    required this.price, // 价格：*元/月
-    required this.url, //  图片url
+    required this.houseDetail,
   }) : super(key: key);
 
-  final String title;
-  final int rooms;
-  final double squares;
-  final String community;
-  final int price;
-  final String url;
+  final HouseDetail houseDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +21,8 @@ class HouseCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              leading: (url != '')
-                  ? Image.network(url)
+              leading: (houseDetail.image != '')
+                  ? Image.network(houseDetail.image)
                   : Image.asset(
                       'assets/picture/404.jpg',
                     ),
@@ -40,22 +30,15 @@ class HouseCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    settings: const RouteSettings(name:"last_detail"),
+                    settings: const RouteSettings(name: "last_detail"),
                     builder: (context) => HouseDetailPage(
-                      houseDetail: HouseDetail(
-                        title: title,
-                        pricePerMonth: price,
-                        squares: squares,
-                        shiNumber: rooms,
-                        image: url,
-                        isStatic: false,
-                      ),
+                      houseDetail: houseDetail,
                     ),
                   ),
                 );
               },
               title: BrnExpandableText(
-                text: title,
+                text: houseDetail.title,
                 textStyle: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w700,
@@ -65,13 +48,14 @@ class HouseCard extends StatelessWidget {
               ),
               subtitle: RichText(
                 text: TextSpan(
-                  text: '$rooms室·$squares平·$community',
+                  text:
+                      '${houseDetail.shiNumber}室·${houseDetail.squares}平·${houseDetail.community}',
                   style: const TextStyle(
                     color: Colors.black,
                   ),
                   children: [
                     TextSpan(
-                      text: '\n$price元/月',
+                      text: '\n${houseDetail.pricePerMonth}元/月',
                       style: const TextStyle(
                         color: Colors.red,
                         fontWeight: FontWeight.bold,

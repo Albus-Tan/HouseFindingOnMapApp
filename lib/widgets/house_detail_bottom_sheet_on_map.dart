@@ -1,3 +1,4 @@
+import 'package:app/routes/house_detail_page.dart';
 import 'package:flutter/material.dart';
 
 import 'house_card.dart';
@@ -55,13 +56,15 @@ void _showHouseDetailListSheet(BuildContext context) {
                     controller: controller, // set this too
                     // 长度
                     itemCount: 15,
-                    itemBuilder: (_, i) => const HouseCard(
-                      title: "title",
-                      rooms: 3,
-                      squares: 33,
-                      community: "community",
-                      price: 250,
-                      url: '',
+                    itemBuilder: (_, i) => HouseCard(
+                      houseDetail: HouseDetail(
+                        title: "title",
+                        shiNumber: 3,
+                        squares: 33,
+                        community: "community",
+                        pricePerMonth: 250,
+                        image: '',
+                      ),
                     ),
                   ),
                 ),

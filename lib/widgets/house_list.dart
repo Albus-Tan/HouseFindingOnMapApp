@@ -1,47 +1,128 @@
-import 'dart:math';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../service/backend_service/select_house.dart';
 import 'house_card.dart';
-import 'house_list/house_data.dart';
 
 class HouseList extends StatefulWidget {
-  const HouseList({Key? key}) : super(key: key);
+  // final Map<String, String>? filter;
+  final String district,
+      rentType,
+      rooms,
+      metroLine,
+      metroStation,
+      price1,
+      price2;
+
+  const HouseList({
+    // this.filter,
+    this.district = "",
+    this.rentType = "",
+    this.rooms = "",
+    this.metroLine = "",
+    this.metroStation = "",
+    this.price1 = "",
+    this.price2 = "",
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HouseList> createState() => _HouseListState();
 }
 
 class _HouseListState extends State<HouseList> {
-  final _houseCards = <HouseCard>[];
+  final List<HouseCard> _houseCards = <HouseCard>[];
+  final Set<int> hasFetched = {};
+  int page = 0, pageSize = 10;
 
-  List<HouseCard> generateHouseCard(int num) {
-    List<HouseCard> tmp = [];
-    for (int i = 0; i < num; i++) {
-      tmp.add(
-        houseCardExample[Random().nextInt(houseCardExample.length)],
-      );
-    }
-    return tmp;
+  bool _isLastPage = false, isLoading = false;
+
+  // List<HouseCard> getHouseCard() {
+  //   List<HouseCard> tmp = [];
+  //   if (isLast) return tmp;
+  //   for (int i = 0; i < 5; i++) {
+  //     tmp.add(
+  //       houseCardExample[Random().nextInt(houseCardExample.length)],
+  //     );
+  //   }
+  //   return tmp;
+  // }
+
+  Future<void> getPageOfHouseCard() async {
+    if (_isLastPage || hasFetched.contains(page)) return;
+    hasFetched.add(page);
+    isLoading = true;
+    await getHousePages();
+  }
+
+  Future getDatas() async {
+    return Future.wait(
+      [
+        getPageOfHouseCard(),
+      ],
+    );
+  }
+
+  Future<void> getHousePages() async {
+    await fetchHousePage(
+            widget.district,
+            widget.price1,
+            widget.price2,
+            widget.rentType,
+            widget.rooms,
+            widget.metroLine,
+            widget.metroStation,
+            page,
+            pageSize)
+        .then((value) => {
+              debugPrint("fetchHousePage: $page"),
+              // debugPrint(jsonEncode(value.toJson())),
+              // value.content?.forEach((element) {
+              //   debugPrint(jsonEncode(element.toJson()));
+              // }),
+
+              value.content?.forEach((e) {
+                _houseCards.add(e.toHouseCard());
+              }),
+              _isLastPage = value.last!,
+              isLoading = false,
+              page++,
+            });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      // shrinkWrap:true,  //加了这个HouseList外面就不用了加Container或Expanded了
-      padding: const EdgeInsets.all(16.0),
-      itemBuilder: /*1*/ (context, i) {
-        if (i.isOdd) return const Divider();
-        /*2*/
+    _houseCards.clear();
+    hasFetched.clear();
+    page=0;
+    return FutureBuilder(
+        future: getDatas(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return ListView.builder(
+              // shrinkWrap:true,  //加了这个HouseList外面就不用了加Container或Expanded了
+              padding: const EdgeInsets.all(16.0),
+              itemBuilder: /*1*/ (context, i) {
+                if (i.isOdd) {
+                  return const Divider();
+                }
+                /*2*/
 
-        final index = i ~/ 2; /*3*/
-        if (index >= _houseCards.length) {
-          _houseCards.addAll(
-            generateHouseCard(2),
-          ); /*4*/
-        }
-        return _houseCards[index];
-      },
-    );
+                final index = i ~/ 2; /*3*/
+                if (index >= _houseCards.length) {
+                  getPageOfHouseCard();
+                  // _houseCards.addAll(
+                  //   getHouseCard(),
+                  // ); /*4*/
+                }
+                // while (isLoading);
+                if (index >= _houseCards.length && isLoading) return const Text("Loading~");
+                return _houseCards[index];
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }

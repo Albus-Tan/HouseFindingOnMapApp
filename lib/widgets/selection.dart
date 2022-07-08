@@ -5,7 +5,9 @@ import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Future<Widget> selectionView(String path) async {
+typedef MyFunction = void Function(int, Map<String, String>, Map<String, String>, void Function({bool isMenuTitleHighLight, String menuTitle}));
+
+Future<Widget> selectionView(String path, MyFunction callback) async {
   final json = await rootBundle.loadString(path);
 
   return BrnSelectionView(
@@ -13,13 +15,14 @@ Future<Widget> selectionView(String path) async {
       const JsonDecoder().convert(json)['data'],
     )!
         .list!,
-    onSelectionChanged: (
-      int menuIndex,
-      Map<String, String> filterParams,
-      Map<String, String> customParams,
-      BrnSetCustomSelectionMenuTitle setCustomTitleFunction,
-    ) {
-      debugPrint("Select: $filterParams");
-    },
+    onSelectionChanged: callback,
+    // onSelectionChanged: (
+    //   int menuIndex,
+    //   Map<String, String> filterParams,
+    //   Map<String, String> customParams,
+    //   BrnSetCustomSelectionMenuTitle setCustomTitleFunction,
+    // ) {
+    //   debugPrint("Select: $filterParams");
+    // },
   );
 }
