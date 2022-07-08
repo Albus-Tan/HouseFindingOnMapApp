@@ -75,7 +75,7 @@ class _HouseListState extends State<HouseList> {
             page,
             pageSize)
         .then((value) => {
-              debugPrint("fetchHousePage: $page"),
+              debugPrint("fetchHousePage: $page ${value.last!}"),
               // debugPrint(jsonEncode(value.toJson())),
               // value.content?.forEach((element) {
               //   debugPrint(jsonEncode(element.toJson()));
@@ -84,6 +84,7 @@ class _HouseListState extends State<HouseList> {
               value.content?.forEach((e) {
                 _houseCards.add(e.toHouseCard());
               }),
+              debugPrint("fetchHousePage: $page $_houseCards"),
               _isLastPage = value.last!,
               isLoading = false,
               page++,
@@ -94,13 +95,15 @@ class _HouseListState extends State<HouseList> {
   Widget build(BuildContext context) {
     _houseCards.clear();
     hasFetched.clear();
-    page=0;
+    page = 0;
+    _isLastPage = isLoading = false;
     return FutureBuilder(
         future: getDatas(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return ListView.builder(
               // shrinkWrap:true,  //加了这个HouseList外面就不用了加Container或Expanded了
+              // itemCount: _houseCards.length + (_isLastPage ? 0 : 1),
               padding: const EdgeInsets.all(16.0),
               itemBuilder: /*1*/ (context, i) {
                 if (i.isOdd) {
@@ -116,7 +119,10 @@ class _HouseListState extends State<HouseList> {
                   // ); /*4*/
                 }
                 // while (isLoading);
-                if (index >= _houseCards.length && isLoading) return const Text("Loading~");
+                if (_isLastPage && index >= _houseCards.length)
+                  return const Text("Over~");
+                if (index >= _houseCards.length && isLoading)
+                  return const Text("Loading~");
                 return _houseCards[index];
               },
             );
