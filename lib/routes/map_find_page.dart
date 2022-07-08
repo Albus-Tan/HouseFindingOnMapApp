@@ -99,6 +99,7 @@ class _MapFindPageState extends State<MapFindPage> {
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
     /// 依据 id 从 residentialMarkers 中取出对应 widget
     print("onTap$id");
+    residentialMarkers[focusingMarkerId]?.focus = false;
     residentialMarkers[id]?.focus = true;
     focusingMarkerId = id;
     residentialMarkers[id]?.toUint8List().then(
@@ -166,24 +167,61 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   void _updateMarkersInPolygon(Store<MapState> store) {
-    // TODO:
-    store.dispatch(
-      CheckPointsInPolygon(mapId: store.state.id),
-    );
     for (final element in store.state.markersInPolygon) {
-      store.dispatch(
-        UpdateMarker(
-          mapId: store.state.id,
-          id: element.id,
-          iconParam: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueOrange,
-          ),
-        ),
+      residentialMarkers[element.id]?.inPolygon = true;
+      residentialMarkers[element.id]?.toUint8List().then(
+            (value) {
+          store.dispatch(
+            UpdateMarker(
+              mapId: store.state.id,
+              id: element.id,
+              iconParam: BitmapDescriptor.fromBytes(value!),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  void _resetAllMarkersInPolygon(Store<MapState> store){
+    for (final element in store.state.markersInPolygon) {
+      residentialMarkers[element.id]?.inPolygon = false;
+      residentialMarkers[element.id]?.toUint8List().then(
+            (value) {
+          store.dispatch(
+            UpdateMarker(
+              mapId: store.state.id,
+              id: element.id,
+              iconParam: BitmapDescriptor.fromBytes(value!),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  void _resetAllMarkers(Store<MapState> store){
+    for (final element in store.state.markers) {
+      residentialMarkers[element.id]?.inPolygon = false;
+      residentialMarkers[element.id]?.toUint8List().then(
+            (value) {
+          store.dispatch(
+            UpdateMarker(
+              mapId: store.state.id,
+              id: element.id,
+              iconParam: BitmapDescriptor.fromBytes(value!),
+            ),
+          );
+        },
       );
     }
   }
 
   Widget buildOperationsWhenDrawing(Store<MapState> store) {
+
+    /// update Markers style In Polygon
+    //_updateMarkersInPolygon(store);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -193,6 +231,7 @@ class _MapFindPageState extends State<MapFindPage> {
           name: '重画',
           iconWidget: const Icon(Icons.gesture),
           onTap: () {
+            _resetAllMarkersInPolygon(store);
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
             );
@@ -207,6 +246,7 @@ class _MapFindPageState extends State<MapFindPage> {
           name: '退出',
           iconWidget: const Icon(Icons.arrow_back),
           onTap: () {
+            _resetAllMarkersInPolygon(store);
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
             );
