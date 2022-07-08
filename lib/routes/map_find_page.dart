@@ -5,10 +5,11 @@ import 'package:app/common/extension/marker.dart';
 import 'package:app/common/extension/widget.dart';
 import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map_find_marker.dart';
+import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:bruno/bruno.dart';
+
 import '../widgets/house_card.dart';
 import '../widgets/house_list/house_data.dart';
 import '../widgets/map.dart';
@@ -35,19 +36,18 @@ class _MapFindPageState extends State<MapFindPage> {
   bool selectionInitialized = false;
   LatLng currentPosition = const LatLng(31.2382, 121.4913);
 
-  void callback(int menuIndex,
+  void callback(
+      int menuIndex,
       Map<String, String> filterParams,
       Map<String, String> customParams,
-      BrnSetCustomSelectionMenuTitle setCustomTitleFunction){
-
-  }
+      BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {}
 
   @override
   void initState() {
     super.initState();
     AMapFlutterLocation().startLocation();
     AMapFlutterLocation().onLocationChanged().listen(
-          (Map<String, Object> result) {
+      (Map<String, Object> result) {
         print(result.toString());
         currentPosition = LatLng(
           double.parse(
@@ -167,44 +167,81 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   void _updateMarkersInPolygon(Store<MapState> store) {
-    for (final element in store.state.markersInPolygon) {
-      residentialMarkers[element.id]?.inPolygon = true;
-      residentialMarkers[element.id]?.toUint8List().then(
-            (value) {
-          store.dispatch(
-            UpdateMarker(
-              mapId: store.state.id,
-              id: element.id,
-              iconParam: BitmapDescriptor.fromBytes(value!),
-            ),
-          );
-        },
-      );
-    }
+    final set = store.state.markersInPolygon.map((e) => e.id).toSet();
+    residentialMarkers.forEach(
+      (key, value) {
+        if (set.contains(key) != value.inPolygon) {
+          value.inPolygon = set.contains(key);
+          if (value.inPolygon == false) {
+            value.toUint8List().then(
+              (value) {
+                store.dispatch(
+                  UpdateMarker(
+                    mapId: store.state.id,
+                    id: key,
+                    iconParam: BitmapDescriptor.fromBytes(value!),
+                  ),
+                );
+              },
+            );
+          } else {
+            value.toUint8List().then(
+              (value) {
+                store.dispatch(
+                  UpdateMarker(
+                    mapId: store.state.id,
+                    id: key,
+                    iconParam: BitmapDescriptor.fromBytes(value!),
+                  ),
+                );
+              },
+            );
+          }
+        }
+      },
+    );
+    // for (final element in residentialMarkers){
+    //   if(set.contains(element.))
+    //   // if (residentialMarkers[element.id]!.inPolygon = false) {
+    //   //   residentialMarkers[element.id]?.inPolygon = true;
+    //   //   residentialMarkers[element.id]?.toUint8List().then(
+    //   //         (value) {
+    //   //       store.dispatch(
+    //   //         UpdateMarker(
+    //   //           mapId: store.state.id,
+    //   //           id: element.id,
+    //   //           iconParam: BitmapDescriptor.fromBytes(value!),
+    //   //         ),
+    //   //       );
+    //   //     },
+    //   //   );
+    //   // }
+    // }
+    // for (final element in store.state.markersInPolygon) {}
   }
 
-  void _resetAllMarkersInPolygon(Store<MapState> store){
-    for (final element in store.state.markersInPolygon) {
-      residentialMarkers[element.id]?.inPolygon = false;
-      residentialMarkers[element.id]?.toUint8List().then(
-            (value) {
-          store.dispatch(
-            UpdateMarker(
-              mapId: store.state.id,
-              id: element.id,
-              iconParam: BitmapDescriptor.fromBytes(value!),
-            ),
-          );
-        },
-      );
-    }
-  }
+  // void _resetAllMarkersInPolygon(Store<MapState> store) {
+  //   for (final element in store.state.markersInPolygon) {
+  //     residentialMarkers[element.id]?.inPolygon = false;
+  //     residentialMarkers[element.id]?.toUint8List().then(
+  //       (value) {
+  //         store.dispatch(
+  //           UpdateMarker(
+  //             mapId: store.state.id,
+  //             id: element.id,
+  //             iconParam: BitmapDescriptor.fromBytes(value!),
+  //           ),
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
-  void _resetAllMarkers(Store<MapState> store){
+  void _resetAllMarkers(Store<MapState> store) {
     for (final element in store.state.markers) {
       residentialMarkers[element.id]?.inPolygon = false;
       residentialMarkers[element.id]?.toUint8List().then(
-            (value) {
+        (value) {
           store.dispatch(
             UpdateMarker(
               mapId: store.state.id,
@@ -218,7 +255,6 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Widget buildOperationsWhenDrawing(Store<MapState> store) {
-
     /// update Markers style In Polygon
     //_updateMarkersInPolygon(store);
 
@@ -231,7 +267,7 @@ class _MapFindPageState extends State<MapFindPage> {
           name: '重画',
           iconWidget: const Icon(Icons.gesture),
           onTap: () {
-            _resetAllMarkersInPolygon(store);
+            // _resetAllMarkersInPolygon(store);
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
             );
@@ -246,9 +282,16 @@ class _MapFindPageState extends State<MapFindPage> {
           name: '退出',
           iconWidget: const Icon(Icons.arrow_back),
           onTap: () {
-            _resetAllMarkersInPolygon(store);
+            // _resetAllMarkersInPolygon(store);
             store.dispatch(
-              ClearPolygon(mapId: store.state.id),
+              ClearPolygon(
+                mapId: store.state.id,
+              ),
+            );
+            store.dispatch(
+              CheckPointsInPolygon(
+                mapId: store.state.id,
+              ),
             );
             setState(() {
               isDrawing = false;
@@ -333,6 +376,7 @@ class _MapFindPageState extends State<MapFindPage> {
             );
           },
           builder: (context, store) {
+            _updateMarkersInPolygon(store);
             return MaterialApp(
               home: Scaffold(
                 appBar: isDrawing
