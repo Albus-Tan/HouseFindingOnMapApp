@@ -32,11 +32,26 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 筛选条件组件
   late Widget selection;
   bool selectionInitialized = false;
-  late LatLng currentPosition;
+  LatLng currentPosition = const LatLng(31.2382, 121.4913);
 
   @override
   void initState() {
     super.initState();
+    AMapFlutterLocation().startLocation();
+    AMapFlutterLocation().onLocationChanged().listen(
+          (Map<String, Object> result) {
+        print(result.toString());
+        currentPosition = LatLng(
+          double.parse(
+            result['latitude'].toString(),
+          ),
+          double.parse(
+            result['longitude'].toString(),
+          ),
+        );
+      },
+    );
+
     selectionView('assets/json/selection.json').then(
       (value) => setState(
         () {
@@ -166,7 +181,7 @@ class _MapFindPageState extends State<MapFindPage> {
           widgetHeight: 60,
           widgetWidth: 40,
           name: '重画',
-          iconWidget: Icon(Icons.gesture),
+          iconWidget: const Icon(Icons.gesture),
           onTap: () {
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
@@ -180,7 +195,7 @@ class _MapFindPageState extends State<MapFindPage> {
           widgetHeight: 60,
           widgetWidth: 40,
           name: '退出',
-          iconWidget: Icon(Icons.arrow_back),
+          iconWidget: const Icon(Icons.arrow_back),
           onTap: () {
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
@@ -227,6 +242,7 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapId: store.state.id,
                 cameraPosition: CameraPosition(
                   target: currentPosition,
+                  zoom: store.state.cameraPosition.zoom,
                 ),
               ),
             );
@@ -234,6 +250,12 @@ class _MapFindPageState extends State<MapFindPage> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    AMapFlutterLocation().stopLocation();
+    super.dispose(); // This will free the memory space allocated to the page
   }
 
   @override
@@ -246,20 +268,6 @@ class _MapFindPageState extends State<MapFindPage> {
               Clear(
                 mapId: store.state.id,
               ),
-            );
-            AMapFlutterLocation().startLocation();
-            AMapFlutterLocation().onLocationChanged().listen(
-              (Map<String, Object> result) {
-                debugPrint(result.toString());
-                currentPosition = LatLng(
-                  double.parse(
-                    result['latitude'].toString(),
-                  ),
-                  double.parse(
-                    result['longitude'].toString(),
-                  ),
-                );
-              },
             );
 
             _initResidentialMarkers(store);
