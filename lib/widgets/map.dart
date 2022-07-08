@@ -41,6 +41,7 @@ class MapWidget extends StatelessWidget {
         return Stack(
           children: [
             AMapWidget(
+              initialCameraPosition: state.cameraPosition,
               polylines: Set.of(state.polyLines),
               polygons: state.polygon.isEmpty
                   ? <Polygon>{}
@@ -102,11 +103,16 @@ class MapWidget extends StatelessWidget {
                     }
                   : null,
               onPanEnd: state.drawing
-                  ? (detail) => store.dispatch(
+                  ? (detail) {
+                      store.dispatch(
                         EndDrawPolygon(
                           mapId: state.id,
                         ),
-                      )
+                      );
+                      store.dispatch(CheckPointsInPolygon(
+                        mapId: state.id,
+                      ));
+                    }
                   : null,
             )
           ],

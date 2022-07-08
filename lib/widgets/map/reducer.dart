@@ -15,6 +15,9 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_endDrawPolygon),
     TypedReducer(_setController),
     TypedReducer(_updateCameraPosition),
+    TypedReducer(_moveCamera),
+    TypedReducer(_clear),
+    TypedReducer(_clearPolygon),
   ],
 );
 
@@ -87,6 +90,7 @@ MapState _checkPointsInPolygon(MapState state, CheckPointsInPolygon action) {
     return state;
   }
 }
+
 MapState _startDrawPolygon(MapState state, StartDrawPolygon action) {
   if (state.id == action.mapId) {
     return state.copyWith(
@@ -122,6 +126,16 @@ MapState _endDrawPolygon(MapState state, EndDrawPolygon action) {
   }
 }
 
+MapState _clearPolygon(MapState state, ClearPolygon action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      polygon: [],
+    );
+  } else {
+    return state;
+  }
+}
+
 MapState _setController(MapState state, SetController action) {
   if (state.id == action.mapId) {
     return state.copyWith(
@@ -136,6 +150,30 @@ MapState _updateCameraPosition(MapState state, UpdateCameraPosition action) {
   if (state.id == action.mapId) {
     return state.copyWith(
       cameraPosition: action.cameraPosition,
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _moveCamera(MapState state, MoveCamera action) {
+  if (state.id == action.mapId) {
+    state.controller?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        action.cameraPosition,
+      ),
+    );
+    return state.copyWith(cameraPosition: action.cameraPosition);
+  }
+  return state;
+}
+
+MapState _clear(MapState state, Clear action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      polygon: [],
+      markers: [],
+      polyLines: [],
     );
   } else {
     return state;

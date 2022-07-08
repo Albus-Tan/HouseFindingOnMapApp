@@ -89,6 +89,12 @@ class EndDrawPolygon extends MapAction {
   });
 }
 
+class ClearPolygon extends MapAction {
+  ClearPolygon({
+    required super.mapId,
+  });
+}
+
 class SetController extends MapAction {
   final AMapController controller;
 
@@ -104,5 +110,20 @@ class UpdateCameraPosition extends MapAction {
   UpdateCameraPosition({
     required super.mapId,
     required this.cameraPosition,
+  });
+}
+
+class MoveCamera extends MapAction {
+  final CameraPosition cameraPosition;
+
+  MoveCamera({
+    required super.mapId,
+    required this.cameraPosition,
+  });
+}
+
+class Clear extends MapAction {
+  Clear({
+    required super.mapId,
   });
 }

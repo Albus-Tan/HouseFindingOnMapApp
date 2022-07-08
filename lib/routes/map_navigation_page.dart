@@ -106,16 +106,15 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
         children: [
           AMapWidget(
             initialCameraPosition: CameraPosition(
-                // TODO: calculate zoom and center pos
-                zoom: 12,
-                target: LatLng(
-                    (double.parse(widget.oriLat) +
-                                double.parse(widget.desLat)) /
-                            2 -
-                        0.05,
-                    (double.parse(widget.oriLng) +
-                            double.parse(widget.desLng)) /
-                        2)),
+              // TODO: calculate zoom and center pos
+              zoom: 12,
+              target: LatLng(
+                  (double.parse(widget.oriLat) + double.parse(widget.desLat)) /
+                          2 -
+                      0.05,
+                  (double.parse(widget.oriLng) + double.parse(widget.desLng)) /
+                      2),
+            ),
             markers: Set<Marker>.of(_initMarkerMap.values),
             polylines: _polylinePoints.isEmpty
                 ? {}
