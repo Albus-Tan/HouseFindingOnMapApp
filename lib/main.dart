@@ -1,10 +1,8 @@
-import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:app/routes/home_page.dart';
 import 'package:app/routes/map_find_page.dart';
 import 'package:app/routes/my_profile_page.dart';
+import 'package:app/service/amap_location_service.dart';
 import 'package:app/utils/route_observer.dart';
-import 'package:app/utils/storage.dart';
 import 'package:app/widgets/map/reducer.dart';
 import 'package:app/widgets/map/state.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 void main() {
-
   //Redux State Init
   final store = Store(
     mapReducer,
@@ -24,11 +21,6 @@ void main() {
       child: const App(),
     ),
   );
-
-  //Amap Permission
-  AMapFlutterLocation.updatePrivacyAgree(true);
-  AMapFlutterLocation.updatePrivacyShow(true, true);
-  const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
 }
 
 class App extends StatefulWidget {
@@ -52,40 +44,21 @@ class _AppState extends State<App> {
   ];
   var currentPageIndex = 0;
 
-  var amapLocationService = AMapFlutterLocation();
+  late AmapLocationService amapLocationService;
 
   @override
   void initState() {
     super.initState();
-    print('App init');
-    // Amap location
-    AMapFlutterLocation().startLocation();
-    //amapLocationService.startLocation();
-    AMapFlutterLocation().onLocationChanged().listen(
-      (Map<String, Object> result) {
-        print('onLocationChanged().listen');
-        print(result.toString());
-        StorageUtil.setDoubleItem(
-          'lat',
-          double.parse(
-            result['latitude'].toString(),
-          ),
-        );
-        StorageUtil.setDoubleItem(
-          'lng',
-          double.parse(
-            result['longitude'].toString(),
-          ),
-        );
-      },
-    );
+    amapLocationService = AmapLocationService();
+    amapLocationService.init();
   }
 
   @override
   void dispose() {
-    amapLocationService.stopLocation();
+    amapLocationService.dispose();
     super.dispose(); // This will free the memory space allocated to the page
   }
+
 
   @override
   Widget build(BuildContext context) {

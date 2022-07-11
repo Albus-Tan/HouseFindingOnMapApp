@@ -6,20 +6,19 @@ import 'package:amap_flutter_location/amap_location_option.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
-  runApp(new MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late Map<String, Object> _locationResult;
 
+  Map<String, Object> _locationResult = {};
   late StreamSubscription<Map<String, Object>> _locationListener;
-
-  AMapFlutterLocation _locationPlugin = new AMapFlutterLocation();
+  final AMapFlutterLocation _locationPlugin = AMapFlutterLocation();
 
   @override
   void initState() {

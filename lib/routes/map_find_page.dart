@@ -83,6 +83,7 @@ class _MapFindPageState extends State<MapFindPage> {
     residentialMarkers.forEach((key, value) {
       bool meetRequirement = true;
 
+
       store.dispatch(
         UpdateMarker(
           mapId: store.state.id,
@@ -114,21 +115,6 @@ class _MapFindPageState extends State<MapFindPage> {
   @override
   void initState() {
     super.initState();
-    // AMapFlutterLocation().startLocation();
-    // AMapFlutterLocation().onLocationChanged().listen(
-    //   (Map<String, Object> result) {
-    //     print(result.toString());
-    //     currentPosition = LatLng(
-    //       double.parse(
-    //         result['latitude'].toString(),
-    //       ),
-    //       double.parse(
-    //         result['longitude'].toString(),
-    //       ),
-    //     );
-    //   },
-    // );
-
     selectionView('assets/json/selection.json', callback).then(
       (value) => setState(
         () {
@@ -410,7 +396,6 @@ class _MapFindPageState extends State<MapFindPage> {
 
   @override
   void dispose() {
-    //AMapFlutterLocation().stopLocation();
     super.dispose(); // This will free the memory space allocated to the page
   }
 
