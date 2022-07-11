@@ -78,10 +78,10 @@ class _HouseListState extends State<HouseList> {
             pageSize)
         .then((value) => {
               debugPrint("fetchHousePage: $page ${value.last!}"),
-              debugPrint(jsonEncode(value.toJson())),
-              value.content?.forEach((element) {
-                debugPrint(jsonEncode(element.toJson()));
-              }),
+              // debugPrint(jsonEncode(value.toJson())),
+              // value.content?.forEach((element) {
+              //   debugPrint(jsonEncode(element.toJson()));
+              // }),
 
               value.content?.forEach((e) {
                 _houseCards.add(e.toHouseCard());

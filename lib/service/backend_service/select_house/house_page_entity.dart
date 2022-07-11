@@ -205,6 +205,8 @@ class Content {
       community: residential ?? "",
       image: firstPicUrl ?? "",
       district: district ?? "上海",
+      latitude: latitude ?? "0",
+      longitude: longitude ?? "0",
     );
     return data;
   }

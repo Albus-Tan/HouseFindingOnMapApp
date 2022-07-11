@@ -253,6 +253,8 @@ class _MapFindPageState extends State<MapFindPage> {
                         housesList?[i].residential ?? '',
                         housesList?[i].price ?? -1,
                         housesList?[i].firstPicUrl ?? '',
+                        housesList?[i].latitude ?? '0',
+                        housesList?[i].longitude ?? '0',
                       ),
                     ),
                   ),

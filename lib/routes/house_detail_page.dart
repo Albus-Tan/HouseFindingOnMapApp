@@ -18,6 +18,8 @@ class HouseDetail {
   final bool isStatic;
   final String community;
   final String district;
+  final String longitude;
+  final String latitude;
 
   HouseDetail({
     required this.title,
@@ -31,6 +33,8 @@ class HouseDetail {
     this.isStatic = false,
     required this.community,
     required this.district,
+    required this.longitude,
+    required this.latitude,
   });
 }
 
@@ -184,10 +188,10 @@ class HouseDetailPage extends StatelessWidget {
                 settings: const RouteSettings(name: "navigation"),
                 builder: (context) => MapNavigationPage(
                   // TODO
-                  oriLat: '39.989643',
-                  oriLng: '116.481028',
-                  desLat: '39.90816',
-                  desLng: '116.434446',
+                  oriLat: '31.2706',
+                  oriLng: '121.3261',
+                  desLat: houseDetail.latitude,
+                  desLng: houseDetail.longitude,
                   oriText: '当前位置',
                   desText: '清华大学',
                 ),

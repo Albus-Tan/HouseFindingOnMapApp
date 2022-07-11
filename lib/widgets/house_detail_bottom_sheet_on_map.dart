@@ -65,6 +65,8 @@ void _showHouseDetailListSheet(BuildContext context) {
                         pricePerMonth: 250,
                         image: '',
                         district: "上海",
+                        longitude: '0',
+                        latitude: '0',
                       ),
                     ),
                   ),
