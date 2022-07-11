@@ -28,6 +28,8 @@ class MapFindPage extends StatefulWidget {
 class _MapFindPageState extends State<MapFindPage> {
   /// 所有房源数据
   List<RentHouse> houses = [];
+  /// 按照小区整理的房源数据
+  Map<String, List<RentHouse>> residentialList = {};
 
   /// 正在画圈
   bool isDrawing = false;
@@ -142,11 +144,26 @@ class _MapFindPageState extends State<MapFindPage> {
     // 从后端拿取所有数据
     await getAllHouses();
 
+    // 按照小区名将数据放入 map
+    for (var house in houses){
+      // 小区名为空，暂时丢弃不进行渲染
+      if(house.residential == "" || house.residential == null) continue;
+      // 将该房源加入对应小区
+      if(!residentialList.containsKey(house.residential)){
+        // 新建小区条目
+        residentialList[house.residential ?? ''] = [];
+      }
+      residentialList[house.residential]?.add(house);
+    }
 
-    for (var house in houses) {
+    // 渲染小区 widget
+    residentialList.forEach((key, value) {
+
+      // 使用第一个房源信息的地理位置代表整个小区
+      var house = value[0];
       var residentialMarkerWidget = ResidentialMapFindMarker(
         residential: house.residential ?? '',
-        num: 1,
+        num: value.length,
       );
       Marker(
         onTap: (id) => _markerOnTap(id, store, context),
@@ -167,7 +184,8 @@ class _MapFindPageState extends State<MapFindPage> {
         /// 依据 id 向 residentialMarkers 中添加对应 widget
         residentialMarkers[value.id] = residentialMarkerWidget;
       });
-    }
+    });
+
 
   }
 
@@ -188,10 +206,16 @@ class _MapFindPageState extends State<MapFindPage> {
         );
       },
     );
-    _showHouseDetailListSheet(context);
+    _showHouseDetailListSheet(context, residentialMarkers[id]?.residential ?? '');
   }
 
-  void _showHouseDetailListSheet(BuildContext context) {
+  void _showHouseDetailListSheet(BuildContext context, String residential) {
+    var housesList = residentialList[residential];
+    var totalPrice = 0;
+    var num = housesList?.length;
+    housesList?.forEach((element) {
+      totalPrice += element.price;
+    });
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // set this to true
@@ -204,31 +228,31 @@ class _MapFindPageState extends State<MapFindPage> {
             color: Colors.white,
             child: Column(
               children: [
-                const ListTile(
+                ListTile(
                   title: Text(
-                    '小区名称',
-                    style: TextStyle(
+                    residential,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  subtitle: Text('均价·房源套数等信息'),
-                  trailing: Icon(Icons.keyboard_arrow_down),
+                  subtitle: Text('均价${(totalPrice/num!).toStringAsFixed(2)}·共$num套'),
+                  trailing: const Icon(Icons.keyboard_arrow_down),
                 ),
                 const Divider(),
                 Expanded(
                   child: ListView.builder(
                     controller: controller, // set this too
                     // 长度
-                    itemCount: 15,
+                    itemCount: num,
                     itemBuilder: (_, i) => HouseCard(
                       houseDetail: toDetail(
-                        "整租 | 城市经典高迪 2室2厅1卫 10500元月 108平",
-                        2,
-                        108,
-                        "城市经典高迪",
-                        10500,
-                        "https://pic4.58cdn.com.cn/anjuke_58/036b1dd7f06f0091bea434be71b8eb3b?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
+                        housesList?[i].title ?? '',
+                        housesList?[i].shi ?? -1,
+                        housesList?[i].squares ?? -1,
+                        housesList?[i].residential ?? '',
+                        housesList?[i].price ?? -1,
+                        housesList?[i].firstPicUrl ?? '',
                       ),
                     ),
                   ),
@@ -407,7 +431,7 @@ class _MapFindPageState extends State<MapFindPage> {
                 cameraPosition: const CameraPosition(
                   // 初始化至上海市
                   target: LatLng(31.2382, 121.4913),
-                  zoom: 20,
+                  zoom: 15,
                 ),
               ),
             );
