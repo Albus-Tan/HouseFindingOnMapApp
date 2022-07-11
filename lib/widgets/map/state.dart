@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +16,8 @@ class MapState {
   final AMapController? controller;
 
   final CameraPosition cameraPosition;
+  final Size widgetSize;
+
   static int mapCount = 0;
 
   MapState({
@@ -25,6 +29,7 @@ class MapState {
     required this.markersInPolygon,
     required this.cameraPosition,
     this.controller,
+    required this.widgetSize,
   });
 
   MapState copyWith({
@@ -36,6 +41,7 @@ class MapState {
     List<Marker>? markersInPolygon,
     AMapController? controller,
     CameraPosition? cameraPosition,
+    Size? widgetSize,
   }) =>
       MapState(
         id: id ?? this.id,
@@ -46,19 +52,22 @@ class MapState {
         markersInPolygon: markersInPolygon ?? this.markersInPolygon,
         controller: controller ?? this.controller,
         cameraPosition: cameraPosition ?? this.cameraPosition,
+        widgetSize: widgetSize ?? this.widgetSize,
       );
 
   static MapState initialState() {
     mapCount++;
     return MapState(
-        id: mapCount.toString(),
-        markers: [],
-        drawing: false,
-        polyLines: [],
-        markersInPolygon: [],
-        polygon: [],
-        cameraPosition: CameraPosition(
-          target: LatLng(0, 0),
-        ));
+      id: mapCount.toString(),
+      markers: [],
+      drawing: false,
+      polyLines: [],
+      markersInPolygon: [],
+      polygon: [],
+      cameraPosition: CameraPosition(
+        target: LatLng(0, 0),
+      ),
+      widgetSize: Size(0, 0),
+    );
   }
 }

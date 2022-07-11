@@ -18,8 +18,7 @@ void main() {
   runApp(
     StoreProvider(
       store: store,
-      child: App(
-      ),
+      child: App(),
     ),
   );
   AMapFlutterLocation.updatePrivacyAgree(true);
@@ -32,7 +31,6 @@ void main() {
 }
 
 class App extends StatelessWidget {
-
   const App({
     Key? key,
   }) : super(
@@ -44,25 +42,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreBuilder<MapState>(
       builder: (context, store) {
-        final marker = Marker(
-          position: const LatLng(
-            40,
-            116.397451,
-          ),
-          draggable: true,
-          onDragEnd: (
-            String id,
-            LatLng position,
-          ) {
-            debugPrint("${id}dragged to $position");
-          },
-        );
-        store.dispatch(
-          AddMarker(
-            mapId: store.state.id,
-            marker: marker,
-          ),
-        );
         return MaterialApp(
           home: Scaffold(
             body: StoreProvider(
@@ -90,7 +69,9 @@ class App extends StatelessWidget {
                             );
                           }
                         },
-                        child: Text("Check"),
+                        child: Text(
+                          "Check",
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
@@ -98,8 +79,36 @@ class App extends StatelessWidget {
                             StartDrawPolygon(mapId: store.state.id),
                           );
                         },
-                        child: Text("Draw"),
+                        child: Text(
+                          "Draw",
+                        ),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          final marker = Marker(
+                            position: const LatLng(
+                              40,
+                              116.397451,
+                            ),
+                            draggable: true,
+                            onDragEnd: (
+                              String id,
+                              LatLng position,
+                            ) {
+                              debugPrint("${id}dragged to $position");
+                            },
+                          );
+                          store.dispatch(
+                            AddMarker(
+                              mapId: store.state.id,
+                              marker: marker,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Add Point",
+                        ),
+                      )
                     ],
                   )
                 ],
