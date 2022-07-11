@@ -4,6 +4,7 @@ import 'package:app/routes/home_page.dart';
 import 'package:app/routes/map_find_page.dart';
 import 'package:app/routes/my_profile_page.dart';
 import 'package:app/utils/route_observer.dart';
+import 'package:app/utils/storage.dart';
 import 'package:app/widgets/map/reducer.dart';
 import 'package:app/widgets/map/state.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ void main() {
   AMapFlutterLocation.updatePrivacyAgree(true);
   AMapFlutterLocation.updatePrivacyShow(true, true);
   const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
+
 }
 
 class App extends StatefulWidget {
@@ -51,11 +53,39 @@ class _AppState extends State<App> {
   var currentPageIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    // Amap location
+    AMapFlutterLocation().startLocation();
+    AMapFlutterLocation().onLocationChanged().listen(
+          (Map<String, Object> result) {
+        print(result.toString());
+        StorageUtil.setDoubleItem(
+          'lat',
+          double.parse(
+            result['latitude'].toString(),
+          ),
+        );
+        StorageUtil.setDoubleItem(
+          'lng',
+          double.parse(
+            result['longitude'].toString(),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    AMapFlutterLocation().stopLocation();
+    super.dispose(); // This will free the memory space allocated to the page
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorObservers: [
-        AppNavigatorObserver()
-      ],
+      navigatorObservers: [AppNavigatorObserver()],
       title: _title,
       //theme: ThemeData.dark(),
       home: Scaffold(

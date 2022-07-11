@@ -183,7 +183,7 @@ class HouseDetailPage extends StatelessWidget {
                   oriLng: '116.481028',
                   desLat: '39.90816',
                   desLng: '116.434446',
-                  oriText: '天安门',
+                  oriText: '当前位置',
                   desText: '清华大学',
                 ),
               ),
