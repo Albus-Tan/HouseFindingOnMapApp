@@ -12,6 +12,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 void main() {
+
   //Redux State Init
   final store = Store(
     mapReducer,
@@ -28,7 +29,6 @@ void main() {
   AMapFlutterLocation.updatePrivacyAgree(true);
   AMapFlutterLocation.updatePrivacyShow(true, true);
   const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
-
 }
 
 class App extends StatefulWidget {
@@ -52,13 +52,18 @@ class _AppState extends State<App> {
   ];
   var currentPageIndex = 0;
 
+  var amapLocationService = AMapFlutterLocation();
+
   @override
   void initState() {
     super.initState();
+    print('App init');
     // Amap location
     AMapFlutterLocation().startLocation();
+    //amapLocationService.startLocation();
     AMapFlutterLocation().onLocationChanged().listen(
-          (Map<String, Object> result) {
+      (Map<String, Object> result) {
+        print('onLocationChanged().listen');
         print(result.toString());
         StorageUtil.setDoubleItem(
           'lat',
@@ -78,7 +83,7 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
-    AMapFlutterLocation().stopLocation();
+    amapLocationService.stopLocation();
     super.dispose(); // This will free the memory space allocated to the page
   }
 

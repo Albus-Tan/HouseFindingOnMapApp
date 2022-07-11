@@ -114,20 +114,20 @@ class _MapFindPageState extends State<MapFindPage> {
   @override
   void initState() {
     super.initState();
-    AMapFlutterLocation().startLocation();
-    AMapFlutterLocation().onLocationChanged().listen(
-      (Map<String, Object> result) {
-        print(result.toString());
-        currentPosition = LatLng(
-          double.parse(
-            result['latitude'].toString(),
-          ),
-          double.parse(
-            result['longitude'].toString(),
-          ),
-        );
-      },
-    );
+    // AMapFlutterLocation().startLocation();
+    // AMapFlutterLocation().onLocationChanged().listen(
+    //   (Map<String, Object> result) {
+    //     print(result.toString());
+    //     currentPosition = LatLng(
+    //       double.parse(
+    //         result['latitude'].toString(),
+    //       ),
+    //       double.parse(
+    //         result['longitude'].toString(),
+    //       ),
+    //     );
+    //   },
+    // );
 
     selectionView('assets/json/selection.json', callback).then(
       (value) => setState(
@@ -410,7 +410,7 @@ class _MapFindPageState extends State<MapFindPage> {
 
   @override
   void dispose() {
-    AMapFlutterLocation().stopLocation();
+    //AMapFlutterLocation().stopLocation();
     super.dispose(); // This will free the memory space allocated to the page
   }
 
@@ -420,13 +420,14 @@ class _MapFindPageState extends State<MapFindPage> {
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
-            store.dispatch(
-              Clear(
-                mapId: store.state.id,
-              ),
-            );
-
-            _initResidentialMarkers(store);
+            // store.dispatch(
+            //   Clear(
+            //     mapId: store.state.id,
+            //   ),
+            // );
+            if(store.state.markers.isEmpty){
+              _initResidentialMarkers(store);
+            }
             store.dispatch(
               UpdateCameraPosition(
                 mapId: store.state.id,
