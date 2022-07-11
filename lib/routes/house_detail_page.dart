@@ -101,11 +101,16 @@ class HouseDetailPage extends StatelessWidget {
     return Column(
       children: [
         ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 300),
-          child: BrnExpandableText(
-            text: houseDetail.title,
-            maxLines: 2,
-            textStyle: const TextStyle(fontSize: 20),
+          constraints: const BoxConstraints(maxWidth: 320),
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: houseDetail.title,
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
         RichText(
@@ -176,7 +181,7 @@ class HouseDetailPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                settings: const RouteSettings(name:"navigation"),
+                settings: const RouteSettings(name: "navigation"),
                 builder: (context) => MapNavigationPage(
                   // TODO
                   oriLat: '39.989643',
