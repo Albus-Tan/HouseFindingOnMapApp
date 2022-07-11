@@ -236,7 +236,7 @@ class _MapFindPageState extends State<MapFindPage> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  subtitle: Text('均价${(totalPrice/num!).toStringAsFixed(2)}·共$num套'),
+                  subtitle: Text('均价${(totalPrice/num!).toStringAsFixed(2)}元/月 · 共$num套'),
                   trailing: const Icon(Icons.keyboard_arrow_down),
                 ),
                 const Divider(),

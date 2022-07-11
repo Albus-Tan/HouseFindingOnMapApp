@@ -22,9 +22,8 @@ Future<List<RentHouse>> fetchAllHouse(
   String metroLine,
   String metroStation,
 ) async {
-  // TODO change to 124.71.183.73
   var url = Uri.parse(
-      'http://192.168.0.103:8080/house/search/all?price1=$price1&price2=$price2'
+      'http://124.71.183.73:8080/house/search/all?price1=$price1&price2=$price2'
       '&rentType=$rentType&rooms=$rooms&metro_station=$metroStation'
       '&district=$district&metro_line=$metroLine');
   var s = url.toString();
