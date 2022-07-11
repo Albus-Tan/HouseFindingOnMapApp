@@ -3,7 +3,7 @@ import '../../routes/house_detail_page.dart';
 import '../house_card.dart';
 
 HouseDetail toDetail(String title, int rooms, double squares, String community,
-    int price, String url, String latitude, String longitude) {
+    int price, String url, String latitude, String longitude, String location) {
   return HouseDetail(
     title: title,
     pricePerMonth: price,
@@ -14,6 +14,7 @@ HouseDetail toDetail(String title, int rooms, double squares, String community,
     district: "上海",
     latitude: latitude,
     longitude: longitude,
+    location: location,
   );
 }
 
@@ -28,6 +29,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic4.58cdn.com.cn/anjuke_58/036b1dd7f06f0091bea434be71b8eb3b?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -40,6 +42,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic8.58cdn.com.cn/anjuke_58/e500e8d261816baca57a3a5257f145f5?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -52,6 +55,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic4.58cdn.com.cn/anjuke_58/9295edd86d264357ecb4724954daee0d?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -64,6 +68,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic4.58cdn.com.cn/anjuke_58/6ae32dc2ca10e439e7f0da84329d2bff?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -76,6 +81,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic8.58cdn.com.cn/anjuke_58/b5eaa682608a3411c0a1fa91125ff26e?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -88,6 +94,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic4.58cdn.com.cn/anjuke_58/3b1153fa0ec5d392351fea30ade3111f?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -100,6 +107,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic1.58cdn.com.cn/anjuke_58/9f58971ea7550e08648a0f6f64f4d941?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -112,6 +120,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic2.58cdn.com.cn/anjuke_58/96565e05456c262a0f3a1748189bb76f?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
   HouseCard(
@@ -124,6 +133,7 @@ final List<HouseCard> houseCardExample = <HouseCard>[
       "https://pic5.58cdn.com.cn/anjuke_58/548979b260ca88cc397a4feded8517d3?w=240&h=180&ss=1&crop=1&cpos=middle&w=240&h=180&crop=1&t=1&srotate=1",
       "0",
       "0",
+      "",
     ),
   ),
 ];

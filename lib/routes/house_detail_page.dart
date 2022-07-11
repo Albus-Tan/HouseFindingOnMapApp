@@ -20,6 +20,7 @@ class HouseDetail {
   final String district;
   final String longitude;
   final String latitude;
+  final String location;
 
   HouseDetail({
     required this.title,
@@ -35,6 +36,7 @@ class HouseDetail {
     required this.district,
     required this.longitude,
     required this.latitude,
+    required this.location,
   });
 }
 
@@ -193,7 +195,9 @@ class HouseDetailPage extends StatelessWidget {
                   desLat: houseDetail.latitude,
                   desLng: houseDetail.longitude,
                   oriText: '当前位置',
-                  desText: '清华大学',
+                  desText: houseDetail.community != ""
+                      ? houseDetail.community
+                      : houseDetail.location,
                 ),
               ),
             );

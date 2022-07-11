@@ -67,6 +67,7 @@ void _showHouseDetailListSheet(BuildContext context) {
                         district: "上海",
                         longitude: '0',
                         latitude: '0',
+                        location: "",
                       ),
                     ),
                   ),

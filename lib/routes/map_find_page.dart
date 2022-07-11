@@ -28,6 +28,7 @@ class MapFindPage extends StatefulWidget {
 class _MapFindPageState extends State<MapFindPage> {
   /// 所有房源数据
   List<RentHouse> houses = [];
+
   /// 按照小区整理的房源数据
   Map<String, List<RentHouse>> residentialList = {};
 
@@ -78,8 +79,7 @@ class _MapFindPageState extends State<MapFindPage> {
     });
   }
 
-
-  updateFilteredHouse(Store<MapState> store){
+  updateFilteredHouse(Store<MapState> store) {
     residentialMarkers.forEach((key, value) {
       bool meetRequirement = true;
 
@@ -140,16 +140,15 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _initResidentialMarkers(Store<MapState> store) async {
-
     // 从后端拿取所有数据
     await getAllHouses();
 
     // 按照小区名将数据放入 map
-    for (var house in houses){
+    for (var house in houses) {
       // 小区名为空，暂时丢弃不进行渲染
-      if(house.residential == "" || house.residential == null) continue;
+      if (house.residential == "" || house.residential == null) continue;
       // 将该房源加入对应小区
-      if(!residentialList.containsKey(house.residential)){
+      if (!residentialList.containsKey(house.residential)) {
         // 新建小区条目
         residentialList[house.residential ?? ''] = [];
       }
@@ -158,7 +157,6 @@ class _MapFindPageState extends State<MapFindPage> {
 
     // 渲染小区 widget
     residentialList.forEach((key, value) {
-
       // 使用第一个房源信息的地理位置代表整个小区
       var house = value[0];
       var residentialMarkerWidget = ResidentialMapFindMarker(
@@ -167,7 +165,8 @@ class _MapFindPageState extends State<MapFindPage> {
       );
       Marker(
         onTap: (id) => _markerOnTap(id, store, context),
-        position: LatLng(double.parse(house.latitude), double.parse(house.longitude)),
+        position:
+            LatLng(double.parse(house.latitude), double.parse(house.longitude)),
         draggable: false,
       )
           .copyWithWidget(
@@ -185,8 +184,6 @@ class _MapFindPageState extends State<MapFindPage> {
         residentialMarkers[value.id] = residentialMarkerWidget;
       });
     });
-
-
   }
 
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
@@ -206,7 +203,8 @@ class _MapFindPageState extends State<MapFindPage> {
         );
       },
     );
-    _showHouseDetailListSheet(context, residentialMarkers[id]?.residential ?? '');
+    _showHouseDetailListSheet(
+        context, residentialMarkers[id]?.residential ?? '');
   }
 
   void _showHouseDetailListSheet(BuildContext context, String residential) {
@@ -236,7 +234,8 @@ class _MapFindPageState extends State<MapFindPage> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  subtitle: Text('均价${(totalPrice/num!).toStringAsFixed(2)}元/月 · 共$num套'),
+                  subtitle: Text(
+                      '均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · 共$num套'),
                   trailing: const Icon(Icons.keyboard_arrow_down),
                 ),
                 const Divider(),
@@ -255,6 +254,7 @@ class _MapFindPageState extends State<MapFindPage> {
                         housesList?[i].firstPicUrl ?? '',
                         housesList?[i].latitude ?? '0',
                         housesList?[i].longitude ?? '0',
+                        housesList?[i].location ?? "",
                       ),
                     ),
                   ),
