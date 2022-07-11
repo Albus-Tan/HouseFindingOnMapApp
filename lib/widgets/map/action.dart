@@ -127,3 +127,12 @@ class Clear extends MapAction {
     required super.mapId,
   });
 }
+
+class UpdateWidgetSize extends MapAction {
+  final Size widgetSize;
+
+  UpdateWidgetSize({
+    required this.widgetSize,
+    required super.mapId,
+  });
+}

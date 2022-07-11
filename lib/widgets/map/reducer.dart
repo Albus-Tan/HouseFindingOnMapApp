@@ -18,6 +18,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_moveCamera),
     TypedReducer(_clear),
     TypedReducer(_clearPolygon),
+    TypedReducer(_updateWidgetSize),
   ],
 );
 
@@ -174,6 +175,16 @@ MapState _clear(MapState state, Clear action) {
       polygon: [],
       markers: [],
       polyLines: [],
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _updateWidgetSize(MapState state, UpdateWidgetSize action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      widgetSize: action.widgetSize,
     );
   } else {
     return state;
