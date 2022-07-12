@@ -98,7 +98,7 @@ class _MapFindPageState extends State<MapFindPage> {
 
     for (final marker in store.state.oriMarkers) {
       var housesList = marker.houses;
-      var filteredHousesList = [];
+      var filteredHousesList = <RentHouse>[];
       bool residentialHasMeetRequirement = false;
       // 遍历检查是否有符合条件的
       for (final house in housesList) {
@@ -128,12 +128,14 @@ class _MapFindPageState extends State<MapFindPage> {
 
       residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
 
+      filteredHousesList = [];
+
       store.dispatch(
         UpdateMarker(
           mapId: store.state.id,
           id: marker.id,
           visibleParam: residentialHasMeetRequirement,
-
+          housesParam: filteredHousesList,
         ),
       );
     }
@@ -231,6 +233,12 @@ class _MapFindPageState extends State<MapFindPage> {
           .then((value) {
         store.dispatch(
           AddMarker(
+            mapId: store.state.id,
+            marker: value,
+          ),
+        );
+        store.dispatch(
+          AddOriMarker(
             mapId: store.state.id,
             marker: value,
           ),
@@ -519,6 +527,7 @@ class _MapFindPageState extends State<MapFindPage> {
               _initResidentialMarkers(store);
             } else {
               _updateResidentialMarkersOnTap(store);
+              selectionChanged = true;
             }
             store.dispatch(
               UpdateCameraPosition(
