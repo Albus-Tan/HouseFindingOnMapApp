@@ -381,11 +381,11 @@
         ]
       },
       {
+        "title": "居室",
         "defaultValue": "",
         "key": "room",
         "type": "checkbox",
         "value": "",
-        "title": "居室",
         "children": [
           {
             "title": "户型",
@@ -424,6 +424,52 @@
               },
               {
                 "title": "四室及以上",
+                "key": "",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "类型",
+        "defaultValue": "",
+        "key": "rentType",
+        "type": "radio",
+        "value": "",
+        "children": [
+          {
+            "title": "类型",
+            "key": "类型",
+            "type": "radio",
+            "defaultValue": "",
+            "value": "",
+            "children": [
+              {
+                "title": "不限",
+                "key": "",
+                "type": "unlimit",
+                "defaultValue": "",
+                "value": ""
+              },
+              {
+                "title": "合租",
+                "key": "",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "1"
+              },
+              {
+                "title": "整套出租",
+                "key": "",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "3"
+              },
+              {
+                "title": "公寓",
                 "key": "",
                 "type": "checkbox",
                 "defaultValue": "",
