@@ -42,7 +42,6 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 被点击过的 markers id 与 相应小区及房源信息 map
   Map<String, HouseMarker?> tappedMarkers = {};
 
-
   /// 筛选条件组件
   bool selectionChanged = false;
   late Widget selection;
@@ -65,25 +64,27 @@ class _MapFindPageState extends State<MapFindPage> {
       Map<String, String> filterParams,
       Map<String, String> customParams,
       BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
-    setState(() {
-      filter = filterParams;
-      print(filterParams.toString());
-      if (filter != null) {
-        district = filter!["region"] ?? "";
-        rooms = filter!["户型"] ?? "";
-        metroLine = filter!["subway"] ?? "";
-        if (filter!["price"] != null) {
-          String s = filter!["price"]!;
-          List<String> x = s.split(':');
-          price1 = x[0];
-          price2 = x[1];
-        } else {
-          price1 = "";
-          price2 = "";
+    setState(
+      () {
+        filter = filterParams;
+        print(filterParams.toString());
+        if (filter != null) {
+          district = filter!["region"] ?? "";
+          rooms = filter!["户型"] ?? "";
+          metroLine = filter!["subway"] ?? "";
+          if (filter!["price"] != null) {
+            String s = filter!["price"]!;
+            List<String> x = s.split(':');
+            price1 = x[0];
+            price2 = x[1];
+          } else {
+            price1 = "";
+            price2 = "";
+          }
+          selectionChanged = true;
         }
-        selectionChanged = true;
-      }
-    });
+      },
+    );
   }
 
   updateFilteredHouse(Store<MapState> store) {
@@ -128,7 +129,6 @@ class _MapFindPageState extends State<MapFindPage> {
 
       residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
 
-      filteredHousesList = [];
 
       store.dispatch(
         UpdateMarker(
@@ -549,7 +549,10 @@ class _MapFindPageState extends State<MapFindPage> {
           },
           builder: (context, store) {
             _updateMarkersInPolygon(store);
-            if(selectionChanged) {updateFilteredHouse(store); selectionChanged = false;}
+            if (selectionChanged) {
+              updateFilteredHouse(store);
+              selectionChanged = false;
+            }
             return MaterialApp(
               home: Scaffold(
                 appBar: isDrawing
