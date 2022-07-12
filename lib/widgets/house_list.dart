@@ -107,13 +107,7 @@ class _HouseListState extends State<HouseList> {
               shrinkWrap: true, //加了这个HouseList外面就不用了加Container或Expanded了
               // itemCount: _houseCards.length + (_isLastPage ? 0 : 1),
               padding: const EdgeInsets.all(16.0),
-              itemBuilder: /*1*/ (context, i) {
-                if (i.isOdd) {
-                  return const Divider();
-                }
-                /*2*/
-
-                final index = i ~/ 2; /*3*/
+              itemBuilder: (context, index) {
                 if (index >= _houseCards.length) {
                   getPageOfHouseCard();
                   // _houseCards.addAll(
@@ -123,14 +117,14 @@ class _HouseListState extends State<HouseList> {
                 // while (isLoading);
                 if (index >= _houseCards.length) {
                   if (_isLastPage) {
-                    if (index == _houseCards.length) return const Text("Over~");
-                    return Divider();
+                    if (index == _houseCards.length) return const Text("已经到底部了~~");
+                    return const Divider();
                   }
                   if (isLoading) {
                     if (index == _houseCards.length) {
-                      return const Text("Loading~");
+                      return Text("Loading~");
                     }
-                    return Divider();
+                    return const Divider();
                   }
                 }
                 return _houseCards[index];
