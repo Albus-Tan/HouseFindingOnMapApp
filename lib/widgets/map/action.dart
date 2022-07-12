@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:app/service/backend_service/house/rent_house.dart';
 import 'package:app/widgets/map/type.dart';
 
 class MapAction {
@@ -40,6 +41,7 @@ class UpdateOriMarker extends MapAction {
   final LatLng? positionParam;
   final double? rotationParam;
   final bool? visibleParam;
+    final List<RentHouse>? housesParam;
   final ArgumentCallback<String?>? onTapParam;
   final MarkerDragEndCallback? onDragEndParam;
 
@@ -56,6 +58,7 @@ class UpdateOriMarker extends MapAction {
     this.visibleParam,
     this.onTapParam,
     this.onDragEndParam,
+    this.housesParam,
     required super.mapId,
     required this.id,
   });
@@ -84,6 +87,7 @@ class UpdateMarker extends MapAction {
   final bool? visibleParam;
   final ArgumentCallback<String?>? onTapParam;
   final MarkerDragEndCallback? onDragEndParam;
+  final List<RentHouse>? housesParam;
 
   UpdateMarker({
     this.alphaParam,
@@ -98,6 +102,7 @@ class UpdateMarker extends MapAction {
     this.visibleParam,
     this.onTapParam,
     this.onDragEndParam,
+    this.housesParam,
     required super.mapId,
     required this.id,
   });
