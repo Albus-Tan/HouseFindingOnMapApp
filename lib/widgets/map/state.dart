@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 @immutable
 class MapState {
   final String id;
+  final List<HouseMarker> oriMarkers;
   final List<HouseMarker> markers;
   final bool drawing;
   final List<Polyline> polyLines;
@@ -31,6 +32,7 @@ class MapState {
     required this.cameraPosition,
     this.controller,
     required this.widgetSize,
+    required this.oriMarkers,
   });
 
   MapState copyWith({
@@ -40,6 +42,7 @@ class MapState {
     List<Polyline>? polyLines,
     List<LatLng>? polygon,
     List<HouseMarker>? markersInPolygon,
+    List<HouseMarker>? oriMarkers,
     AMapController? controller,
     CameraPosition? cameraPosition,
     Size? widgetSize,
@@ -54,6 +57,7 @@ class MapState {
         controller: controller ?? this.controller,
         cameraPosition: cameraPosition ?? this.cameraPosition,
         widgetSize: widgetSize ?? this.widgetSize,
+        oriMarkers: oriMarkers ?? this.oriMarkers,
       );
 
   static MapState initialState() {
@@ -66,9 +70,13 @@ class MapState {
       markersInPolygon: [],
       polygon: [],
       cameraPosition: CameraPosition(
-        target: LatLng(0, 0),
+        target: LatLng(
+          0,
+          0,
+        ),
       ),
       widgetSize: Size(0, 0),
+      oriMarkers: [],
     );
   }
 }

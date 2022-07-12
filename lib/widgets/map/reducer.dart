@@ -11,6 +11,9 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_addMarker),
     TypedReducer(_updateMarker),
     TypedReducer(_removeMarker),
+    TypedReducer(_addOriMarker),
+    TypedReducer(_updateOriMarker),
+    TypedReducer(_removeOriMarker),
     TypedReducer(_checkPointsInPolygon),
     TypedReducer(_startDrawPolygon),
     TypedReducer(_addPolygonPoint),
@@ -63,6 +66,57 @@ MapState _updateMarker(MapState state, UpdateMarker action) {
 }
 
 MapState _removeMarker(MapState state, RemoveMarker action) {
+  if (state.id == action.mapId) {
+    final markers = keyByHosueMarkerId(state.markers);
+    markers.remove(action.createId);
+
+    return state.copyWith(
+      markers: markers.values.toList(),
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _addOriMarker(MapState state, AddOriMarker action) {
+  if (state.id == action.mapId) {
+    final markers = state.markers;
+    markers.add(action.marker);
+    return state.copyWith(
+      markers: markers,
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _updateOriMarker(MapState state, UpdateOriMarker action) {
+  if (state.id == action.mapId) {
+    final markers = keyByHosueMarkerId(state.markers);
+    markers[action.id] = markers[action.id]!.copyWithHouses(
+      alphaParam: action.alphaParam,
+      anchorParam: action.anchorParam,
+      clickableParam: action.clickableParam,
+      draggableParam: action.draggableParam,
+      iconParam: action.iconParam,
+      infoWindowEnableParam: action.infoWindowEnableParam,
+      infoWindowParam: action.infoWindowParam,
+      onDragEndParam: action.onDragEndParam,
+      onTapParam: action.onTapParam,
+      positionParam: action.positionParam,
+      rotationParam: action.rotationParam,
+      visibleParam: action.visibleParam,
+    );
+
+    return state.copyWith(
+      markers: markers.values.toList(),
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _removeOriMarker(MapState state, RemoveOriMarker action) {
   if (state.id == action.mapId) {
     final markers = keyByHosueMarkerId(state.markers);
     markers.remove(action.createId);

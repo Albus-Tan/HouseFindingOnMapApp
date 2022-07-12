@@ -20,6 +20,55 @@ class AddMarker extends MapAction {
     required this.marker,
   });
 }
+class AddOriMarker extends MapAction {
+  final HouseMarker marker;
+
+  AddOriMarker({
+    required super.mapId,
+    required this.marker,
+  });
+}
+class UpdateOriMarker extends MapAction {
+  final String id;
+  final double? alphaParam;
+  final Offset? anchorParam;
+  final bool? clickableParam;
+  final bool? draggableParam;
+  final BitmapDescriptor? iconParam;
+  final bool? infoWindowEnableParam;
+  final InfoWindow? infoWindowParam;
+  final LatLng? positionParam;
+  final double? rotationParam;
+  final bool? visibleParam;
+  final ArgumentCallback<String?>? onTapParam;
+  final MarkerDragEndCallback? onDragEndParam;
+
+  UpdateOriMarker({
+    this.alphaParam,
+    this.anchorParam,
+    this.clickableParam,
+    this.draggableParam,
+    this.iconParam,
+    this.infoWindowEnableParam,
+    this.infoWindowParam,
+    this.positionParam,
+    this.rotationParam,
+    this.visibleParam,
+    this.onTapParam,
+    this.onDragEndParam,
+    required super.mapId,
+    required this.id,
+  });
+}
+
+class RemoveOriMarker extends MapAction {
+  final String createId;
+
+  RemoveOriMarker({
+    required this.createId,
+    required super.mapId,
+  });
+}
 
 class UpdateMarker extends MapAction {
   final String id;
@@ -53,6 +102,8 @@ class UpdateMarker extends MapAction {
     required this.id,
   });
 }
+
+
 
 class RemoveMarker extends MapAction {
   final String createId;
