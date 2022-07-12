@@ -17,6 +17,7 @@ import '../widgets/house_card.dart';
 import '../widgets/house_list/house_data.dart';
 import '../widgets/map.dart';
 import '../widgets/map/state.dart';
+import '../widgets/map/type.dart';
 import '../widgets/selection.dart';
 
 class MapFindPage extends StatefulWidget {
@@ -159,11 +160,12 @@ class _MapFindPageState extends State<MapFindPage> {
         residential: house.residential ?? '',
         num: value.length,
       );
-      Marker(
+      HouseMarker(
         onTap: (id) => _markerOnTap(id, store, context),
         position:
             LatLng(double.parse(house.latitude), double.parse(house.longitude)),
         draggable: false,
+        houses: value,
       )
           .copyWithWidget(
         widget: residentialMarkerWidget,
@@ -423,6 +425,8 @@ class _MapFindPageState extends State<MapFindPage> {
             // );
             if (store.state.markers.isEmpty) {
               _initResidentialMarkers(store);
+            }else{
+
             }
             store.dispatch(
               UpdateCameraPosition(

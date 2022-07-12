@@ -24,7 +24,7 @@ class HomePageTabBarView extends StatefulWidget {
   const HomePageTabBarView({Key? key}) : super(key: key);
 
   @override
-  State<HomePageTabBarView> createState() => _HomePageTabBarViewState();
+  createState() => _HomePageTabBarViewState();
 }
 
 class _HomePageTabBarViewState extends State<HomePageTabBarView>
@@ -33,7 +33,7 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
 
   @override
   void initState() {
-    _tabController = new TabController(
+    _tabController = TabController(
       length: 4,
       vsync: this,
     );
@@ -87,7 +87,6 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                               delegate: SearchBarViewDelegate());
                         },
                         readOnly: true,
-
                         decoration: InputDecoration(
                           labelText: '点击搜索小区',
                           border: InputBorder.none,
