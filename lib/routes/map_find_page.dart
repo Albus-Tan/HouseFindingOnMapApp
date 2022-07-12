@@ -141,6 +141,18 @@ class _MapFindPageState extends State<MapFindPage> {
         });
   }
 
+  Future<void> _updateResidentialMarkersOnTap(Store<MapState> store) async {
+    for(var m in store.state.markers){
+      store.dispatch(
+        UpdateMarker(
+          id: m.id,
+          onTapParam: (id) => _markerOnTap(id!, store, context),
+          mapId: store.state.id,
+        ),
+      );
+    }
+  }
+
   Future<void> _initResidentialMarkers(Store<MapState> store) async {
     // 从后端拿取所有数据
     await getAllHouses();
@@ -465,7 +477,9 @@ class _MapFindPageState extends State<MapFindPage> {
             // );
             if (store.state.markers.isEmpty) {
               _initResidentialMarkers(store);
-            } else {}
+            } else {
+              _updateResidentialMarkersOnTap(store);
+            }
             store.dispatch(
               UpdateCameraPosition(
                 mapId: store.state.id,
