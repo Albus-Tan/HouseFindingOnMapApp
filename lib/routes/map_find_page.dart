@@ -161,6 +161,7 @@ class _MapFindPageState extends State<MapFindPage> {
               (value) {
                 store.dispatch(
                   UpdateMarker(
+                    iconParam: BitmapDescriptor.fromBytes(value!),
                     mapId: store.state.id,
                     id: marker.id,
                     visibleParam: residentialHasMeetRequirement,
