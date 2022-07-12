@@ -42,8 +42,6 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 被点击过的 markers id 与 相应小区及房源信息 map
   Map<String, HouseMarker?> tappedMarkers = {};
 
-  /// 符合筛选条件的 markers id 与 相应小区及房源信息 map
-  Map<String, HouseMarker?> filteredMarkers = {};
 
   /// 筛选条件组件
   bool selectionChanged = false;
@@ -98,9 +96,7 @@ class _MapFindPageState extends State<MapFindPage> {
       shi.add(int.parse(xi));
     }
 
-    filteredMarkers.clear();
-
-    for (final marker in store.state.markers) {
+    for (final marker in store.state.oriMarkers) {
       var housesList = marker.houses;
       var filteredHousesList = [];
       bool residentialHasMeetRequirement = false;
@@ -137,6 +133,7 @@ class _MapFindPageState extends State<MapFindPage> {
           mapId: store.state.id,
           id: marker.id,
           visibleParam: residentialHasMeetRequirement,
+
         ),
       );
     }
