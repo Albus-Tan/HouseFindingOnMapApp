@@ -1,5 +1,4 @@
 import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:app/common/extension/marker.dart';
 import 'package:app/common/extension/widget.dart';
@@ -87,7 +86,7 @@ class _MapFindPageState extends State<MapFindPage> {
 
   updateFilteredHouse(Store<MapState> store) {
     // TODO
-    store.state.markers.map((marker){
+    store.state.markers.map((marker) {
       var housesList = marker.houses;
       bool meetRequirement = true;
 
@@ -142,7 +141,7 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _updateResidentialMarkersOnTap(Store<MapState> store) async {
-    for(var m in store.state.markers){
+    for (var m in store.state.markers) {
       store.dispatch(
         UpdateMarker(
           id: m.id,
@@ -226,12 +225,13 @@ class _MapFindPageState extends State<MapFindPage> {
         );
       },
     );
-    _showHouseDetailListSheet(
-        context, residentialMarkers[id]);
+    _showHouseDetailListSheet(context, residentialMarkers[id]);
   }
 
-  void _showHouseDetailListSheet(BuildContext context, HouseMarker? houseMarker, ) {
-
+  void _showHouseDetailListSheet(
+    BuildContext context,
+    HouseMarker? houseMarker,
+  ) {
     var housesList = houseMarker?.houses;
     var totalPrice = 0;
     var num = housesList?.length;
@@ -293,23 +293,23 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   void _updateMarkersInPolygon(Store<MapState> store) {
-
     // 建立本次多边形中 markers 的 id 与 相关信息的索引
-    final markersInPolygonMap = keyByHosueMarkerId(store.state.markersInPolygon);
+    final markersInPolygonMap =
+        keyByHosueMarkerId(store.state.markersInPolygon);
 
     /// 建立索引
     final residentialMarkers = keyByHosueMarkerId(store.state.markers);
 
     // 将上一次在圈内，这一次不在圈内的恢复原样
-    for( final id in markersIdInPolygon){
-      if(!markersInPolygonMap.containsKey(id)){
+    for (final id in markersIdInPolygon) {
+      if (!markersInPolygonMap.containsKey(id)) {
         final residentialMapFindMarker = ResidentialMapFindMarker(
           residential: residentialMarkers[id]?.houses[0].residential ?? '',
           num: residentialMarkers[id]?.houses.length ?? 0,
         );
         residentialMapFindMarker.inPolygon = false;
         residentialMapFindMarker.toUint8List().then(
-              (value) {
+          (value) {
             store.dispatch(
               UpdateMarker(
                 mapId: store.state.id,
@@ -327,12 +327,14 @@ class _MapFindPageState extends State<MapFindPage> {
       // 上一次不在圈内
       if (!markersIdInPolygon.contains(residentialMarkerId)) {
         var residentialMapFindMarker = ResidentialMapFindMarker(
-          residential: markersInPolygonMap[residentialMarkerId]?.houses[0].residential ?? '',
+          residential:
+              markersInPolygonMap[residentialMarkerId]?.houses[0].residential ??
+                  '',
           num: markersInPolygonMap[residentialMarkerId]?.houses.length ?? 0,
         );
         residentialMapFindMarker.inPolygon = true;
         residentialMapFindMarker.toUint8List().then(
-              (value) {
+          (value) {
             store.dispatch(
               UpdateMarker(
                 mapId: store.state.id,
@@ -350,7 +352,6 @@ class _MapFindPageState extends State<MapFindPage> {
     markersInPolygonMap.forEach((residentialMarkerId, value) {
       markersIdInPolygon.add(residentialMarkerId);
     });
-
   }
 
   // void _resetAllMarkers(Store<MapState> store) {
@@ -461,7 +462,7 @@ class _MapFindPageState extends State<MapFindPage> {
 
   @override
   void dispose() {
-    super.dispose(); // This will free the memory space allocated to the page
+    super.dispose();
   }
 
   @override
@@ -488,6 +489,13 @@ class _MapFindPageState extends State<MapFindPage> {
                   target: LatLng(31.2382, 121.4913),
                   zoom: 15,
                 ),
+              ),
+            );
+          },
+          onDispose: (store) {
+            store.dispatch(
+              EndDrawPolygon(
+                mapId: store.state.id,
               ),
             );
           },
