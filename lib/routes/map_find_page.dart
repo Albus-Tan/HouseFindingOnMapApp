@@ -72,6 +72,8 @@ class _MapFindPageState extends State<MapFindPage> {
           district = filter!["region"] ?? "";
           rooms = filter!["户型"] ?? "";
           metroLine = filter!["subway"] ?? "";
+          metroStation = filter?["station"] ?? "";
+          rentType = filter?["类型"] ?? "";
           if (filter!["price"] != null) {
             String s = filter!["price"]!;
             List<String> x = s.split(':');
@@ -91,10 +93,19 @@ class _MapFindPageState extends State<MapFindPage> {
     int priceLow = (price1 == '') ? -1 : int.parse(price1);
     int priceHigh = (price2 == '') ? -1 : int.parse(price2);
 
+    int mLine = (metroLine == '') ? -1 : int.parse(metroLine);
+    List<String> zhan = (metroStation == '') ? [] : metroStation.split(',');
+
     List<int> shi = [];
     List<String> x = (rooms == '') ? [] : rooms.split(',');
     for (final xi in x) {
       shi.add(int.parse(xi));
+    }
+
+    List<int> rType = [];
+    List<String> y = (rentType == '') ? [] : rentType.split(',');
+    for (final yi in y) {
+      rType.add(int.parse(yi));
     }
 
     for (final marker in store.state.oriMarkers) {
@@ -122,6 +133,18 @@ class _MapFindPageState extends State<MapFindPage> {
               houseMeetRequirement && shi.any((e) => e == house.shi);
         }
 
+        // type
+        if (rType.isNotEmpty) {
+          houseMeetRequirement =
+              houseMeetRequirement && rType.any((e) => e == house.rentType);
+        }
+
+        // metro
+        if(mLine != -1 && mLine != house.metroLine){
+          houseMeetRequirement = false;
+        }
+
+
         if (houseMeetRequirement) {
           filteredHousesList.add(house);
         }
@@ -129,15 +152,33 @@ class _MapFindPageState extends State<MapFindPage> {
 
       residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
 
-
-      store.dispatch(
-        UpdateMarker(
-          mapId: store.state.id,
-          id: marker.id,
-          visibleParam: residentialHasMeetRequirement,
-          housesParam: filteredHousesList,
-        ),
-      );
+      if(residentialHasMeetRequirement && filteredHousesList.length != housesList.length){
+        var residentialMapFindMarker = ResidentialMapFindMarker(
+          residential: filteredHousesList[0].residential ?? '',
+          num: filteredHousesList.length,
+        );
+        residentialMapFindMarker.toUint8List().then(
+              (value) {
+                store.dispatch(
+                  UpdateMarker(
+                    mapId: store.state.id,
+                    id: marker.id,
+                    visibleParam: residentialHasMeetRequirement,
+                    housesParam: residentialHasMeetRequirement ? filteredHousesList : housesList,
+                  ),
+                );
+          },
+        );
+      } else {
+        store.dispatch(
+          UpdateMarker(
+            mapId: store.state.id,
+            id: marker.id,
+            visibleParam: residentialHasMeetRequirement,
+            housesParam: residentialHasMeetRequirement ? filteredHousesList : housesList,
+          ),
+        );
+      }
     }
   }
 
