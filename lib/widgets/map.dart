@@ -39,19 +39,23 @@ class MapWidget extends StatelessWidget {
           final state = store.state;
           debugPrint('Enter');
           final markers = <Marker>[];
-          for (var e in store.state.markers) {
-            if (_getLatLngBound(
-              Size(
-                constrains.maxWidth,
-                constrains.maxHeight,
-              ),
-              store.state.cameraPosition,
-            ).contains(
-              e.position,
-            )) {
-              markers.add(e);
+
+          if(state.drawing==false){
+            for (var e in store.state.markers) {
+              if (_getLatLngBound(
+                Size(
+                  constrains.maxWidth,
+                  constrains.maxHeight,
+                ),
+                store.state.cameraPosition,
+              ).contains(
+                e.position,
+              )) {
+                markers.add(e);
+              }
             }
           }
+
 
           return Stack(
             children: [
