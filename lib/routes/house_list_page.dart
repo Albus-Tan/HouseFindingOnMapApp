@@ -65,6 +65,7 @@ class _HouseListPageState extends State<HouseListPage> {
         district = filter!["region"] ?? "";
         rooms = filter!["户型"] ?? "";
         metroLine = filter!["subway"] ?? "";
+        metroStation = filter?["station"] ?? "";
         if (filter!["price"] != null) {
           String s = filter!["price"]!;
           List<String> x = s.split(':');

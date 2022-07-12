@@ -26,107 +26,121 @@
               {
                 "title": "浦东",
                 "key": "town",
-                "type": "radio",
+                "type": "checkbox",
                 "defaultValue": "",
-                "value": "浦东",
-                "children": [
-                  {
-                    "title": "全浦东",
-                    "type": "unlimit",
-                    "value": ""
-                  },
-                  {
-                    "title": "八佰伴",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "八佰伴"
-                  },
-                  {
-                    "title": "临港新城",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "临港新城"
-                  },
-                  {
-                    "title": "张江",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "张江"
-                  }
-                ]
+                "value": "浦东"
               },
               {
                 "title": "闵行",
                 "key": "town",
-                "type": "radio",
+                "type": "checkbox",
                 "defaultValue": "",
-                "value": "闵行",
-                "children": [
-                  {
-                    "title": "全闵行",
-                    "type": "unlimit",
-                    "value": ""
-                  },
-                  {
-                    "title": "江川路",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "江川路"
-                  },
-                  {
-                    "title": "老闵行",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "老闵行"
-                  },
-                  {
-                    "title": "莘庄",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "莘庄"
-                  }
-                ]
+                "value": "闵行"
+              },
+              {
+                "title": "松江",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "松江"
+              },
+              {
+                "title": "宝山",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "宝山"
+              },
+              {
+                "title": "嘉定",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "嘉定"
               },
               {
                 "title": "徐汇",
                 "key": "town",
-                "type": "radio",
+                "type": "checkbox",
                 "defaultValue": "",
-                "value": "徐汇",
-                "children": [
-                  {
-                    "title": "全徐汇",
-                    "type": "unlimit",
-                    "value": ""
-                  },
-                  {
-                    "title": "万体馆",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "万体馆"
-                  },
-                  {
-                    "title": "徐汇滨江",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "徐汇滨江"
-                  },
-                  {
-                    "title": "徐家汇",
-                    "key": "",
-                    "type": "checkbox",
-                    "defaultValue": "",
-                    "value": "徐家汇"
-                  }
-                ]
+                "value": "徐汇"
+              },
+              {
+                "title": "青浦",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "青浦"
+              },
+              {
+                "title": "静安",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "静安"
+              },
+              {
+                "title": "普陀",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "普陀"
+              },
+              {
+                "title": "杨浦",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "杨浦"
+              },
+              {
+                "title": "奉贤",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "奉贤"
+              },
+              {
+                "title": "黄浦",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "黄浦"
+              },
+              {
+                "title": "虹口",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "虹口"
+              },
+              {
+                "title": "长宁",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "长宁"
+              },
+              {
+                "title": "金山",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "金山"
+              },
+              {
+                "title": "崇明",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "崇明"
+              },
+              {
+                "title": "上海周边",
+                "key": "town",
+                "type": "checkbox",
+                "defaultValue": "",
+                "value": "上海周边"
               }
             ]
           },
@@ -139,66 +153,161 @@
             "children": [
               {
                 "title": "1号线",
-                "key": "1号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "1"
+                "value": "1",
+                "children": [
+                  {
+                    "title": "富锦路",
+                    "key": "富锦路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "富锦路"
+                  },
+                  {
+                    "title": "友谊西路",
+                    "key": "友谊西路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "友谊西路"
+                  },
+                  {
+                    "title": "宝安公路",
+                    "key": "宝安公路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "宝安公路"
+                  }
+                ]
               },
               {
                 "title": "2号线",
-                "key": "2号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "2"
               },
               {
                 "title": "3号线",
-                "key": "3号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "3"
               },
               {
                 "title": "4号线",
-                "key": "4号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "4"
               },
               {
                 "title": "5号线",
-                "key": "5号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "5"
               },
               {
                 "title": "6号线",
-                "key": "6号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "6"
               },
               {
                 "title": "7号线",
-                "key": "7号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "7"
               },
               {
                 "title": "8号线",
-                "key": "8号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "8"
               },
               {
                 "title": "9号线",
-                "key": "9号线",
+                "key": "station",
                 "type": "radio",
                 "defaultValue": "",
                 "value": "9"
+              },
+              {
+                "title": "10号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "10",
+                "children": [
+                  {
+                    "title": "基隆路",
+                    "key": "基隆路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "基隆路"
+                  }
+                ]
+              },
+              {
+                "title": "11号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "11"
+              },
+              {
+                "title": "12号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "12"
+              },
+              {
+                "title": "13号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "13"
+              },
+              {
+                "title": "14号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "14"
+              },
+              {
+                "title": "15号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "15"
+              },
+              {
+                "title": "16号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "16"
+              },
+              {
+                "title": "17号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "17"
+              },
+              {
+                "title": "18号线",
+                "key": "station",
+                "type": "radio",
+                "defaultValue": "",
+                "value": "18"
               }
             ]
           }
@@ -319,36 +428,6 @@
                 "type": "checkbox",
                 "defaultValue": "",
                 "value": "4"
-              }
-            ]
-          },
-          {
-            "title": "卧室",
-            "key": "卧室",
-            "type": "radio",
-            "defaultValue": "",
-            "value": "",
-            "children": [
-              {
-                "title": "不限",
-                "key": "",
-                "type": "unlimit",
-                "defaultValue": "",
-                "value": ""
-              },
-              {
-                "title": "主卧",
-                "key": "",
-                "type": "checkbox",
-                "defaultValue": "",
-                "value": "1"
-              },
-              {
-                "title": "次卧",
-                "key": "",
-                "type": "checkbox",
-                "defaultValue": "",
-                "value": "2"
               }
             ]
           }

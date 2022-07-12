@@ -104,7 +104,7 @@ class _HouseListState extends State<HouseList> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return ListView.builder(
-              // shrinkWrap:true,  //加了这个HouseList外面就不用了加Container或Expanded了
+              shrinkWrap: true, //加了这个HouseList外面就不用了加Container或Expanded了
               // itemCount: _houseCards.length + (_isLastPage ? 0 : 1),
               padding: const EdgeInsets.all(16.0),
               itemBuilder: /*1*/ (context, i) {
@@ -121,10 +121,18 @@ class _HouseListState extends State<HouseList> {
                   // ); /*4*/
                 }
                 // while (isLoading);
-                if (_isLastPage && index >= _houseCards.length)
-                  return const Text("Over~");
-                if (index >= _houseCards.length && isLoading)
-                  return const Text("Loading~");
+                if (index >= _houseCards.length) {
+                  if (_isLastPage) {
+                    if (index == _houseCards.length) return const Text("Over~");
+                    return Divider();
+                  }
+                  if (isLoading) {
+                    if (index == _houseCards.length) {
+                      return const Text("Loading~");
+                    }
+                    return Divider();
+                  }
+                }
                 return _houseCards[index];
               },
             );
