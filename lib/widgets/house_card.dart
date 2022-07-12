@@ -3,6 +3,7 @@ import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
 import '../routes/house_detail_page.dart';
+import '../service/image_service.dart';
 
 //TODO:card加收藏按钮
 class HouseCard extends StatelessWidget {
@@ -22,10 +23,8 @@ class HouseCard extends StatelessWidget {
           children: <Widget>[
             ListTile(
               leading: (houseDetail.image != '')
-                  ? Image.network(houseDetail.image)
-                  : Image.asset(
-                      'assets/picture/404.jpg',
-                    ),
+                  ? getNetWorkImage(houseDetail.image)
+                  : noImage,
               onTap: () {
                 Navigator.push(
                   context,

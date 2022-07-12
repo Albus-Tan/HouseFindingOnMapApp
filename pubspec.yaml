@@ -43,6 +43,7 @@ dependencies:
   build_runner: ^2.1.11
   http: ^0.13.4
   shared_preferences: ^2.0.15
+  cached_network_image: ^3.2.1
 
 dev_dependencies:
 #  # Used by tests. Not required to use `json_serializable`.
