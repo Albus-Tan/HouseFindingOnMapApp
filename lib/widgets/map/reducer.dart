@@ -55,6 +55,7 @@ MapState _updateMarker(MapState state, UpdateMarker action) {
       positionParam: action.positionParam,
       rotationParam: action.rotationParam,
       visibleParam: action.visibleParam,
+      housesParam: action.housesParam,
     );
 
     return state.copyWith(
@@ -106,6 +107,7 @@ MapState _updateOriMarker(MapState state, UpdateOriMarker action) {
       positionParam: action.positionParam,
       rotationParam: action.rotationParam,
       visibleParam: action.visibleParam,
+      housesParam: action.housesParam,
     );
 
     return state.copyWith(
