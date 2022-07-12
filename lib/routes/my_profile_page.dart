@@ -1,3 +1,4 @@
+import 'package:app/routes/login_page.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
       ),
       body: Column(
         children: [
-          const ListTile(
+          ListTile(
             contentPadding: EdgeInsets.all(20),
             leading: CircleAvatar(
               backgroundImage: NetworkImage("https://i-1-lanrentuku.52tup.com"
@@ -46,6 +47,17 @@ class _MyProfilePageState extends State<MyProfilePage> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: "login"),
+                  builder: (context) => LoginPage(
+                    title: "欢迎登录",
+                  ),
+                ),
+              );
+            },
           ),
           Container(
             padding: const EdgeInsets.symmetric(
