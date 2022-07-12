@@ -34,7 +34,6 @@ class _MapFindPageState extends State<MapFindPage> {
   bool isDrawing = false;
 
   /// 地图上房源小区 Marker
-  // Map<String, ResidentialMapFindMarker> residentialMarkersMap = {};
   String focusingMarkerId = "";
 
   /// 在圈内的 markers 的 id
@@ -42,6 +41,9 @@ class _MapFindPageState extends State<MapFindPage> {
 
   /// 被点击过的 markers id 与 相应小区及房源信息 map
   Map<String, HouseMarker?> tappedMarkers = {};
+
+  /// 符合筛选条件的 markers id 与 相应小区及房源信息 map
+  Map<String, HouseMarker?> filteredMarkers = {};
 
   /// 筛选条件组件
   late Widget selection;
@@ -66,7 +68,7 @@ class _MapFindPageState extends State<MapFindPage> {
       BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
     setState(() {
       filter = filterParams;
-      debugPrint(filterParams.toString());
+      print(filterParams.toString());
       if (filter != null) {
         district = filter!["region"] ?? "";
         rooms = filter!["户型"] ?? "";
@@ -85,19 +87,55 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   updateFilteredHouse(Store<MapState> store) {
-    // TODO
-    store.state.markers.map((marker) {
+    int priceLow = (price1 == '') ? -1 : int.parse(price1);
+    int priceHigh = (price2 == '') ? -1 : int.parse(price2);
+
+    List<int> shi = [];
+    List<String> x = (rooms == '') ? [] : rooms.split(',');
+    for (final xi in x) {
+      shi.add(int.parse(xi));
+    }
+
+    for (final marker in store.state.markers) {
       var housesList = marker.houses;
-      bool meetRequirement = true;
+      var filteredHousesList = [];
+      bool residentialHasMeetRequirement = false;
+      // 遍历检查是否有符合条件的
+      for (final house in housesList) {
+        bool houseMeetRequirement = true;
+
+        // region
+        if (district != '' && house.district != district) {
+          houseMeetRequirement = false;
+        }
+
+        // price
+        if (priceLow != -1 &&
+            (house.price < priceLow || house.price > priceHigh)) {
+          houseMeetRequirement = false;
+        }
+
+        // shi
+        if (shi.isNotEmpty) {
+          houseMeetRequirement =
+              houseMeetRequirement && shi.any((e) => e == house.shi);
+        }
+
+        if (houseMeetRequirement) {
+          filteredHousesList.add(house);
+        }
+      }
+
+      residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
 
       store.dispatch(
         UpdateMarker(
           mapId: store.state.id,
           id: marker.id,
-          visibleParam: meetRequirement,
+          visibleParam: residentialHasMeetRequirement,
         ),
       );
-    });
+    }
   }
 
   /// 发送请求拿取房源数据
