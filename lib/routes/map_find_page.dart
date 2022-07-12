@@ -12,6 +12,7 @@ import 'package:redux/redux.dart';
 
 import '../service/backend_service/house/rent_house.dart';
 import '../service/backend_service/map_find_house.dart';
+import '../utils/storage.dart';
 import '../widgets/house_card.dart';
 import '../widgets/house_list/house_data.dart';
 import '../widgets/map.dart';
@@ -52,7 +53,8 @@ class _MapFindPageState extends State<MapFindPage> {
       price2 = "";
 
   /// 位置
-  LatLng currentPosition = const LatLng(31.2382, 121.4913);
+  double currentPositionLat = 31.2382;
+  double currentPositionLng = 121.4913;
 
   void callback(
       int menuIndex,
@@ -82,7 +84,6 @@ class _MapFindPageState extends State<MapFindPage> {
   updateFilteredHouse(Store<MapState> store) {
     residentialMarkers.forEach((key, value) {
       bool meetRequirement = true;
-
 
       store.dispatch(
         UpdateMarker(
@@ -123,6 +124,15 @@ class _MapFindPageState extends State<MapFindPage> {
         },
       ),
     );
+  }
+
+  Future _updatePos() async {
+    await StorageUtil.getDoubleItem('lat').then((res) async => {
+          currentPositionLat = res,
+        });
+    await StorageUtil.getDoubleItem('lng').then((res) async => {
+          currentPositionLng = res,
+        });
   }
 
   Future<void> _initResidentialMarkers(Store<MapState> store) async {
@@ -378,12 +388,13 @@ class _MapFindPageState extends State<MapFindPage> {
           widgetWidth: 40,
           name: '定位',
           iconWidget: const Icon(Icons.my_location),
-          onTap: () {
+          onTap: () async {
+            await _updatePos();
             store.dispatch(
               MoveCamera(
                 mapId: store.state.id,
                 cameraPosition: CameraPosition(
-                  target: currentPosition,
+                  target: LatLng(currentPositionLat, currentPositionLng),
                   zoom: store.state.cameraPosition.zoom,
                 ),
               ),
@@ -410,7 +421,7 @@ class _MapFindPageState extends State<MapFindPage> {
             //     mapId: store.state.id,
             //   ),
             // );
-            if(store.state.markers.isEmpty){
+            if (store.state.markers.isEmpty) {
               _initResidentialMarkers(store);
             }
             store.dispatch(

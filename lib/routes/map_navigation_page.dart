@@ -51,7 +51,6 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
     // _oriLat = widget.oriLat;
     // _oriLng = widget.oriLng;
     // _oriText = widget.oriText;
-
   }
 
   Future<void> _initMarker() async {
@@ -97,11 +96,11 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
                 print(res),
                 _oriLat = res.toString(),
               }),
-          await StorageUtil.getDoubleItem('lng').then((res) => {
+          await StorageUtil.getDoubleItem('lng').then((res) async => {
                 print(res),
                 _oriLng = res.toString(),
               }),
-          await StorageUtil.getStringItem('address').then((res) => {
+          await StorageUtil.getStringItem('address').then((res) async => {
                 print(res),
                 _oriText = res.toString(),
               }),
