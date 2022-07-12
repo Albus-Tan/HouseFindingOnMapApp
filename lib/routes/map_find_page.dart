@@ -31,15 +31,18 @@ class _MapFindPageState extends State<MapFindPage> {
   /// 所有房源数据
   List<RentHouse> houses = [];
 
-  /// 按照小区整理的房源数据
-  Map<String, List<RentHouse>> residentialList = {};
-
   /// 正在画圈
   bool isDrawing = false;
 
   /// 地图上房源小区 Marker
-  Map<String, ResidentialMapFindMarker> residentialMarkers = {};
+  // Map<String, ResidentialMapFindMarker> residentialMarkersMap = {};
   String focusingMarkerId = "";
+
+  /// 在圈内的 markers 的 id
+  Set<String> markersIdInPolygon = {};
+
+  /// 被点击过的 markers id 与 相应小区及房源信息 map
+  Map<String, HouseMarker?> tappedMarkers = {};
 
   /// 筛选条件组件
   late Widget selection;
@@ -83,13 +86,15 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   updateFilteredHouse(Store<MapState> store) {
-    residentialMarkers.forEach((key, value) {
+    // TODO
+    store.state.markers.map((marker){
+      var housesList = marker.houses;
       bool meetRequirement = true;
 
       store.dispatch(
         UpdateMarker(
           mapId: store.state.id,
-          id: key,
+          id: marker.id,
           visibleParam: meetRequirement,
         ),
       );
@@ -141,6 +146,9 @@ class _MapFindPageState extends State<MapFindPage> {
     await getAllHouses();
 
     // 按照小区名将数据放入 map
+    /// 按照小区整理的房源数据
+    Map<String, List<RentHouse>> residentialList = {};
+
     for (var house in houses) {
       // 小区名为空，暂时丢弃不进行渲染
       if (house.residential == "" || house.residential == null) continue;
@@ -177,9 +185,6 @@ class _MapFindPageState extends State<MapFindPage> {
             marker: value,
           ),
         );
-
-        /// 依据 id 向 residentialMarkers 中添加对应 widget
-        residentialMarkers[value.id] = residentialMarkerWidget;
       });
     });
   }
@@ -187,10 +192,18 @@ class _MapFindPageState extends State<MapFindPage> {
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
     /// 依据 id 从 residentialMarkers 中取出对应 widget
     print("onTap$id");
-    residentialMarkers[focusingMarkerId]?.focus = false;
-    residentialMarkers[id]?.focus = true;
+
+    /// 建立索引
+    final residentialMarkers = keyByHosueMarkerId(store.state.markers);
+
+    tappedMarkers[id] = residentialMarkers[id];
     focusingMarkerId = id;
-    residentialMarkers[id]?.toUint8List().then(
+    var residentialMapFindMarker = ResidentialMapFindMarker(
+      residential: residentialMarkers[id]?.houses[0].residential ?? '',
+      num: residentialMarkers[id]?.houses.length ?? 0,
+    );
+    residentialMapFindMarker.focus = true;
+    residentialMapFindMarker.toUint8List().then(
       (value) {
         store.dispatch(
           UpdateMarker(
@@ -202,13 +215,15 @@ class _MapFindPageState extends State<MapFindPage> {
       },
     );
     _showHouseDetailListSheet(
-        context, residentialMarkers[id]?.residential ?? '');
+        context, residentialMarkers[id]);
   }
 
-  void _showHouseDetailListSheet(BuildContext context, String residential) {
-    var housesList = residentialList[residential];
+  void _showHouseDetailListSheet(BuildContext context, HouseMarker? houseMarker, ) {
+
+    var housesList = houseMarker?.houses;
     var totalPrice = 0;
     var num = housesList?.length;
+    var residential = housesList?[0].residential;
     housesList?.forEach((element) {
       totalPrice += element.price;
     });
@@ -226,7 +241,7 @@ class _MapFindPageState extends State<MapFindPage> {
               children: [
                 ListTile(
                   title: Text(
-                    residential,
+                    residential ?? '',
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w900,
@@ -266,57 +281,82 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   void _updateMarkersInPolygon(Store<MapState> store) {
-    final set = store.state.markersInPolygon.map((e) => e.id).toSet();
-    residentialMarkers.forEach(
-      (key, value) {
-        if (set.contains(key) != value.inPolygon) {
-          value.inPolygon = set.contains(key);
-          if (value.inPolygon == false) {
-            value.toUint8List().then(
+
+    // 建立本次多边形中 markers 的 id 与 相关信息的索引
+    final markersInPolygonMap = keyByHosueMarkerId(store.state.markersInPolygon);
+
+    /// 建立索引
+    final residentialMarkers = keyByHosueMarkerId(store.state.markers);
+
+    // 将上一次在圈内，这一次不在圈内的恢复原样
+    markersIdInPolygon.map((id){
+      if(!markersInPolygonMap.containsKey(id)){
+        var residentialMapFindMarker = ResidentialMapFindMarker(
+          residential: residentialMarkers[id]?.houses[0].residential ?? '',
+          num: residentialMarkers[id]?.houses.length ?? 0,
+        );
+        residentialMapFindMarker.inPolygon = false;
+        residentialMapFindMarker.toUint8List().then(
               (value) {
-                store.dispatch(
-                  UpdateMarker(
-                    mapId: store.state.id,
-                    id: key,
-                    iconParam: BitmapDescriptor.fromBytes(value!),
-                  ),
-                );
-              },
+            store.dispatch(
+              UpdateMarker(
+                mapId: store.state.id,
+                id: id,
+                iconParam: BitmapDescriptor.fromBytes(value!),
+              ),
             );
-          } else {
-            value.toUint8List().then(
+          },
+        );
+      }
+    });
+
+    // 遍历这一次在圈内的
+    markersInPolygonMap.forEach((residentialMarkerId, value) {
+      // 上一次不在圈内
+      if (!markersIdInPolygon.contains(residentialMarkerId)) {
+        var residentialMapFindMarker = ResidentialMapFindMarker(
+          residential: markersInPolygonMap[residentialMarkerId]?.houses[0].residential ?? '',
+          num: markersInPolygonMap[residentialMarkerId]?.houses.length ?? 0,
+        );
+        residentialMapFindMarker.inPolygon = true;
+        residentialMapFindMarker.toUint8List().then(
               (value) {
-                store.dispatch(
-                  UpdateMarker(
-                    mapId: store.state.id,
-                    id: key,
-                    iconParam: BitmapDescriptor.fromBytes(value!),
-                  ),
-                );
-              },
+            store.dispatch(
+              UpdateMarker(
+                mapId: store.state.id,
+                id: residentialMarkerId,
+                iconParam: BitmapDescriptor.fromBytes(value!),
+              ),
             );
-          }
-        }
-      },
-    );
+          },
+        );
+      }
+    });
+
+    // 更新圈内 id 集合
+    markersIdInPolygon.clear();
+    markersInPolygonMap.forEach((residentialMarkerId, value) {
+      markersIdInPolygon.add(residentialMarkerId);
+    });
+
   }
 
-  void _resetAllMarkers(Store<MapState> store) {
-    for (final element in store.state.markers) {
-      residentialMarkers[element.id]?.inPolygon = false;
-      residentialMarkers[element.id]?.toUint8List().then(
-        (value) {
-          store.dispatch(
-            UpdateMarker(
-              mapId: store.state.id,
-              id: element.id,
-              iconParam: BitmapDescriptor.fromBytes(value!),
-            ),
-          );
-        },
-      );
-    }
-  }
+  // void _resetAllMarkers(Store<MapState> store) {
+  //   for (final element in store.state.markers) {
+  //     residentialMarkers[element.id]?.inPolygon = false;
+  //     residentialMarkers[element.id]?.toUint8List().then(
+  //       (value) {
+  //         store.dispatch(
+  //           UpdateMarker(
+  //             mapId: store.state.id,
+  //             id: element.id,
+  //             iconParam: BitmapDescriptor.fromBytes(value!),
+  //           ),
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
   Widget buildOperationsWhenDrawing(Store<MapState> store) {
     return Column(
@@ -425,9 +465,7 @@ class _MapFindPageState extends State<MapFindPage> {
             // );
             if (store.state.markers.isEmpty) {
               _initResidentialMarkers(store);
-            }else{
-
-            }
+            } else {}
             store.dispatch(
               UpdateCameraPosition(
                 mapId: store.state.id,
