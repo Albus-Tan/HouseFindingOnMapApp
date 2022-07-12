@@ -51,10 +51,12 @@ class _AppState extends State<App> {
     super.initState();
     amapLocationService = AmapLocationService();
     amapLocationService.init();
+    amapLocationService.startLocation();
   }
 
   @override
   void dispose() {
+    amapLocationService.stopLocation();
     amapLocationService.dispose();
     super.dispose(); // This will free the memory space allocated to the page
   }

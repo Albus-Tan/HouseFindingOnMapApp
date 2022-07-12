@@ -1,4 +1,5 @@
 import 'package:app/routes/search_page.dart';
+import 'package:app/utils/storage.dart';
 import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
@@ -189,12 +190,11 @@ class HouseDetailPage extends StatelessWidget {
               MaterialPageRoute(
                 settings: const RouteSettings(name: "navigation"),
                 builder: (context) => MapNavigationPage(
-                  // TODO
-                  oriLat: '31.2706',
-                  oriLng: '121.3261',
+                  oriLat: '',
+                  oriLng: '',
                   desLat: houseDetail.latitude,
                   desLng: houseDetail.longitude,
-                  oriText: '当前位置',
+                  oriText: '我的位置',
                   desText: houseDetail.community != ""
                       ? houseDetail.community
                       : houseDetail.location,

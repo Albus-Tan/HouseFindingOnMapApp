@@ -67,4 +67,5 @@ class StorageUtil{
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
+
 }

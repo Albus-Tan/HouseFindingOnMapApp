@@ -34,7 +34,7 @@ class AmapLocationService {
 
   ///开始定位
   void startLocation() {
-    setLocationOption();
+    _setLocationOption();
     _locationPlugin.startLocation();
   }
 
@@ -44,52 +44,50 @@ class AmapLocationService {
   }
 
   ///设置定位参数
-  void setLocationOption() {
-    if (null != _locationPlugin) {
-      AMapLocationOption locationOption = new AMapLocationOption();
+  void _setLocationOption() {
+    AMapLocationOption locationOption = AMapLocationOption();
 
-      ///是否单次定位
-      locationOption.onceLocation = false;
+    ///是否单次定位
+    locationOption.onceLocation = false;
 
-      ///是否需要返回逆地理信息
-      locationOption.needAddress = true;
+    ///是否需要返回逆地理信息
+    locationOption.needAddress = true;
 
-      ///逆地理信息的语言类型
-      locationOption.geoLanguage = GeoLanguage.DEFAULT;
+    ///逆地理信息的语言类型
+    locationOption.geoLanguage = GeoLanguage.DEFAULT;
 
-      locationOption.desiredLocationAccuracyAuthorizationMode =
-          AMapLocationAccuracyAuthorizationMode.ReduceAccuracy;
+    locationOption.desiredLocationAccuracyAuthorizationMode =
+        AMapLocationAccuracyAuthorizationMode.ReduceAccuracy;
 
-      locationOption.fullAccuracyPurposeKey = "AMapLocationScene";
+    locationOption.fullAccuracyPurposeKey = "AMapLocationScene";
 
-      ///设置Android端连续定位的定位间隔
-      locationOption.locationInterval = 2000;
+    ///设置Android端连续定位的定位间隔
+    locationOption.locationInterval = 2000;
 
-      ///设置Android端的定位模式<br>
-      ///可选值：<br>
-      ///<li>[AMapLocationMode.Battery_Saving]</li>
-      ///<li>[AMapLocationMode.Device_Sensors]</li>
-      ///<li>[AMapLocationMode.Hight_Accuracy]</li>
-      locationOption.locationMode = AMapLocationMode.Hight_Accuracy;
+    ///设置Android端的定位模式<br>
+    ///可选值：<br>
+    ///<li>[AMapLocationMode.Battery_Saving]</li>
+    ///<li>[AMapLocationMode.Device_Sensors]</li>
+    ///<li>[AMapLocationMode.Hight_Accuracy]</li>
+    locationOption.locationMode = AMapLocationMode.Hight_Accuracy;
 
-      ///设置iOS端的定位最小更新距离<br>
-      locationOption.distanceFilter = -1;
+    ///设置iOS端的定位最小更新距离<br>
+    locationOption.distanceFilter = -1;
 
-      ///设置iOS端期望的定位精度
-      /// 可选值：<br>
-      /// <li>[DesiredAccuracy.Best] 最高精度</li>
-      /// <li>[DesiredAccuracy.BestForNavigation] 适用于导航场景的高精度 </li>
-      /// <li>[DesiredAccuracy.NearestTenMeters] 10米 </li>
-      /// <li>[DesiredAccuracy.Kilometer] 1000米</li>
-      /// <li>[DesiredAccuracy.ThreeKilometers] 3000米</li>
-      locationOption.desiredAccuracy = DesiredAccuracy.Best;
+    ///设置iOS端期望的定位精度
+    /// 可选值：<br>
+    /// <li>[DesiredAccuracy.Best] 最高精度</li>
+    /// <li>[DesiredAccuracy.BestForNavigation] 适用于导航场景的高精度 </li>
+    /// <li>[DesiredAccuracy.NearestTenMeters] 10米 </li>
+    /// <li>[DesiredAccuracy.Kilometer] 1000米</li>
+    /// <li>[DesiredAccuracy.ThreeKilometers] 3000米</li>
+    locationOption.desiredAccuracy = DesiredAccuracy.Best;
 
-      ///设置iOS端是否允许系统暂停定位
-      locationOption.pausesLocationUpdatesAutomatically = false;
+    ///设置iOS端是否允许系统暂停定位
+    locationOption.pausesLocationUpdatesAutomatically = false;
 
-      ///将定位参数设置给定位插件
-      _locationPlugin.setLocationOption(locationOption);
-    }
+    ///将定位参数设置给定位插件
+    _locationPlugin.setLocationOption(locationOption);
   }
 
   /// 动态申请定位权限
@@ -117,6 +115,10 @@ class AmapLocationService {
       print(result);
       _locationResult = result;
 
+      StorageUtil.setStringItem(
+        'address',
+        result['address'].toString(),
+      );
       StorageUtil.setDoubleItem(
         'lat',
         double.parse(
