@@ -46,6 +46,7 @@ class _MapFindPageState extends State<MapFindPage> {
   Map<String, HouseMarker?> filteredMarkers = {};
 
   /// 筛选条件组件
+  bool selectionChanged = false;
   late Widget selection;
   bool selectionInitialized = false;
   Map<String, String>? filter;
@@ -82,6 +83,7 @@ class _MapFindPageState extends State<MapFindPage> {
           price1 = "";
           price2 = "";
         }
+        selectionChanged = true;
       }
     });
   }
@@ -95,6 +97,8 @@ class _MapFindPageState extends State<MapFindPage> {
     for (final xi in x) {
       shi.add(int.parse(xi));
     }
+
+    filteredMarkers.clear();
 
     for (final marker in store.state.markers) {
       var housesList = marker.houses;
@@ -539,6 +543,7 @@ class _MapFindPageState extends State<MapFindPage> {
           },
           builder: (context, store) {
             _updateMarkersInPolygon(store);
+            if(selectionChanged) {updateFilteredHouse(store); selectionChanged = false;}
             return MaterialApp(
               home: Scaffold(
                 appBar: isDrawing
