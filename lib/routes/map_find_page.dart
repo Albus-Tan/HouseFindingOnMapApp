@@ -301,9 +301,9 @@ class _MapFindPageState extends State<MapFindPage> {
     final residentialMarkers = keyByHosueMarkerId(store.state.markers);
 
     // 将上一次在圈内，这一次不在圈内的恢复原样
-    markersIdInPolygon.map((id){
+    for( final id in markersIdInPolygon){
       if(!markersInPolygonMap.containsKey(id)){
-        var residentialMapFindMarker = ResidentialMapFindMarker(
+        final residentialMapFindMarker = ResidentialMapFindMarker(
           residential: residentialMarkers[id]?.houses[0].residential ?? '',
           num: residentialMarkers[id]?.houses.length ?? 0,
         );
@@ -320,7 +320,7 @@ class _MapFindPageState extends State<MapFindPage> {
           },
         );
       }
-    });
+    }
 
     // 遍历这一次在圈内的
     markersInPolygonMap.forEach((residentialMarkerId, value) {
