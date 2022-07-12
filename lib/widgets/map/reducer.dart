@@ -4,6 +4,8 @@ import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map/state.dart';
 import 'package:redux/redux.dart';
 
+import 'type.dart';
+
 final Reducer<MapState> mapReducer = combineReducers(
   [
     TypedReducer(_addMarker),
@@ -36,8 +38,8 @@ MapState _addMarker(MapState state, AddMarker action) {
 
 MapState _updateMarker(MapState state, UpdateMarker action) {
   if (state.id == action.mapId) {
-    final markers = keyByMarkerId(state.markers);
-    markers[action.id] = markers[action.id]!.copyWith(
+    final markers = keyByHosueMarkerId(state.markers);
+    markers[action.id] = markers[action.id]!.copyWithHouses(
       alphaParam: action.alphaParam,
       anchorParam: action.anchorParam,
       clickableParam: action.clickableParam,
@@ -62,7 +64,7 @@ MapState _updateMarker(MapState state, UpdateMarker action) {
 
 MapState _removeMarker(MapState state, RemoveMarker action) {
   if (state.id == action.mapId) {
-    final markers = keyByMarkerId(state.markers);
+    final markers = keyByHosueMarkerId(state.markers);
     markers.remove(action.createId);
 
     return state.copyWith(
@@ -76,7 +78,7 @@ MapState _removeMarker(MapState state, RemoveMarker action) {
 MapState _checkPointsInPolygon(MapState state, CheckPointsInPolygon action) {
   if (state.id == action.mapId) {
     final markers = state.markers;
-    final markersInPolygon = <Marker>[];
+    final markersInPolygon = <HouseMarker>[];
     final polygon = state.polygon;
     for (var marker in markers) {
       if (AMapTools.latLngIsInPolygon(marker.position, polygon)) {
