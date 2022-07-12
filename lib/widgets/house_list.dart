@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +34,7 @@ class _HouseListState extends State<HouseList> {
   final List<HouseCard> _houseCards = <HouseCard>[];
   final Set<int> hasFetched = {};
   int page = 0, pageSize = 10;
+  late int totElements;
 
   bool _isLastPage = false, isLoading = false;
 
@@ -90,6 +89,7 @@ class _HouseListState extends State<HouseList> {
               _isLastPage = value.last!,
               isLoading = false,
               page++,
+              totElements = value.totalElements!,
             });
   }
 
@@ -103,9 +103,10 @@ class _HouseListState extends State<HouseList> {
         future: getDatas(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return ListView.builder(
-              shrinkWrap: true, //加了这个HouseList外面就不用了加Container或Expanded了
-              // itemCount: _houseCards.length + (_isLastPage ? 0 : 1),
+            return ListView.separated(
+              shrinkWrap: true,
+              //加了这个HouseList外面就不用了加Container或Expanded了
+              itemCount: totElements,
               padding: const EdgeInsets.all(16.0),
               itemBuilder: (context, index) {
                 if (index >= _houseCards.length) {
@@ -117,7 +118,8 @@ class _HouseListState extends State<HouseList> {
                 // while (isLoading);
                 if (index >= _houseCards.length) {
                   if (_isLastPage) {
-                    if (index == _houseCards.length) return const Text("已经到底部了~~");
+                    if (index == _houseCards.length)
+                      return const Text("已经到底部了~~");
                     return const Divider();
                   }
                   if (isLoading) {
@@ -128,6 +130,9 @@ class _HouseListState extends State<HouseList> {
                   }
                 }
                 return _houseCards[index];
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Divider();
               },
             );
           } else {
