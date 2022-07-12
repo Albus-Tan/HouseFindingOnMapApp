@@ -108,6 +108,8 @@ class _MapFindPageState extends State<MapFindPage> {
       rType.add(int.parse(yi));
     }
 
+    final residentialMarkers = keyByHosueMarkerId(store.state.markers);
+
     for (final marker in store.state.oriMarkers) {
       var housesList = marker.houses;
       var filteredHousesList = <RentHouse>[];
@@ -140,10 +142,9 @@ class _MapFindPageState extends State<MapFindPage> {
         }
 
         // metro
-        if(mLine != -1 && mLine != house.metroLine){
+        if (mLine != -1 && mLine != house.metroLine) {
           houseMeetRequirement = false;
         }
-
 
         if (houseMeetRequirement) {
           filteredHousesList.add(house);
@@ -152,22 +153,26 @@ class _MapFindPageState extends State<MapFindPage> {
 
       residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
 
-      if(residentialHasMeetRequirement && filteredHousesList.length != housesList.length){
+      if (residentialHasMeetRequirement &&
+          filteredHousesList.length !=
+              residentialMarkers[marker.id]?.houses.length) {
         var residentialMapFindMarker = ResidentialMapFindMarker(
           residential: filteredHousesList[0].residential ?? '',
           num: filteredHousesList.length,
         );
         residentialMapFindMarker.toUint8List().then(
-              (value) {
-                store.dispatch(
-                  UpdateMarker(
-                    iconParam: BitmapDescriptor.fromBytes(value!),
-                    mapId: store.state.id,
-                    id: marker.id,
-                    visibleParam: residentialHasMeetRequirement,
-                    housesParam: residentialHasMeetRequirement ? filteredHousesList : housesList,
-                  ),
-                );
+          (value) {
+            store.dispatch(
+              UpdateMarker(
+                iconParam: BitmapDescriptor.fromBytes(value!),
+                mapId: store.state.id,
+                id: marker.id,
+                visibleParam: residentialHasMeetRequirement,
+                housesParam: residentialHasMeetRequirement
+                    ? filteredHousesList
+                    : housesList,
+              ),
+            );
           },
         );
       } else {
@@ -176,7 +181,8 @@ class _MapFindPageState extends State<MapFindPage> {
             mapId: store.state.id,
             id: marker.id,
             visibleParam: residentialHasMeetRequirement,
-            housesParam: residentialHasMeetRequirement ? filteredHousesList : housesList,
+            housesParam:
+                residentialHasMeetRequirement ? filteredHousesList : housesList,
           ),
         );
       }
