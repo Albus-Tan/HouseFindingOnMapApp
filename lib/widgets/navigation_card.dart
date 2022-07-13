@@ -115,27 +115,28 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.public] = [],
           _distanceCostMap[NavigationType.public] = [],
           _timeCostMap[NavigationType.public] = [],
-          if(value.status == '1'){
-            value.route.transits.forEach((path) => {
-              publicPolyline = "",
-              _distanceCostMap[NavigationType.public]
-                  ?.add(int.parse(path.distance)),
-              _timeCostMap[NavigationType.public]
-                  ?.add(int.parse(path.cost.duration ?? '0')),
-              path.segments.forEach((segment) => {
-                segment.walking.steps.forEach((step) => {
-                  publicPolyline =
-                  "$publicPolyline${step.polyline.polyline};",
-                }),
-                segment.bus.buslines.forEach((step) => {
-                  publicPolyline =
-                  "$publicPolyline${step.polyline.polyline};",
-                }),
-              }),
-              _polylinesMap[NavigationType.public]?.add(
-                  publicPolyline.substring(0, publicPolyline.length - 1)),
-            }),
-          },
+          if (value.status == '1')
+            {
+              value.route.transits.forEach((path) => {
+                    publicPolyline = "",
+                    _distanceCostMap[NavigationType.public]
+                        ?.add(int.parse(path.distance)),
+                    _timeCostMap[NavigationType.public]
+                        ?.add(int.parse(path.cost.duration ?? '0')),
+                    path.segments.forEach((segment) => {
+                          segment.walking.steps.forEach((step) => {
+                                publicPolyline =
+                                    "$publicPolyline${step.polyline.polyline};",
+                              }),
+                          segment.bus.buslines.forEach((step) => {
+                                publicPolyline =
+                                    "$publicPolyline${step.polyline.polyline};",
+                              }),
+                        }),
+                    _polylinesMap[NavigationType.public]?.add(
+                        publicPolyline.substring(0, publicPolyline.length - 1)),
+                  }),
+            },
           widget.onNavigate(_polylinesMap[NavigationType.public]?[0] ?? ''),
         },
       );
@@ -154,20 +155,21 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.driving] = [],
           _distanceCostMap[NavigationType.driving] = [],
           _timeCostMap[NavigationType.driving] = [],
-          if(value.status == '1'){
-            value.route.paths.forEach((path) => {
-              drivingPolyline = "",
-              _distanceCostMap[NavigationType.driving]
-                  ?.add(int.parse(path.distance)),
-              _timeCostMap[NavigationType.driving]
-                  ?.add(int.parse(path.cost.duration)),
-              path.steps.forEach((step) => {
-                drivingPolyline = "$drivingPolyline${step.polyline};",
-              }),
-              _polylinesMap[NavigationType.driving]?.add(
-                  drivingPolyline.substring(0, drivingPolyline.length - 1)),
-            }),
-          },
+          if (value.status == '1')
+            {
+              value.route.paths.forEach((path) => {
+                    drivingPolyline = "",
+                    _distanceCostMap[NavigationType.driving]
+                        ?.add(int.parse(path.distance)),
+                    _timeCostMap[NavigationType.driving]
+                        ?.add(int.parse(path.cost.duration)),
+                    path.steps.forEach((step) => {
+                          drivingPolyline = "$drivingPolyline${step.polyline};",
+                        }),
+                    _polylinesMap[NavigationType.driving]?.add(drivingPolyline
+                        .substring(0, drivingPolyline.length - 1)),
+                  }),
+            },
           widget.onNavigate(_polylinesMap[NavigationType.driving]?[0] ?? ''),
         },
       );
@@ -187,20 +189,21 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.walking] = [],
           _distanceCostMap[NavigationType.walking] = [],
           _timeCostMap[NavigationType.walking] = [],
-          if(value.status == '1'){
-            value.route.paths.forEach((path) => {
-              walkingPolyline = "",
-              _distanceCostMap[NavigationType.walking]
-                  ?.add(int.parse(path.distance)),
-              _timeCostMap[NavigationType.walking]
-                  ?.add(int.parse(path.cost.duration)),
-              path.steps.forEach((step) => {
-                walkingPolyline = "$walkingPolyline${step.polyline};",
-              }),
-            }),
-            _polylinesMap[NavigationType.walking]
-                ?.add(walkingPolyline.substring(0, walkingPolyline.length - 1)),
-          },
+          if (value.status == '1')
+            {
+              value.route.paths.forEach((path) => {
+                    walkingPolyline = "",
+                    _distanceCostMap[NavigationType.walking]
+                        ?.add(int.parse(path.distance)),
+                    _timeCostMap[NavigationType.walking]
+                        ?.add(int.parse(path.cost.duration)),
+                    path.steps.forEach((step) => {
+                          walkingPolyline = "$walkingPolyline${step.polyline};",
+                        }),
+                  }),
+              _polylinesMap[NavigationType.walking]?.add(
+                  walkingPolyline.substring(0, walkingPolyline.length - 1)),
+            },
           widget.onNavigate(_polylinesMap[NavigationType.walking]?[0] ?? ''),
         },
       );
@@ -219,20 +222,21 @@ class _NavigationCardState extends State<NavigationCard> {
           _polylinesMap[NavigationType.bicycle] = [],
           _distanceCostMap[NavigationType.bicycle] = [],
           _timeCostMap[NavigationType.bicycle] = [],
-          if(value.status == '1'){
-            value.route.paths.forEach((path) => {
-              bicyclePolyline = "",
-              _distanceCostMap[NavigationType.bicycle]
-                  ?.add(int.parse(path.distance)),
-              _timeCostMap[NavigationType.bicycle]
-                  ?.add(int.parse(path.duration)),
-              path.steps.forEach((step) => {
-                bicyclePolyline = "$bicyclePolyline${step.polyline};",
-              }),
-            }),
-            _polylinesMap[NavigationType.bicycle]
-                ?.add(bicyclePolyline.substring(0, bicyclePolyline.length - 1)),
-          },
+          if (value.status == '1')
+            {
+              value.route.paths.forEach((path) => {
+                    bicyclePolyline = "",
+                    _distanceCostMap[NavigationType.bicycle]
+                        ?.add(int.parse(path.distance)),
+                    _timeCostMap[NavigationType.bicycle]
+                        ?.add(int.parse(path.duration)),
+                    path.steps.forEach((step) => {
+                          bicyclePolyline = "$bicyclePolyline${step.polyline};",
+                        }),
+                  }),
+              _polylinesMap[NavigationType.bicycle]?.add(
+                  bicyclePolyline.substring(0, bicyclePolyline.length - 1)),
+            },
           widget.onNavigate(_polylinesMap[NavigationType.bicycle]?[0] ?? ''),
         },
       );
@@ -459,31 +463,55 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
       ),
       tabs: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: const [
-            Icon(Icons.directions_car),
-            SizedBox(width: 10),
-            Text("驾车"),
+            Flexible(
+              flex: 1,
+              child: Icon(Icons.directions_car),
+            ),
+            Flexible(
+              flex: 1,
+              child: Text("驾车"),
+            ),
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: const [
-            Icon(Icons.directions_walk),
-            SizedBox(width: 10),
-            Text("步行"),
+            Flexible(
+              flex: 1,
+              child: Icon(Icons.directions_walk),
+            ),
+            Flexible(
+              flex: 1,
+              child: Text("步行"),
+            ),
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: const [
-            Icon(Icons.directions_bus),
-            SizedBox(width: 10),
-            Text("公交"),
+            Flexible(
+              flex: 1,
+              child: Icon(Icons.directions_bus),
+            ),
+            Flexible(
+                flex: 1,
+                child: Text("公交"),
+            ),
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: const [
-            Icon(Icons.directions_bike),
-            SizedBox(width: 10),
-            Text("骑行"),
+            Flexible(
+                flex: 1,
+                child: Icon(Icons.directions_bike),
+            ),
+            Flexible(
+                flex: 1,
+                child: Text("骑行"),
+            ),
           ],
         ),
       ],
@@ -491,19 +519,27 @@ class _NavigationResultBarState extends State<NavigationResultBar> {
   }
 
   Widget buildNavigationResultListView(NavigationType type) {
-    return (widget.timeCostMap[type]?.length == null) ? const Center(
-      child: Text("暂无数据", style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500, fontSize: 15),),
-    ) : ListView.builder(
-      controller: widget.scrollController,
-      itemCount: widget.timeCostMap[type]?.length,
-      itemBuilder: (BuildContext context, int index) {
-        return buildNavigationResultCard(
-            type,
-            widget.timeCostMap[type]?[index] ?? 0,
-            widget.distanceCostMap[type]?[index] ?? 0,
-            index);
-      },
-    );
+    return (widget.timeCostMap[type]?.length == null)
+        ? const Center(
+            child: Text(
+              "暂无数据",
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15),
+            ),
+          )
+        : ListView.builder(
+            controller: widget.scrollController,
+            itemCount: widget.timeCostMap[type]?.length,
+            itemBuilder: (BuildContext context, int index) {
+              return buildNavigationResultCard(
+                  type,
+                  widget.timeCostMap[type]?[index] ?? 0,
+                  widget.distanceCostMap[type]?[index] ?? 0,
+                  index);
+            },
+          );
   }
 
   Widget buildNavigationResultTabBarView() {
