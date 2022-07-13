@@ -106,7 +106,7 @@ class _HouseListState extends State<HouseList> {
             return ListView.separated(
               shrinkWrap: true,
               //加了这个HouseList外面就不用了加Container或Expanded了
-              itemCount: totElements,
+              itemCount: totElements + 1,
               padding: const EdgeInsets.all(16.0),
               itemBuilder: (context, index) {
                 if (index >= _houseCards.length) {
