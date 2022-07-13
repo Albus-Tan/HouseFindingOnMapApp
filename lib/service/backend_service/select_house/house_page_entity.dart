@@ -208,6 +208,7 @@ class Content {
       latitude: latitude ?? "0",
       longitude: longitude ?? "0",
       location: location ?? "",
+      hid: id ?? "",
     );
     return data;
   }

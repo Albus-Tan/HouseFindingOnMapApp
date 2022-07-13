@@ -26,6 +26,7 @@ class HouseDetail {
   final String longitude;
   final String latitude;
   final String location;
+  final String hid;
 
   HouseDetail({
     required this.title,
@@ -42,16 +43,33 @@ class HouseDetail {
     required this.longitude,
     required this.latitude,
     required this.location,
+    required this.hid,
   });
 }
 
-class HouseDetailPage extends StatelessWidget {
+class HouseDetailPage extends StatefulWidget {
   final HouseDetail houseDetail;
 
-  const HouseDetailPage({
-    Key? key,
+  const HouseDetailPage({Key? key,
     required this.houseDetail,
   }) : super(key: key);
+
+  @override
+  State<HouseDetailPage> createState() => _HouseDetailPageState();
+}
+
+class _HouseDetailPageState extends State<HouseDetailPage> {
+  var isFavored = false;
+
+  @override
+  void initState() {
+    _checkFavor(widget.houseDetail.hid).then((value)=> {
+      setState((){
+        isFavored = value;
+      })
+    });
+    super.initState();
+  }
 
   /*
   * 绘制标题在上，文字在下的格式化文本
@@ -70,6 +88,20 @@ class HouseDetailPage extends StatelessWidget {
     );
   }
 
+  Future<bool> _checkFavor(String hid) async {
+    var url = Uri.parse('${Constants.backend}/user/checkFavorite?house_id=$hid');
+    print(url);
+    http.Response response;
+    var responseJson;
+    Result<String> res2;
+    final res = await StorageUtil.getStringItem('token');
+    response = await http.post(url, headers: {'Authorization' : 'Bearer $res'});
+    responseJson = json.decode(utf8.decode(response.bodyBytes));
+    print(responseJson);
+    res2 = Result.fromJson(responseJson);
+    return (res2.code == 200);
+  }
+
   Future<void> _favor(String hid) async {
     var url = Uri.parse( '${Constants.backend}/user/favor?house_id=$hid');
     http.Response response;
@@ -79,7 +111,20 @@ class HouseDetailPage extends StatelessWidget {
       response = await http.post(url, headers: {'Authorization' : 'Bearer $res'}),
       responseJson = json.decode(utf8.decode(response.bodyBytes)),
       res2 = Result.fromJson(responseJson),
-      StorageUtil.setStringItem('token', res2.detail ?? ''),
+      StorageUtil.setStringItem('token', res2.detail ?? ''), // update token
+    });
+  }
+
+  Future<void> _unFavor(String hid) async {
+    var url = Uri.parse( '${Constants.backend}/user/unFavor?house_id=$hid');
+    http.Response response;
+    var responseJson;
+    Result<String> res2;
+    StorageUtil.getStringItem('token').then((res) async => {
+      response = await http.post(url, headers: {'Authorization' : 'Bearer $res'}),
+      responseJson = json.decode(utf8.decode(response.bodyBytes)),
+      res2 = Result.fromJson(responseJson),
+      StorageUtil.setStringItem('token', res2.detail ?? ''), // update token
     });
   }
 
@@ -95,11 +140,15 @@ class HouseDetailPage extends StatelessWidget {
         BrnIconAction(
           key: const ValueKey('detail_favorite_button'),
           iconPressed: () {
-
+            if (isFavored) {
+              _unFavor(widget.houseDetail.hid);
+            } else {
+              _favor(widget.houseDetail.hid);
+            }
           },
-          child: const Icon(
+          child: Icon(
             Icons.star_border_outlined,
-            color: Colors.black,
+            color: isFavored ? Colors.amberAccent : Colors.black,
           ),
         ),
         BrnIconAction(
@@ -211,12 +260,12 @@ class HouseDetailPage extends StatelessWidget {
                 builder: (context) => MapNavigationPage(
                   oriLat: '',
                   oriLng: '',
-                  desLat: houseDetail.latitude,
-                  desLng: houseDetail.longitude,
+                  desLat: widget.houseDetail.latitude,
+                  desLng: widget.houseDetail.longitude,
                   oriText: '我的位置',
-                  desText: houseDetail.community != ""
-                      ? houseDetail.community
-                      : houseDetail.location,
+                  desText: widget.houseDetail.community != ""
+                      ? widget.houseDetail.community
+                      : widget.houseDetail.location,
                 ),
               ),
             );
@@ -236,13 +285,13 @@ class HouseDetailPage extends StatelessWidget {
           renderCarousel(
             List<HouseImage>.generate(
               1,
-              (index) => HouseImage(
-                  image: houseDetail.image,
+                  (index) => HouseImage(
+                  image: widget.houseDetail.image,
                   title: '1',
-                  isStatic: houseDetail.isStatic),
+                  isStatic: widget.houseDetail.isStatic),
             ),
           ),
-          _renderDetailTexts(houseDetail),
+          _renderDetailTexts(widget.houseDetail),
           const Flexible(
             flex: 4,
             child: HouseList(),
@@ -253,3 +302,4 @@ class HouseDetailPage extends StatelessWidget {
     );
   }
 }
+

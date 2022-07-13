@@ -375,6 +375,7 @@ class _MapFindPageState extends State<MapFindPage> {
                         housesList?[i].latitude ?? '0',
                         housesList?[i].longitude ?? '0',
                         housesList?[i].location ?? "",
+                        housesList?[i].id ?? "",
                       ),
                     ),
                   ),
