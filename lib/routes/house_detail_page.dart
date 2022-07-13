@@ -77,9 +77,9 @@ class HouseDetailPage extends StatelessWidget {
     Result<String> res2;
     StorageUtil.getStringItem('token').then((res) async => {
       response = await http.post(url, headers: {'Authorization' : 'Bearer $res'}),
-      responseJson = json.decode(utf8.decode(response.bodyBytes));
-      res2 = Result.fromJson(responseJson);
-      StorageUtil.setStringItem('token', res2.detail ?? '');
+      responseJson = json.decode(utf8.decode(response.bodyBytes)),
+      res2 = Result.fromJson(responseJson),
+      StorageUtil.setStringItem('token', res2.detail ?? ''),
     });
   }
 
