@@ -39,7 +39,7 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
   static final String _startIconPath = 'assets/map/start.png';
   static final String _endIconPath = 'assets/map/end.png';
 
-  var _futureBuilderFuture;
+  late Future<void> _futureBuilderFuture;
   late String _oriLat;
   late String _oriLng;
   late String _oriText;
@@ -91,27 +91,23 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
   }
 
   Future<void> getPos() async {
-    return Future(() async => {
-          await StorageUtil.getDoubleItem('lat').then((res) async => {
-                print(res),
-                _oriLat = res.toString(),
-              }),
-          await StorageUtil.getDoubleItem('lng').then((res) async => {
-                print(res),
-                _oriLng = res.toString(),
-              }),
-          await StorageUtil.getStringItem('address').then((res) async => {
-                print(res),
-                _oriText = res.toString(),
-              }),
-          await _initMarker(),
+    await StorageUtil.getDoubleItem('lat').then((res) async => {
+          print(res),
+          _oriLat = res.toString(),
         });
+    await StorageUtil.getDoubleItem('lng').then((res) async => {
+          print(res),
+          _oriLng = res.toString(),
+        });
+    await StorageUtil.getStringItem('address').then((res) async => {
+          print(res),
+          _oriText = res.toString(),
+        });
+    await _initMarker();
   }
 
-  Future initData() async {
-    return Future.wait([
-      getPos(),
-    ]);
+  Future<void> initData() async {
+    await getPos();
   }
 
   @override
