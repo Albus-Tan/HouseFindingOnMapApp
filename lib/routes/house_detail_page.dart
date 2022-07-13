@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:app/routes/search_page.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import '../utils/constants.dart';
+import '../utils/result.dart';
 import 'map_navigation_page.dart';
 
 class HouseDetail {
@@ -66,6 +70,19 @@ class HouseDetailPage extends StatelessWidget {
     );
   }
 
+  Future<void> _favor(String hid) async {
+    var url = Uri.parse( '${Constants.backend}/user/favor?house_id=$hid');
+    http.Response response;
+    var responseJson;
+    Result<String> res2;
+    StorageUtil.getStringItem('token').then((res) async => {
+      response = await http.post(url, headers: {'Authorization' : 'Bearer $res'}),
+      responseJson = json.decode(utf8.decode(response.bodyBytes));
+      res2 = Result.fromJson(responseJson);
+      StorageUtil.setStringItem('token', res2.detail ?? '');
+    });
+  }
+
   /*
   * 绘制AppBar，包含返回按钮，收藏按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
@@ -77,7 +94,9 @@ class HouseDetailPage extends StatelessWidget {
       actions: [
         BrnIconAction(
           key: const ValueKey('detail_favorite_button'),
-          iconPressed: () {},
+          iconPressed: () {
+
+          },
           child: const Icon(
             Icons.star_border_outlined,
             color: Colors.black,

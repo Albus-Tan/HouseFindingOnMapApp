@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:app/routes/register_page.dart';
+import 'package:app/utils/constants.dart';
+import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../utils/result.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required this.title}) : super(key: key);
@@ -119,6 +125,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Future<Result<String>> login(String name, String password) async {
+    var url = Uri.parse( '${Constants.backend}/user/login?name='
+        '$name&password=$password');
+    final response = await http.post(url);
+    final responseJson = json.decode(utf8.decode(response.bodyBytes));
+    Result<String> res = Result.fromJson(responseJson);
+    StorageUtil.setStringItem('token', res.detail ?? '');
+    return res;
+  }
+
   Widget buildLoginButton(BuildContext context) {
     return Align(
       child: SizedBox(
@@ -136,6 +152,12 @@ class _LoginPageState extends State<LoginPage> {
             if ((_formKey.currentState as FormState).validate()) {
               (_formKey.currentState as FormState).save();
               //TODO： 执行登录方法
+
+              login(_username, _password).then((value) => {
+                   StorageUtil.getStringItem('token').then((res) async => {
+                     print('token : $res'),
+                   }),
+              });
 
               //弹到主页
               Navigator.popUntil(
@@ -175,8 +197,8 @@ class _LoginPageState extends State<LoginPage> {
           if (v!.isEmpty) {
             return '请输入密码';
           }
-          if (v.length < 6) {
-            return '密码需大于6位';
+          if (v.length < 3) {
+            return '密码需大于3位';
           }
         },
         decoration: InputDecoration(
