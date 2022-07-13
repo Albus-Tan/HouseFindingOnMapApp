@@ -46,11 +46,12 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
 
   @override
   void initState() {
+    _oriLat = widget.oriLat;
+    _oriLng = widget.oriLng;
+    _oriText = widget.oriText;
     _futureBuilderFuture = initData();
     super.initState();
-    // _oriLat = widget.oriLat;
-    // _oriLng = widget.oriLng;
-    // _oriText = widget.oriText;
+
   }
 
   Future<void> _initMarker() async {
@@ -91,18 +92,20 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
   }
 
   Future<void> getPos() async {
-    await StorageUtil.getDoubleItem('lat').then((res) async => {
-          print(res),
-          _oriLat = res.toString(),
-        });
-    await StorageUtil.getDoubleItem('lng').then((res) async => {
-          print(res),
-          _oriLng = res.toString(),
-        });
-    await StorageUtil.getStringItem('address').then((res) async => {
-          print(res),
-          _oriText = res.toString(),
-        });
+    if(_oriLat == '' || _oriLng == ''){
+      await StorageUtil.getDoubleItem('lat').then((res) async => {
+        print(res),
+        _oriLat = res.toString(),
+      });
+      await StorageUtil.getDoubleItem('lng').then((res) async => {
+        print(res),
+        _oriLng = res.toString(),
+      });
+      await StorageUtil.getStringItem('address').then((res) async => {
+        print(res),
+        _oriText = res.toString(),
+      });
+    }
     await _initMarker();
   }
 
