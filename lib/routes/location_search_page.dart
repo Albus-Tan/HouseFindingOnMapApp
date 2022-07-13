@@ -119,7 +119,7 @@ class LocationSearchPage extends SearchDelegate {
                                   oriLat: location[1],
                                   oriLng: location[0],
                                   desLat: desLat,
-                                  desLng: oriLng,
+                                  desLng: desLng,
                                   oriText: inputTipsList[index].name,
                                   desText: desText,
                                 ) :  MapNavigationPage(
