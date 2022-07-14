@@ -133,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
         '$name&password=$password');
     final response = await http.post(url);
     if (response.statusCode != 200) {
+      StorageUtil.setStringItem('token', "");
       return Result(code: 403, msg: "wrong name or password");
     }
     final responseJson = json.decode(utf8.decode(response.bodyBytes));
@@ -160,15 +161,17 @@ class _LoginPageState extends State<LoginPage> {
               //TODO： 执行登录方法
 
               login(_username, _password).then((value) => {
-                    if (value.code == 403)
+                    if (value.code != 200)
                       {
+                        print("wrong password or username"),
                         Fluttertoast.showToast(
                           msg: value.msg,
                           backgroundColor: Colors.red,
                         ),
                       }
-                    else if (value.code == 200)
+                    else
                       {
+                        print("username: $_username password $_password"),
                         StorageUtil.setStringItem('name', _username),
                         Navigator.pushAndRemoveUntil(
                           context,
@@ -185,7 +188,6 @@ class _LoginPageState extends State<LoginPage> {
               //   context,
               //   ModalRoute.withName('/'),
               // );
-              print('username: $_username, password: $_password');
             }
           },
         ),

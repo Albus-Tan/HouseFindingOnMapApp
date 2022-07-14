@@ -1,4 +1,4 @@
 
 class Constants {
-  static String backend = "http://192.168.0.104:8080";
+  static String backend = "http://124.71.183.73:8080";
 }
