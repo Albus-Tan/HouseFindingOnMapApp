@@ -1,7 +1,16 @@
+import 'dart:convert';
+
+import 'package:app/routes/house_detail_page.dart';
 import 'package:app/routes/login_page.dart';
+import 'package:app/service/backend_service/select_house/house_page_entity.dart';
+import 'package:app/service/house_list_service.dart';
+import 'package:app/utils/constants.dart';
 import 'package:app/utils/storage.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../utils/result.dart';
+import '../widgets/house_card.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({
@@ -15,19 +24,31 @@ class MyProfilePage extends StatefulWidget {
 class _MyProfilePageState extends State<MyProfilePage> {
 
   late String name;
-
+  late List<HouseDetail> houseList;
+  late int favoriteNumber;
   // 私有方法
-  List<Widget> _getData() {
-    List<Widget> list = [];
-    for (int i = 0; i < 30; i++) {
-      // TODO: 修改为 用户收藏的 房屋详情信息卡
-      list.add(ListTile(
-        title: Text("收藏$i"),
-      ));
-    }
-    return list;
+
+  Future _getDatas() async {
+    Future.wait(
+      [
+        _getName(),
+        _getHouse(),
+      ]
+    );
   }
 
+  Future<void> _getHouse() async {
+    var url = Uri.parse('${Constants.backend}/user/getFavorites');
+    final token = await StorageUtil.getStringItem('token');
+    var response = await http.post(url, headers: {'Authorization' : 'Bearer $token'});
+    List<dynamic> responseJson = json.decode(utf8.decode(response.bodyBytes));
+    print(responseJson);
+    houseList.clear();
+    for (var v in responseJson) {
+      houseList.add(Content.fromJson(v).toHouseDetail());
+    }
+    favoriteNumber = houseList.length;
+  }
 
   Future<void> _getName() async {
     await StorageUtil.getStringItem('name').then((value) => {
@@ -38,7 +59,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _getName(),
+      future: _getDatas(),
       builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
@@ -95,7 +116,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           itemChildren: [
                             BrnNumberInfoItemModel(
                               title: '我的收藏',
-                              number: '24',
+                              number: favoriteNumber.toString(),
                             ),
                             BrnNumberInfoItemModel(
                               title: '最近浏览',
@@ -119,11 +140,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     ),
                   ),
                   const Divider(),
-                  Expanded(
-                    child: ListView(
-                      children: _getData(),
-                    ),
-                  )
+                  houseDetailToHouseList(houseList),
                 ],
               ),
             );
