@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
 import '../utils/result.dart';
 
 class LoginPage extends StatefulWidget {
@@ -177,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                           context,
                           MaterialPageRoute(
                             settings: const RouteSettings(name: "profile_page"),
-                            builder: (context) => MyProfilePage(),
+                            builder: (context) => const App(),
                           ),
                           ModalRoute.withName('/'),
                         ),
