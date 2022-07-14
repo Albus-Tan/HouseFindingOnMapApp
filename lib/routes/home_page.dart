@@ -1,7 +1,9 @@
 import 'package:app/routes/search_page.dart';
 import 'package:app/widgets/house_list.dart';
+import 'package:app/widgets/house_list_nearby.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/storage.dart';
 import '../widgets/carousel.dart';
 
 /// 轮播的广告图片
@@ -20,16 +22,30 @@ List advertisement = [
   ),
 ];
 
-class HomePageTabBarView extends StatefulWidget {
-  const HomePageTabBarView({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  createState() => _HomePageTabBarViewState();
+  createState() => _HomePageState();
 }
 
-class _HomePageTabBarViewState extends State<HomePageTabBarView>
+class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
+  String lat = '', lng = '';
+
+  Future<void> getPos() async {
+    if (lat == '' || lng == '') {
+      await StorageUtil.getDoubleItem('lat').then((res) async => {
+            print(res),
+            lat = res.toString(),
+          });
+      await StorageUtil.getDoubleItem('lng').then((res) async => {
+            print(res),
+            lng = res.toString(),
+          });
+    }
+  }
 
   @override
   void initState() {
@@ -148,18 +164,29 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: const [
-                  HouseList(
+                children: [
+                  const HouseList(
                     key: Key('recommendTabView'),
                   ),
-                  HouseList(
-                    key: Key('nearbyTabView'),
-                  ),
-                  HouseList(
+                  FutureBuilder(
+                      future: getPos(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return HouseListNearby(
+                            key: const Key('nearbyTabView'),
+                            lat: lat,
+                            lng: lng,
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      }),
+                  const HouseList(
                     key: Key('rentWholeTabView'),
                     rentType: "3",
                   ),
-                  HouseList(
+                  const HouseList(
                     key: Key('rentTogetherTabView'),
                     rentType: "1",
                   ),
@@ -170,19 +197,5 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
         ),
       ),
     );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return HomePageTabBarView();
   }
 }
