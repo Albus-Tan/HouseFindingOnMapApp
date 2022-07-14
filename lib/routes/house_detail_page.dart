@@ -112,6 +112,9 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
       responseJson = json.decode(utf8.decode(response.bodyBytes)),
       res2 = Result.fromJson(responseJson),
       StorageUtil.setStringItem('token', res2.detail ?? ''), // update token
+      setState((){
+        isFavored = true;
+      })
     });
   }
 
@@ -125,6 +128,9 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
       responseJson = json.decode(utf8.decode(response.bodyBytes)),
       res2 = Result.fromJson(responseJson),
       StorageUtil.setStringItem('token', res2.detail ?? ''), // update token
+      setState((){
+        isFavored = false;
+      })
     });
   }
 

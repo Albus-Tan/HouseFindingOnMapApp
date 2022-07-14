@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:app/routes/my_profile_page.dart';
 import 'package:app/routes/register_page.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+
 import '../utils/result.dart';
 
 class LoginPage extends StatefulWidget {
@@ -126,9 +129,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<Result<String>> login(String name, String password) async {
-    var url = Uri.parse( '${Constants.backend}/user/login?name='
+    var url = Uri.parse('${Constants.backend}/user/login?name='
         '$name&password=$password');
     final response = await http.post(url);
+    if (response.statusCode != 200) {
+      return Result(code: 403, msg: "wrong name or password");
+    }
     final responseJson = json.decode(utf8.decode(response.bodyBytes));
     Result<String> res = Result.fromJson(responseJson);
     StorageUtil.setStringItem('token', res.detail ?? '');
@@ -154,16 +160,31 @@ class _LoginPageState extends State<LoginPage> {
               //TODO： 执行登录方法
 
               login(_username, _password).then((value) => {
-                   StorageUtil.getStringItem('token').then((res) async => {
-                     print('token : $res'),
-                   }),
-              });
+                    if (value.code == 403)
+                      {
+                        Fluttertoast.showToast(
+                          msg: value.msg,
+                          backgroundColor: Colors.red,
+                        ),
+                      }
+                    else if (value.code == 200)
+                      {
+                        StorageUtil.setStringItem('name', _username),
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            settings: const RouteSettings(name: "profile_page"),
+                            builder: (context) => MyProfilePage(),
+                          ),
+                          ModalRoute.withName('/'),
+                        ),
+                      }
+                  });
 
-              //弹到主页
-              Navigator.popUntil(
-                context,
-                ModalRoute.withName('/'),
-              );
+              // Navigator.popUntil(
+              //   context,
+              //   ModalRoute.withName('/'),
+              // );
               print('username: $_username, password: $_password');
             }
           },
