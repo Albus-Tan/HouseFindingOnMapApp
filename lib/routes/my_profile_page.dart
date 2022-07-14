@@ -25,11 +25,19 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   late String name;
   late List<HouseDetail> houseList;
-  late int favoriteNumber;
   // 私有方法
 
-  Future _getDatas() async {
-    Future.wait(
+  @override
+  void initState() {
+     super.initState();
+     name = "游客";
+     houseList = [];
+  }
+
+  Future<List<void>> _getDatas() async {
+    // await _getName();
+    // await _getHouse();
+    return await Future.wait(
       [
         _getName(),
         _getHouse(),
@@ -41,18 +49,23 @@ class _MyProfilePageState extends State<MyProfilePage> {
     var url = Uri.parse('${Constants.backend}/user/getFavorites');
     final token = await StorageUtil.getStringItem('token');
     var response = await http.post(url, headers: {'Authorization' : 'Bearer $token'});
-    List<dynamic> responseJson = json.decode(utf8.decode(response.bodyBytes));
-    print(responseJson);
-    houseList.clear();
-    for (var v in responseJson) {
-      houseList.add(Content.fromJson(v).toHouseDetail());
+    if (response.statusCode != 200) {
+      print("empty list!");
+      houseList = [];
     }
-    favoriteNumber = houseList.length;
+    else {
+      List<dynamic> responseJson = json.decode(utf8.decode(response.bodyBytes));
+      print(responseJson);
+      houseList.clear();
+      for (var v in responseJson) {
+        houseList.add(Content.fromJson(v).toHouseDetail());
+      }
+    }
   }
 
   Future<void> _getName() async {
     await StorageUtil.getStringItem('name').then((value) => {
-      name = value,
+      name = value ?? "游客",
     });
   }
 
@@ -116,7 +129,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           itemChildren: [
                             BrnNumberInfoItemModel(
                               title: '我的收藏',
-                              number: favoriteNumber.toString(),
+                              number: houseList.length.toString(),
                             ),
                             BrnNumberInfoItemModel(
                               title: '最近浏览',
