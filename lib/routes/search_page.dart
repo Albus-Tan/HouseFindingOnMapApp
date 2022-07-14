@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../service/amap_api_service/amap_api_service.dart';
+import '../service/amap_api_service/search/input_tips.dart';
 import 'house_list_page.dart';
 
 class SearchBarViewDelegate extends SearchDelegate<String> {
-
-  String searchHint = "请输入搜索内容...";
+  String searchHint = "请输入小区名...";
 
   /// 待搜索的所有条目
   var sourceList = [
@@ -24,8 +25,24 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   /// 推荐的搜索条目
   var suggestList = ["汤臣一品", "上海交通大学"];
 
+  /// 搜索提示条目
+  List<Tips> inputTipsList = [];
+
   @override
   String get searchFieldLabel => searchHint;
+
+  Future<void> getInputTips(String keyword) async {
+    if (query == '') {
+      return;
+    } else {
+      await fetchResidentialInputTips(keyword).then((value) => {
+            print("fetchResidentialInputTips: "),
+            print(value),
+            inputTipsList.clear(),
+            inputTipsList.addAll(value.tips),
+          });
+    }
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -92,42 +109,41 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     List<String> suggest = query.isEmpty
         ? suggestList
-        : sourceList.where((input) => input.startsWith(query)).toList();
-    return query.isEmpty
-        ? const SingleChildScrollView(
-            child: SearchContentView(),
-          )
-        : ListView.builder(
-            itemCount: suggest.length,
-            itemBuilder: (BuildContext context, int index) => InkWell(
-              child: ListTile(
-                title: RichText(
-                  key: Key(suggest[index]),
-                  text: TextSpan(
-                    text: suggest[index].substring(0, query.length),
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: suggest[index].substring(query.length),
-                        style: const TextStyle(
-                          color: Colors.grey,
+        : inputTipsList.map((input) => input.name).toList();
+    return FutureBuilder(
+        future: getInputTips(query),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return query.isEmpty
+                ? const SingleChildScrollView(
+                    child: SearchContentView(),
+                  )
+                : ListView.builder(
+                    itemCount: suggest.length,
+                    itemBuilder: (BuildContext context, int index) => InkWell(
+                      child: ListTile(
+                        title: RichText(
+                          key: Key(suggest[index]),
+                          text: TextSpan(
+                            text: suggest[index],
+                            style: const TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              onTap: () {
-                query.replaceAll("", suggest[index].toString());
-                searchHint = "";
-                query = suggest[index].toString();
-                showResults(context);
-              },
-            ),
-          );
+                      onTap: () {
+                        query.replaceAll("", suggest[index].toString());
+                        searchHint = "";
+                        query = suggest[index].toString();
+                        showResults(context);
+                      },
+                    ),
+                  );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }
 
