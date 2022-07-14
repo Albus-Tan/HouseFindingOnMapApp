@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:app/routes/my_profile_page.dart';
 import 'package:app/routes/register_page.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/utils/storage.dart';
@@ -180,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                             settings: const RouteSettings(name: "profile_page"),
                             builder: (context) => const App(),
                           ),
-                          ModalRoute.withName('/'),
+                          (route) => false,
                         ),
                       }
                   });

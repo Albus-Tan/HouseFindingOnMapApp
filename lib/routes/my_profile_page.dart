@@ -101,7 +101,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
               settings: const RouteSettings(name: "profile_page"),
               builder: (context) => const App(),
             ),
-            ModalRoute.withName('/'),
+            (route) => false,
           );
         },
         style: ButtonStyle(
