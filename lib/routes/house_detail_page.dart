@@ -6,6 +6,7 @@ import 'package:app/widgets/carousel.dart';
 import 'package:app/widgets/house_list.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import '../utils/constants.dart';
 import '../utils/result.dart';
@@ -50,7 +51,8 @@ class HouseDetail {
 class HouseDetailPage extends StatefulWidget {
   final HouseDetail houseDetail;
 
-  const HouseDetailPage({Key? key,
+  const HouseDetailPage({
+    Key? key,
     required this.houseDetail,
   }) : super(key: key);
 
@@ -63,11 +65,11 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
 
   @override
   void initState() {
-    _checkFavor(widget.houseDetail.hid).then((value)=> {
-      setState((){
-        isFavored = value;
-      })
-    });
+    _checkFavor(widget.houseDetail.hid).then((value) => {
+          setState(() {
+            isFavored = value;
+          })
+        });
     super.initState();
   }
 
@@ -89,49 +91,86 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
   }
 
   Future<bool> _checkFavor(String hid) async {
-    var url = Uri.parse('${Constants.backend}/user/checkFavorite?house_id=$hid');
+    var url =
+        Uri.parse('${Constants.backend}/user/checkFavorite?house_id=$hid');
     print(url);
     http.Response response;
     var responseJson;
     Result<String> res2;
     final res = await StorageUtil.getStringItem('token');
-    response = await http.post(url, headers: {'Authorization' : 'Bearer $res'});
+    response = await http.post(url, headers: {'Authorization': 'Bearer $res'});
     responseJson = json.decode(utf8.decode(response.bodyBytes));
-    print(responseJson);
+    //print(responseJson);
     res2 = Result.fromJson(responseJson);
     return (res2.code == 200);
   }
 
   Future<void> _favor(String hid) async {
-    var url = Uri.parse( '${Constants.backend}/user/favor?house_id=$hid');
+    var url = Uri.parse('${Constants.backend}/user/favor?house_id=$hid');
     http.Response response;
     var responseJson;
     Result<String> res2;
     StorageUtil.getStringItem('token').then((res) async => {
-      response = await http.post(url, headers: {'Authorization' : 'Bearer $res'}),
-      responseJson = json.decode(utf8.decode(response.bodyBytes)),
-      res2 = Result.fromJson(responseJson),
-      StorageUtil.setStringItem('token', res2.detail ?? ''), // update token
-      setState((){
-        isFavored = true;
-      })
-    });
+          if (res == null || res == "")
+            {
+              Fluttertoast.showToast(
+                  msg: "Please login first", gravity: ToastGravity.TOP),
+            }
+          else
+            {
+              response = await http
+                  .post(url, headers: {'Authorization': 'Bearer $res'}),
+              responseJson = json.decode(utf8.decode(response.bodyBytes)),
+              res2 = Result.fromJson(responseJson),
+              if (res2.detail != null)
+                {
+                  StorageUtil.setStringItem('token', res2.detail ?? ''),
+                  // update token
+                  setState(() {
+                    isFavored = true;
+                  })
+                }
+              else
+                {
+                  Fluttertoast.showToast(
+                      msg: "Login expired! Please login again"),
+                }
+            }
+        });
   }
 
   Future<void> _unFavor(String hid) async {
-    var url = Uri.parse( '${Constants.backend}/user/unFavor?house_id=$hid');
+    var url = Uri.parse('${Constants.backend}/user/unFavor?house_id=$hid');
     http.Response response;
     var responseJson;
     Result<String> res2;
     StorageUtil.getStringItem('token').then((res) async => {
-      response = await http.post(url, headers: {'Authorization' : 'Bearer $res'}),
-      responseJson = json.decode(utf8.decode(response.bodyBytes)),
-      res2 = Result.fromJson(responseJson),
-      StorageUtil.setStringItem('token', res2.detail ?? ''), // update token
-      setState((){
-        isFavored = false;
-      })
-    });
+          if (res == null || res == "")
+            {
+              Fluttertoast.showToast(
+                  msg: "Please login first", gravity: ToastGravity.TOP),
+            }
+          else
+            {
+              response = await http
+                  .post(url, headers: {'Authorization': 'Bearer $res'}),
+              responseJson = json.decode(utf8.decode(response.bodyBytes)),
+              res2 = Result.fromJson(responseJson),
+              if (res2.detail != null)
+                {
+                  StorageUtil.setStringItem('token', res2.detail ?? ''),
+                  // update token
+                  setState(() {
+                    isFavored = false;
+                  })
+                }
+              else
+                {
+                  Fluttertoast.showToast(
+                      msg: "Login expired! Please login again"),
+                }
+            }
+        });
   }
 
   /*
@@ -291,7 +330,7 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
           renderCarousel(
             List<HouseImage>.generate(
               1,
-                  (index) => HouseImage(
+              (index) => HouseImage(
                   image: widget.houseDetail.image,
                   title: '1',
                   isStatic: widget.houseDetail.isStatic),
@@ -308,4 +347,3 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
     );
   }
 }
-
