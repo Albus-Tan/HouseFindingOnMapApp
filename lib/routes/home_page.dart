@@ -157,9 +157,11 @@ class _HomePageTabBarViewState extends State<HomePageTabBarView>
                   ),
                   HouseList(
                     key: Key('rentWholeTabView'),
+                    rentType: "3",
                   ),
                   HouseList(
                     key: Key('rentTogetherTabView'),
+                    rentType: "1",
                   ),
                 ],
               ),
