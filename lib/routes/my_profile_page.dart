@@ -10,9 +10,8 @@ import 'package:app/utils/storage.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../main.dart';
-import '../utils/result.dart';
-import '../widgets/house_card.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({
@@ -206,7 +205,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   ),
                 ),
                 const Divider(),
-                houseDetailToHouseList(houseList),
+                Expanded(
+                  child: houseDetailToHouseList(houseList),
+                ),
               ],
             ),
           );
