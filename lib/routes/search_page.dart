@@ -7,6 +7,11 @@ import 'house_list_page.dart';
 class SearchBarViewDelegate extends SearchDelegate<String> {
   String searchHint = "请输入小区名...";
 
+  // final page = const HouseListPage(
+  //   needAppBar: false,
+  //   keyWord: "",
+  // );
+
   /// 待搜索的所有条目
   var sourceList = [
     "汤臣一品",
@@ -62,7 +67,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
       /// 搜索按钮
       IconButton(
         icon: const Icon(Icons.search),
-        onPressed: () => query = "",
+        onPressed: () => showResults(context),
       )
     ];
   }
@@ -79,30 +84,48 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
     );
   }
 
-  ///展示搜索结果
   @override
-  Widget buildResults(BuildContext context) {
-    List<String> result = [];
+  Widget buildResults(BuildContext context) => Container();
 
-    ///模拟搜索过程
-    for (var str in sourceList) {
-      ///query 就是输入框的 TextEditingController
-      if (query.isNotEmpty && str.contains(query)) {
-        result.add(str);
-      }
-    }
-
-    ///展示搜索结果
-    // return ListView.builder(
-    //   itemCount: result.length,
-    //   itemBuilder: (BuildContext context, int index) => ListTile(
-    //     title: Text(result[index]),
-    //   ),
-    // );
-    return const HouseListPage(
-      needAppBar: false,
+  @override
+  void showResults(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HouseListPage(
+          needAppBar: true,
+          keyWord: query,
+        ),
+      ),
     );
+    super.showResults(context);
   }
+
+  // ///展示搜索结果
+  // @override
+  // Widget buildResults(BuildContext context) {
+  //   List<String> result = [];
+  //
+  //   ///模拟搜索过程
+  //   for (var str in sourceList) {
+  //     ///query 就是输入框的 TextEditingController
+  //     if (query.isNotEmpty && str.contains(query)) {
+  //       result.add(str);
+  //     }
+  //   }
+  //
+  //   ///展示搜索结果
+  //   // return ListView.builder(
+  //   //   itemCount: result.length,
+  //   //   itemBuilder: (BuildContext context, int index) => ListTile(
+  //   //     title: Text(result[index]),
+  //   //   ),
+  //   // );
+  //   // return page;
+  //   return HouseListPage(
+  //     needAppBar: false,
+  //     keyWord: query,
+  //   );
+  // }
 
   /// 搜索推荐下拉列表
   @override
@@ -137,6 +160,14 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
                         searchHint = "";
                         query = suggest[index].toString();
                         showResults(context);
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) => HouseListPage(
+                        //       needAppBar: true,
+                        //       keyWord: query,
+                        //     ),
+                        //   ),
+                        // );
                       },
                     ),
                   );
