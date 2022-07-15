@@ -89,7 +89,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
 
   @override
   void showResults(BuildContext context) {
-    Navigator.of(context).push(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => HouseListPage(
           needAppBar: true,

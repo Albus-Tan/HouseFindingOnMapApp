@@ -16,6 +16,9 @@ Widget _renderAppBar(BuildContext context) {
       BrnIconAction(
         iconPressed: () {
           showSearch(context: context, delegate: SearchBarViewDelegate());
+          // Navigator.of(context, rootNavigator: false).push(_SearchPageRoute<T>(
+          //   delegate: SearchBarViewDelegate(),
+          // ));
         },
         child: const Icon(
           Icons.search,
