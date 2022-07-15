@@ -16,6 +16,9 @@ Widget _renderAppBar(BuildContext context) {
       BrnIconAction(
         iconPressed: () {
           showSearch(context: context, delegate: SearchBarViewDelegate());
+          // Navigator.of(context, rootNavigator: false).push(_SearchPageRoute<T>(
+          //   delegate: SearchBarViewDelegate(),
+          // ));
         },
         child: const Icon(
           Icons.search,
@@ -30,9 +33,11 @@ class HouseListPage extends StatefulWidget {
   const HouseListPage({
     Key? key,
     this.needAppBar = true,
+    this.keyWord = "",
   }) : super(key: key);
 
   final bool needAppBar;
+  final String keyWord;
 
   @override
   createState() => _HouseListPageState();
@@ -103,6 +108,7 @@ class _HouseListPageState extends State<HouseListPage> {
     if (selectionInitialized) {
       list.add(selection);
     }
+    // list.add(Text(widget.keyWord));
     list.add(
       Expanded(
         child: HouseList(

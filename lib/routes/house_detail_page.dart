@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:app/routes/search_page.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/widgets/carousel.dart';
-import 'package:app/widgets/house_list.dart';
+import 'package:app/widgets/house_list_nearby.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+
 import '../utils/constants.dart';
 import '../utils/result.dart';
 import 'map_navigation_page.dart';
@@ -337,9 +338,12 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
             ),
           ),
           _renderDetailTexts(widget.houseDetail),
-          const Flexible(
+          Flexible(
             flex: 4,
-            child: HouseList(),
+            child: HouseListNearby(
+              lat: widget.houseDetail.latitude,
+              lng: widget.houseDetail.longitude,
+            ),
           ),
           _renderNavigationIcon(context),
         ],
