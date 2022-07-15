@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
   * 绘制AppBar，包含返回按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-Widget _renderAppBar(BuildContext context) {
+Widget _renderAppBar(BuildContext context, String keyword) {
   return BrnAppBar(
+    title: keyword,
     automaticallyImplyLeading: true,
     actions: [
       BrnIconAction(
@@ -102,7 +103,7 @@ class _HouseListPageState extends State<HouseListPage> {
   Widget build(BuildContext context) {
     final list = widget.needAppBar
         ? <Widget>[
-            _renderAppBar(context),
+            _renderAppBar(context,widget.keyWord),
           ]
         : <Widget>[];
     if (selectionInitialized) {
