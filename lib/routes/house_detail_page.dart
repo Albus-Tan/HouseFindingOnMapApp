@@ -100,6 +100,9 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
     Result<String> res2;
     final res = await StorageUtil.getStringItem('token');
     response = await http.post(url, headers: {'Authorization': 'Bearer $res'});
+    if (response.statusCode != 200) {
+      return false;
+    }
     responseJson = json.decode(utf8.decode(response.bodyBytes));
     //print(responseJson);
     res2 = Result.fromJson(responseJson);
@@ -119,22 +122,28 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
             }
           else
             {
+              print('token' + res),
               response = await http
                   .post(url, headers: {'Authorization': 'Bearer $res'}),
-              responseJson = json.decode(utf8.decode(response.bodyBytes)),
-              res2 = Result.fromJson(responseJson),
-              if (res2.detail != null)
+              if (response.statusCode != 200)
                 {
-                  StorageUtil.setStringItem('token', res2.detail ?? ''),
-                  // update token
-                  setState(() {
-                    isFavored = true;
-                  })
+                  Fluttertoast.showToast(
+                      msg: "Login expired! Please login again",
+                      backgroundColor: Colors.red,
+                      gravity: ToastGravity.TOP,),
                 }
               else
                 {
-                  Fluttertoast.showToast(
-                      msg: "Login expired! Please login again"),
+                  responseJson = json.decode(utf8.decode(response.bodyBytes)),
+                  res2 = Result.fromJson(responseJson),
+                  if (res2.detail != null)
+                    {
+                      StorageUtil.setStringItem('token', res2.detail ?? ''),
+                      // update token
+                      setState(() {
+                        isFavored = true;
+                      })
+                    }
                 }
             }
         });
