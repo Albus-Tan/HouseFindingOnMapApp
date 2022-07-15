@@ -8,4 +8,10 @@ class UserEntity {
     required this.name,
     required this.password
   });
+
+  UserEntity.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    password = json['password'];
+  }
 }

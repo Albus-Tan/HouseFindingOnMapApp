@@ -1,6 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:app/service/backend_service/user/user_entity.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../utils/constants.dart';
+import '../utils/result.dart';
+import '../utils/storage.dart';
 import 'login_page.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key, required this.title}) : super(key: key);
@@ -90,24 +98,22 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget buildOtherMethod(context) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
-      children: _RegisterMethod
-          .map((item) => Builder(builder: (context) {
-        return IconButton(
-            icon: Icon(item['icon'],
-                color: Theme.of(context).iconTheme.color),
-            onPressed: () {
-              //TODO: 第三方登录方法
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('${item['title']}登录'),
-                    action: SnackBarAction(
-                      label: '取消',
-                      onPressed: () {},
-                    )),
-              );
-            });
-      }))
-          .toList(),
+      children: _RegisterMethod.map((item) => Builder(builder: (context) {
+            return IconButton(
+                icon: Icon(item['icon'],
+                    color: Theme.of(context).iconTheme.color),
+                onPressed: () {
+                  //TODO: 第三方登录方法
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('${item['title']}登录'),
+                        action: SnackBarAction(
+                          label: '取消',
+                          onPressed: () {},
+                        )),
+                  );
+                });
+          })).toList(),
     );
   }
 
@@ -120,6 +126,18 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  Future<Result> _register(String name, String password) async {
+    var url = Uri.parse('${Constants.backend}/user/register?name='
+        '$name&password=$password');
+    final response = await http.post(url);
+    if (response.statusCode != 200) {
+      return Result(code: 404, msg: "Network may error");
+    }
+    final responseJson = json.decode(utf8.decode(response.bodyBytes));
+    var res = Result.fromJson(responseJson);
+    return res;
+  }
+
   Widget buildRegisterButton(BuildContext context) {
     return Align(
       child: SizedBox(
@@ -127,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
         width: 270,
         child: ElevatedButton(
           style: ButtonStyle(
-            // 设置圆角
+              // 设置圆角
               shape: MaterialStateProperty.all(const StadiumBorder(
                   side: BorderSide(style: BorderStyle.none)))),
           child: Text('Register',
@@ -138,18 +156,25 @@ class _RegisterPageState extends State<RegisterPage> {
               (_formKey.currentState as FormState).save();
               //TODO 执行注册方法
 
-              //弹到登录
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: "login"),
-                  builder: (context) => LoginPage(
-                    title: "欢迎登录",
-                  ),
-                ),
-
-              );
-              print('username: $_username, password: $_password');
+              _register(_username, _password).then((value) => {
+                    if (value.code == 200)
+                      {
+                        Fluttertoast.showToast(msg: value.msg),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            settings: const RouteSettings(name: "login"),
+                            builder: (context) => const LoginPage(
+                              title: "欢迎登录",
+                            ),
+                          ),
+                        ),
+                      }
+                    else
+                      {
+                        Fluttertoast.showToast(msg: value.msg),
+                      }
+                  });
             }
           },
         ),
