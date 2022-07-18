@@ -69,6 +69,7 @@ void _showHouseDetailListSheet(BuildContext context) {
                         latitude: '0',
                         location: "",
                         hid: "qqqq",
+                        layout: "nothing",
                       ),
                     ),
                   ),

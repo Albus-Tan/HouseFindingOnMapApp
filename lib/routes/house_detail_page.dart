@@ -29,6 +29,7 @@ class HouseDetail {
   final String latitude;
   final String location;
   final String hid;
+  final String layout;
 
   HouseDetail({
     required this.title,
@@ -46,6 +47,7 @@ class HouseDetail {
     required this.latitude,
     required this.location,
     required this.hid,
+    required this.layout,
   });
 }
 
@@ -266,9 +268,10 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
           children: [
             Expanded(
               child: _renderWrappedText(
-                "${houseDetail.shiNumber}室"
-                    "${houseDetail.tingNumber}厅"
-                    "${houseDetail.weiNumber}卫",
+                // "${houseDetail.shiNumber}室"
+                //     "${houseDetail.tingNumber}厅"
+                //     "${houseDetail.weiNumber}卫",
+                houseDetail.layout,
                 "房型",
               ),
             ),
@@ -280,8 +283,8 @@ class _HouseDetailPageState extends State<HouseDetailPage> {
             ),
             Expanded(
               child: _renderWrappedText(
-                houseDetail.direction,
-                "朝向",
+                houseDetail.community,
+                "小区",
               ),
             ),
           ],
