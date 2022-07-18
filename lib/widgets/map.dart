@@ -29,95 +29,171 @@ class WidgetMarker {
 }
 
 class MapWidget extends StatelessWidget {
-  const MapWidget({
-    Key? key,
-  }) : super(key: key);
+  const MapWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StoreBuilder<MapState>(
-      builder: (context, store) {
-        final state = store.state;
-        return Stack(
-          children: [
-            AMapWidget(
-              initialCameraPosition: state.cameraPosition,
-              polylines: Set.of(state.polyLines),
-              polygons: state.polygon.isEmpty
-                  ? <Polygon>{}
-                  : <Polygon>{
-                      Polygon(
-                        points: state.polygon,
-                      ),
-                    },
-              markers: Set.of(state.markers),
-              onMapCreated: (controller) => store.dispatch(
-                SetController(
-                  mapId: state.id,
-                  controller: controller,
-                ),
-              ),
-              rotateGesturesEnabled: false,
-              onCameraMoveEnd: (cameraPosition) {
-                store.dispatch(
-                  UpdateCameraPosition(
-                    mapId: state.id,
-                    cameraPosition: cameraPosition,
-                  ),
-                );
-              },
-            ),
-            GestureDetector(
-              onPanUpdate: state.drawing
-                  ? (details) {
-                      final screenPosition = details.localPosition;
+      builder: (context, store) => LayoutBuilder(
+        builder: (context, constrains) {
+          final state = store.state;
+          debugPrint('Enter');
+          final markers = <Marker>[];
 
-                      final centerLatitude =
-                          state.cameraPosition.target.latitude;
-                      final centerLongitude =
-                          state.cameraPosition.target.longitude;
-                      final height = context.size!.height;
-                      final width = context.size!.width;
-                      final centerHeight = height / 2;
-                      final centerWidth = width / 2;
-                      final ratio = 1 / cos(centerLatitude * pi / 180);
-                      final limitWidth = min(height, width);
-                      // actualLatitude = pixel * a * exp( 2 * zoom )
-                      final a = 2.0 - limitWidth / 2000;
-                      store.dispatch(
-                        AddPolygonPoint(
-                          mapId: state.id,
-                          position: LatLng(
-                            (-a *
-                                    (screenPosition.dy - centerHeight) *
-                                    pow(2, -state.cameraPosition.zoom) /
-                                    ratio +
-                                centerLatitude),
-                            (a *
-                                    (screenPosition.dx - centerWidth) *
-                                    pow(2, -state.cameraPosition.zoom) +
-                                centerLongitude),
+          if(state.drawing==false){
+            for (var e in store.state.markers) {
+              if (_getLatLngBound(
+                Size(
+                  constrains.maxWidth,
+                  constrains.maxHeight,
+                ),
+                store.state.cameraPosition,
+              ).contains(
+                e.position,
+              )) {
+                markers.add(e);
+              }
+            }
+          }
+
+
+          return Stack(
+            children: [
+              AMapWidget(
+                initialCameraPosition: state.cameraPosition,
+                polylines: Set.of(state.polyLines),
+                polygons: state.polygon.isEmpty
+                    ? <Polygon>{}
+                    : <Polygon>{
+                        Polygon(
+                          points: state.polygon,
+                        ),
+                      },
+                markers: Set.of(markers),
+                onMapCreated: (controller) => store.dispatch(
+                  SetController(
+                    mapId: state.id,
+                    controller: controller,
+                  ),
+                ),
+                rotateGesturesEnabled: false,
+                onCameraMoveEnd: (cameraPosition) {
+                  store.dispatch(
+                    UpdateCameraPosition(
+                      mapId: state.id,
+                      cameraPosition: cameraPosition,
+                    ),
+                  );
+                },
+              ),
+              GestureDetector(
+                onPanUpdate: state.drawing
+                    ? (details) {
+                        final screenPosition = details.localPosition;
+
+                        final centerLatitude =
+                            state.cameraPosition.target.latitude;
+                        final centerLongitude =
+                            state.cameraPosition.target.longitude;
+                        final height = context.size!.height;
+                        final width = context.size!.width;
+                        final centerHeight = height / 2;
+                        final centerWidth = width / 2;
+                        final ratio = 1 / cos(centerLatitude * pi / 180);
+                        final limitWidth = min(height, width);
+                        // actualLatitude = pixel * a * exp( 2 * zoom )
+                        final a = 2.0 - limitWidth / 2000;
+                        store.dispatch(
+                          AddPolygonPoint(
+                            mapId: state.id,
+                            position: LatLng(
+                              (-a *
+                                      (screenPosition.dy - centerHeight) *
+                                      pow(2, -state.cameraPosition.zoom) /
+                                      ratio +
+                                  centerLatitude),
+                              (a *
+                                      (screenPosition.dx - centerWidth) *
+                                      pow(2, -state.cameraPosition.zoom) +
+                                  centerLongitude),
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  : null,
-              onPanEnd: state.drawing
-                  ? (detail) {
-                      store.dispatch(
-                        EndDrawPolygon(
+                        );
+                      }
+                    : null,
+                onPanEnd: state.drawing
+                    ? (detail) {
+                        store.dispatch(
+                          EndDrawPolygon(
+                            mapId: state.id,
+                          ),
+                        );
+                        store.dispatch(CheckPointsInPolygon(
                           mapId: state.id,
-                        ),
-                      );
-                      store.dispatch(CheckPointsInPolygon(
-                        mapId: state.id,
-                      ));
-                    }
-                  : null,
-            )
-          ],
-        );
-      },
+                        ));
+                      }
+                    : null,
+              )
+            ],
+          );
+        },
+      ),
     );
   }
+}
+
+LatLngBounds _getLatLngBound(Size size, CameraPosition cameraPosition) {
+  final centerLatitude = cameraPosition.target.latitude;
+  final centerLongitude = cameraPosition.target.longitude;
+  final height = size.height;
+  final width = size.width;
+  final centerHeight = height / 2;
+  final centerWidth = width / 2;
+  final ratio = 1 /
+      cos(
+        centerLatitude * pi / 180,
+      );
+  final limitWidth = min(
+    height,
+    width,
+  );
+  // actualLatitude = pixel * a * exp( 2 * zoom )
+  final a = 2.0 - limitWidth / 2000;
+  final zoom = cameraPosition.zoom;
+  return LatLngBounds(
+    southwest: LatLng(
+      centerLatitude -
+          centerHeight *
+              a *
+              pow(
+                2,
+                -zoom,
+              ) /
+              ratio,
+      centerLongitude -
+          centerWidth *
+              a *
+              pow(
+                2,
+                -zoom,
+              ),
+    ),
+    northeast: LatLng(
+      centerLatitude +
+          centerHeight *
+              a *
+              pow(
+                2,
+                -zoom,
+              ) /
+              ratio,
+      centerLongitude +
+          centerWidth *
+              a *
+              pow(
+                2,
+                -zoom,
+              ),
+    ),
+  );
 }

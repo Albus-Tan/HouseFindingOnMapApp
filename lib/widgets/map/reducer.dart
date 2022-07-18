@@ -4,11 +4,16 @@ import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map/state.dart';
 import 'package:redux/redux.dart';
 
+import 'type.dart';
+
 final Reducer<MapState> mapReducer = combineReducers(
   [
     TypedReducer(_addMarker),
     TypedReducer(_updateMarker),
     TypedReducer(_removeMarker),
+    TypedReducer(_addOriMarker),
+    TypedReducer(_updateOriMarker),
+    TypedReducer(_removeOriMarker),
     TypedReducer(_checkPointsInPolygon),
     TypedReducer(_startDrawPolygon),
     TypedReducer(_addPolygonPoint),
@@ -18,6 +23,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_moveCamera),
     TypedReducer(_clear),
     TypedReducer(_clearPolygon),
+    TypedReducer(_updateWidgetSize),
   ],
 );
 
@@ -35,8 +41,8 @@ MapState _addMarker(MapState state, AddMarker action) {
 
 MapState _updateMarker(MapState state, UpdateMarker action) {
   if (state.id == action.mapId) {
-    final markers = keyByMarkerId(state.markers);
-    markers[action.id] = markers[action.id]!.copyWith(
+    final markers = keyByHosueMarkerId(state.markers);
+    markers[action.id] = markers[action.id]!.copyWithHouses(
       alphaParam: action.alphaParam,
       anchorParam: action.anchorParam,
       clickableParam: action.clickableParam,
@@ -49,6 +55,7 @@ MapState _updateMarker(MapState state, UpdateMarker action) {
       positionParam: action.positionParam,
       rotationParam: action.rotationParam,
       visibleParam: action.visibleParam,
+      housesParam: action.housesParam,
     );
 
     return state.copyWith(
@@ -61,7 +68,7 @@ MapState _updateMarker(MapState state, UpdateMarker action) {
 
 MapState _removeMarker(MapState state, RemoveMarker action) {
   if (state.id == action.mapId) {
-    final markers = keyByMarkerId(state.markers);
+    final markers = keyByHosueMarkerId(state.markers);
     markers.remove(action.createId);
 
     return state.copyWith(
@@ -72,10 +79,62 @@ MapState _removeMarker(MapState state, RemoveMarker action) {
   }
 }
 
+MapState _addOriMarker(MapState state, AddOriMarker action) {
+  if (state.id == action.mapId) {
+    final oriMarkers = state.oriMarkers;
+    oriMarkers.add(action.marker);
+    return state.copyWith(
+      oriMarkers: oriMarkers,
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _updateOriMarker(MapState state, UpdateOriMarker action) {
+  if (state.id == action.mapId) {
+    final oriMarkers = keyByHosueMarkerId(state.oriMarkers);
+    oriMarkers[action.id] = oriMarkers[action.id]!.copyWithHouses(
+      alphaParam: action.alphaParam,
+      anchorParam: action.anchorParam,
+      clickableParam: action.clickableParam,
+      draggableParam: action.draggableParam,
+      iconParam: action.iconParam,
+      infoWindowEnableParam: action.infoWindowEnableParam,
+      infoWindowParam: action.infoWindowParam,
+      onDragEndParam: action.onDragEndParam,
+      onTapParam: action.onTapParam,
+      positionParam: action.positionParam,
+      rotationParam: action.rotationParam,
+      visibleParam: action.visibleParam,
+      housesParam: action.housesParam,
+    );
+
+    return state.copyWith(
+      oriMarkers: oriMarkers.values.toList(),
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _removeOriMarker(MapState state, RemoveOriMarker action) {
+  if (state.id == action.mapId) {
+    final oriMarkers = keyByHosueMarkerId(state.oriMarkers);
+    oriMarkers.remove(action.createId);
+
+    return state.copyWith(
+      markers: oriMarkers.values.toList(),
+    );
+  } else {
+    return state;
+  }
+}
+
 MapState _checkPointsInPolygon(MapState state, CheckPointsInPolygon action) {
   if (state.id == action.mapId) {
     final markers = state.markers;
-    final markersInPolygon = <Marker>[];
+    final markersInPolygon = <HouseMarker>[];
     final polygon = state.polygon;
     for (var marker in markers) {
       if (AMapTools.latLngIsInPolygon(marker.position, polygon)) {
@@ -174,6 +233,16 @@ MapState _clear(MapState state, Clear action) {
       polygon: [],
       markers: [],
       polyLines: [],
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _updateWidgetSize(MapState state, UpdateWidgetSize action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      widgetSize: action.widgetSize,
     );
   } else {
     return state;

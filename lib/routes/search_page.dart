@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../service/amap_api_service/amap_api_service.dart';
+import '../service/amap_api_service/search/input_tips.dart';
 import 'house_list_page.dart';
 
 class SearchBarViewDelegate extends SearchDelegate<String> {
+  String searchHint = "请输入小区名...";
 
-  String searchHint = "请输入搜索内容...";
+  // final page = const HouseListPage(
+  //   needAppBar: false,
+  //   keyWord: "",
+  // );
 
   /// 待搜索的所有条目
   var sourceList = [
@@ -24,8 +30,24 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   /// 推荐的搜索条目
   var suggestList = ["汤臣一品", "上海交通大学"];
 
+  /// 搜索提示条目
+  List<Tips> inputTipsList = [];
+
   @override
   String get searchFieldLabel => searchHint;
+
+  Future<void> getInputTips(String keyword) async {
+    if (query == '') {
+      return;
+    } else {
+      await fetchResidentialInputTips(keyword).then((value) => {
+            print("fetchResidentialInputTips: "),
+            print(value),
+            inputTipsList.clear(),
+            inputTipsList.addAll(value.tips),
+          });
+    }
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -45,7 +67,7 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
       /// 搜索按钮
       IconButton(
         icon: const Icon(Icons.search),
-        onPressed: () => query = "",
+        onPressed: () => showResults(context),
       )
     ];
   }
@@ -62,72 +84,98 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
     );
   }
 
-  ///展示搜索结果
   @override
-  Widget buildResults(BuildContext context) {
-    List<String> result = [];
+  Widget buildResults(BuildContext context) => Container();
 
-    ///模拟搜索过程
-    for (var str in sourceList) {
-      ///query 就是输入框的 TextEditingController
-      if (query.isNotEmpty && str.contains(query)) {
-        result.add(str);
-      }
-    }
-
-    ///展示搜索结果
-    // return ListView.builder(
-    //   itemCount: result.length,
-    //   itemBuilder: (BuildContext context, int index) => ListTile(
-    //     title: Text(result[index]),
-    //   ),
-    // );
-    return const HouseListPage(
-      needAppBar: false,
+  @override
+  void showResults(BuildContext context) {
+    Navigator.of(context).popUntil(ModalRoute.withName('/'));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HouseListPage(
+          needAppBar: true,
+          keyWord: query,
+        ),
+      ),
     );
+    super.showResults(context);
   }
+
+  // ///展示搜索结果
+  // @override
+  // Widget buildResults(BuildContext context) {
+  //   List<String> result = [];
+  //
+  //   ///模拟搜索过程
+  //   for (var str in sourceList) {
+  //     ///query 就是输入框的 TextEditingController
+  //     if (query.isNotEmpty && str.contains(query)) {
+  //       result.add(str);
+  //     }
+  //   }
+  //
+  //   ///展示搜索结果
+  //   // return ListView.builder(
+  //   //   itemCount: result.length,
+  //   //   itemBuilder: (BuildContext context, int index) => ListTile(
+  //   //     title: Text(result[index]),
+  //   //   ),
+  //   // );
+  //   // return page;
+  //   return HouseListPage(
+  //     needAppBar: false,
+  //     keyWord: query,
+  //   );
+  // }
 
   /// 搜索推荐下拉列表
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> suggest = query.isEmpty
         ? suggestList
-        : sourceList.where((input) => input.startsWith(query)).toList();
-    return query.isEmpty
-        ? const SingleChildScrollView(
-            child: SearchContentView(),
-          )
-        : ListView.builder(
-            itemCount: suggest.length,
-            itemBuilder: (BuildContext context, int index) => InkWell(
-              child: ListTile(
-                title: RichText(
-                  key: Key(suggest[index]),
-                  text: TextSpan(
-                    text: suggest[index].substring(0, query.length),
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: suggest[index].substring(query.length),
-                        style: const TextStyle(
-                          color: Colors.grey,
+        : inputTipsList.map((input) => input.name).toList();
+    return FutureBuilder(
+        future: getInputTips(query),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return query.isEmpty
+                ? const SingleChildScrollView(
+                    child: SearchContentView(),
+                  )
+                : ListView.builder(
+                    itemCount: suggest.length,
+                    itemBuilder: (BuildContext context, int index) => InkWell(
+                      child: ListTile(
+                        title: RichText(
+                          key: Key(suggest[index]),
+                          text: TextSpan(
+                            text: suggest[index],
+                            style: const TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              onTap: () {
-                query.replaceAll("", suggest[index].toString());
-                searchHint = "";
-                query = suggest[index].toString();
-                showResults(context);
-              },
-            ),
-          );
+                      onTap: () {
+                        query.replaceAll("", suggest[index].toString());
+                        searchHint = "";
+                        query = suggest[index].toString();
+                        showResults(context);
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) => HouseListPage(
+                        //       needAppBar: true,
+                        //       keyWord: query,
+                        //     ),
+                        //   ),
+                        // );
+                      },
+                    ),
+                  );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }
 

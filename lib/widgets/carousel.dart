@@ -1,3 +1,4 @@
+import 'package:app/service/image_service.dart';
 import 'package:flutter/material.dart';
 
 class HouseImage {
@@ -106,10 +107,7 @@ class _CarouselState extends State<Carousel> {
                       items[index].image,
                       fit: BoxFit.cover,
                     )
-                  : Image.network(
-                      items[index].image,
-                      fit: BoxFit.cover,
-                    ),
+                  : getNetWorkImage(items[index].image),
             ),
             Align(
               alignment: Alignment.bottomCenter,

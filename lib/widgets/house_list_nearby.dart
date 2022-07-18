@@ -4,52 +4,28 @@ import 'package:flutter/material.dart';
 import '../service/backend_service/select_house.dart';
 import 'house_card.dart';
 
-class HouseList extends StatefulWidget {
+class HouseListNearby extends StatefulWidget {
   // final Map<String, String>? filter;
-  final String district,
-      rentType,
-      rooms,
-      metroLine,
-      metroStation,
-      price1,
-      price2,
-      keyword;
+  final String lat,lng;
 
-  const HouseList({
+  const HouseListNearby({
     // this.filter,
-    this.district = "",
-    this.rentType = "",
-    this.rooms = "",
-    this.metroLine = "",
-    this.metroStation = "",
-    this.price1 = "",
-    this.price2 = "",
-    this.keyword = "",
+    this.lat = "",
+    this.lng = "",
     Key? key,
   }) : super(key: key);
 
   @override
-  State<HouseList> createState() => _HouseListState();
+  State<HouseListNearby> createState() => _HouseListNearbyState();
 }
 
-class _HouseListState extends State<HouseList> {
+class _HouseListNearbyState extends State<HouseListNearby> {
   final List<HouseCard> _houseCards = <HouseCard>[];
   final Set<int> hasFetched = {};
   int page = 0, pageSize = 10;
-  late int totElements;
+  int totElements = 0;
 
   bool _isLastPage = false, isLoading = false;
-
-  // List<HouseCard> getHouseCard() {
-  //   List<HouseCard> tmp = [];
-  //   if (isLast) return tmp;
-  //   for (int i = 0; i < 5; i++) {
-  //     tmp.add(
-  //       houseCardExample[Random().nextInt(houseCardExample.length)],
-  //     );
-  //   }
-  //   return tmp;
-  // }
 
   Future<void> getPageOfHouseCard() async {
     if (_isLastPage || hasFetched.contains(page)) return;
@@ -67,33 +43,27 @@ class _HouseListState extends State<HouseList> {
   }
 
   Future<void> getHousePages() async {
-    await fetchHousePage(
-            widget.district,
-            widget.price1,
-            widget.price2,
-            widget.rentType,
-            widget.rooms,
-            widget.metroLine,
-            widget.metroStation,
-            widget.keyword,
-            page,
-            pageSize)
+    await fetchHousePageNearBy(
+        widget.lat,
+        widget.lng,
+        page,
+        pageSize)
         .then((value) => {
-              debugPrint("fetchHousePage: $page ${value.last!}"),
-              // debugPrint(jsonEncode(value.toJson())),
-              // value.content?.forEach((element) {
-              //   debugPrint(jsonEncode(element.toJson()));
-              // }),
+      debugPrint("fetchHousePageNearBy: $page ${value.last!}"),
+      // debugPrint(jsonEncode(value.toJson())),
+      // value.content?.forEach((element) {
+      //   debugPrint(jsonEncode(element.toJson()));
+      // }),
 
-              value.content?.forEach((e) {
-                _houseCards.add(e.toHouseCard());
-              }),
-              // debugPrint("fetchHousePage: $page $_houseCards"),
-              _isLastPage = value.last!,
-              isLoading = false,
-              page++,
-              totElements = value.totalElements!,
-            });
+      value.content?.forEach((e) {
+        _houseCards.add(e.toHouseCard());
+      }),
+      // debugPrint("fetchHousePage: $page $_houseCards"),
+      _isLastPage = value.last!,
+      isLoading = false,
+      page++,
+      totElements = value.totalElements!,
+    });
   }
 
   @override

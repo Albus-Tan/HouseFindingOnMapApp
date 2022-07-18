@@ -9,13 +9,17 @@ import 'package:flutter/material.dart';
   * 绘制AppBar，包含返回按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
   * */
-Widget _renderAppBar(BuildContext context) {
+Widget _renderAppBar(BuildContext context, String keyword) {
   return BrnAppBar(
+    title: keyword,
     automaticallyImplyLeading: true,
     actions: [
       BrnIconAction(
         iconPressed: () {
           showSearch(context: context, delegate: SearchBarViewDelegate());
+          // Navigator.of(context, rootNavigator: false).push(_SearchPageRoute<T>(
+          //   delegate: SearchBarViewDelegate(),
+          // ));
         },
         child: const Icon(
           Icons.search,
@@ -30,9 +34,11 @@ class HouseListPage extends StatefulWidget {
   const HouseListPage({
     Key? key,
     this.needAppBar = true,
+    this.keyWord = "",
   }) : super(key: key);
 
   final bool needAppBar;
+  final String keyWord;
 
   @override
   createState() => _HouseListPageState();
@@ -65,6 +71,8 @@ class _HouseListPageState extends State<HouseListPage> {
         district = filter!["region"] ?? "";
         rooms = filter!["户型"] ?? "";
         metroLine = filter!["subway"] ?? "";
+        metroStation = filter?["station"] ?? "";
+        rentType = filter?["类型"] ?? "";
         if (filter!["price"] != null) {
           String s = filter!["price"]!;
           List<String> x = s.split(':');
@@ -95,12 +103,13 @@ class _HouseListPageState extends State<HouseListPage> {
   Widget build(BuildContext context) {
     final list = widget.needAppBar
         ? <Widget>[
-            _renderAppBar(context),
+            _renderAppBar(context,widget.keyWord),
           ]
         : <Widget>[];
     if (selectionInitialized) {
       list.add(selection);
     }
+    // list.add(Text(widget.keyWord));
     list.add(
       Expanded(
         child: HouseList(
@@ -111,6 +120,7 @@ class _HouseListPageState extends State<HouseListPage> {
           metroStation: metroStation,
           price1: price1,
           price2: price2,
+          keyword: widget.keyWord,
         ),
       ),
     );

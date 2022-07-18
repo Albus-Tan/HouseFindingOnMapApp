@@ -8,8 +8,8 @@ import 'package:app/service/amap_api_service/route_plan/walking_route_plan.dart'
 import 'package:app/service/amap_api_service/search/input_tips.dart';
 import 'package:http/http.dart' as http;
 
-
-Future<DrivingRoutePlan> fetchDrivingRoutePlan(String oriLng, String oriLat, String desLng, String desLat) async {
+Future<DrivingRoutePlan> fetchDrivingRoutePlan(
+    String oriLng, String oriLat, String desLng, String desLat) async {
   final response = await http.get(
     Uri.parse('https://restapi.amap.com/v5/direction/driving?'
         'key=beba67dedb3de25a4f91da96b33c62c0&'
@@ -20,7 +20,8 @@ Future<DrivingRoutePlan> fetchDrivingRoutePlan(String oriLng, String oriLat, Str
   return DrivingRoutePlan.fromJson(responseJson);
 }
 
-Future<WalkingRoutePlan> fetchWalkingRoutePlan(String oriLng, String oriLat, String desLng, String desLat) async {
+Future<WalkingRoutePlan> fetchWalkingRoutePlan(
+    String oriLng, String oriLat, String desLng, String desLat) async {
   final response = await http.get(
     Uri.parse('https://restapi.amap.com/v5/direction/walking?'
         'origin=$oriLng,$oriLat&destination=$desLng,$desLat&'
@@ -30,7 +31,8 @@ Future<WalkingRoutePlan> fetchWalkingRoutePlan(String oriLng, String oriLat, Str
   return WalkingRoutePlan.fromJson(responseJson);
 }
 
-Future<PublicRoutePlan> fetchPublicRoutePlan(String oriLng, String oriLat, String desLng, String desLat) async {
+Future<PublicRoutePlan> fetchPublicRoutePlan(
+    String oriLng, String oriLat, String desLng, String desLat) async {
   final response = await http.get(
     Uri.parse('https://restapi.amap.com/v5/direction/transit/'
         'integrated?origin=$oriLng,$oriLat&'
@@ -42,7 +44,8 @@ Future<PublicRoutePlan> fetchPublicRoutePlan(String oriLng, String oriLat, Strin
   return PublicRoutePlan.fromJson(responseJson);
 }
 
-Future<BicycleRoutePlan> fetchBicycleRoutePlan(String oriLng, String oriLat, String desLng, String desLat) async {
+Future<BicycleRoutePlan> fetchBicycleRoutePlan(
+    String oriLng, String oriLat, String desLng, String desLat) async {
   final response = await http.get(
     Uri.parse('https://restapi.amap.com/v5/direction/bicycling?'
         'origin=$oriLng,$oriLat&destination=$desLng,$desLat&'
@@ -54,9 +57,20 @@ Future<BicycleRoutePlan> fetchBicycleRoutePlan(String oriLng, String oriLat, Str
 
 Future<InputTips> fetchInputTips(String keyword, {String city = '021'}) async {
   final response = await http.get(
-    Uri.parse('https://restapi.amap.com/v3/assistant/inputtips?keywords=$keyword&key=beba67dedb3de25a4f91da96b33c62c0&city=$city'),
+    Uri.parse(
+        'https://restapi.amap.com/v3/assistant/inputtips?keywords=$keyword&key=beba67dedb3de25a4f91da96b33c62c0&city=$city'),
   );
   final responseJson = jsonDecode(response.body);
   return InputTips.fromJson(responseJson);
 }
 
+// 搜索住宅小区的提示
+Future<InputTips> fetchResidentialInputTips(String keyword,
+    {String city = '021'}) async {
+  final response = await http.get(
+    Uri.parse(
+        'https://restapi.amap.com/v3/assistant/inputtips?keywords=$keyword&key=beba67dedb3de25a4f91da96b33c62c0&city=$city&type=120300|120302'),
+  );
+  final responseJson = jsonDecode(response.body);
+  return InputTips.fromJson(responseJson);
+}

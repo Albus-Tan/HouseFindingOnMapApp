@@ -2,6 +2,7 @@ import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/storage.dart';
 import '../widgets/navigation_card.dart';
 
 class MapNavigationPage extends StatefulWidget {
@@ -38,18 +39,27 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
   static final String _startIconPath = 'assets/map/start.png';
   static final String _endIconPath = 'assets/map/end.png';
 
+  late Future<void> _futureBuilderFuture;
+  late String _oriLat;
+  late String _oriLng;
+  late String _oriText;
+
   @override
   void initState() {
-    _initMarker();
+    _oriLat = widget.oriLat;
+    _oriLng = widget.oriLng;
+    _oriText = widget.oriText;
+    _futureBuilderFuture = initData();
     super.initState();
+
   }
 
-  void _initMarker() async {
+  Future<void> _initMarker() async {
     if (_hasInitMarker) {
       return;
     }
     final LatLng oriMarkerPosition =
-        LatLng(double.parse(widget.oriLat), double.parse(widget.oriLng));
+        LatLng(double.parse(_oriLat), double.parse(_oriLng));
     final LatLng desMarkerPosition =
         LatLng(double.parse(widget.desLat), double.parse(widget.desLng));
     Marker oriMarker = Marker(
@@ -81,6 +91,28 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
     });
   }
 
+  Future<void> getPos() async {
+    if(_oriLat == '' || _oriLng == ''){
+      await StorageUtil.getDoubleItem('lat').then((res) async => {
+        print(res),
+        _oriLat = res.toString(),
+      });
+      await StorageUtil.getDoubleItem('lng').then((res) async => {
+        print(res),
+        _oriLng = res.toString(),
+      });
+      await StorageUtil.getStringItem('address').then((res) async => {
+        print(res),
+        _oriText = res.toString(),
+      });
+    }
+    await _initMarker();
+  }
+
+  Future<void> initData() async {
+    await getPos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,44 +134,62 @@ class _MapNavigationPageState extends State<MapNavigationPage> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          AMapWidget(
-            initialCameraPosition: CameraPosition(
-              // TODO: calculate zoom and center pos
-              zoom: 12,
-              target: LatLng(
-                  (double.parse(widget.oriLat) + double.parse(widget.desLat)) /
-                          2 -
-                      0.05,
-                  (double.parse(widget.oriLng) + double.parse(widget.desLng)) /
-                      2),
-            ),
-            markers: Set<Marker>.of(_initMarkerMap.values),
-            polylines: _polylinePoints.isEmpty
-                ? {}
-                : {
-                    Polyline(
-                      width: 20,
-                      customTexture: BitmapDescriptor.fromIconPath(
-                          'assets/map/texture_green.png'),
-                      joinType: JoinType.round,
-                      points: _polylinePoints,
-                    )
-                  },
-          ),
-          NavigationCard(
-            polyline: _polyline,
-            onNavigate: _handleNavigation,
-            oriLat: widget.oriLat,
-            oriLng: widget.oriLng,
-            desLat: widget.desLat,
-            desLng: widget.desLng,
-            oriText: widget.oriText,
-            desText: widget.desText,
-          ),
-        ],
-      ),
+      body: FutureBuilder(
+          future: _futureBuilderFuture,
+          builder: (BuildContext context, AsyncSnapshot snapShot) {
+            if (snapShot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                  color: Colors.redAccent,
+                ),
+              );
+            } else if (snapShot.connectionState == ConnectionState.done) {
+              print(snapShot.hasError);
+              return Stack(
+                children: [
+                  AMapWidget(
+                    initialCameraPosition: CameraPosition(
+                      // TODO: calculate zoom and center pos
+                      zoom: 12,
+                      target: LatLng(
+                          (double.parse(_oriLat) +
+                                      double.parse(widget.desLat)) /
+                                  2 -
+                              0.05,
+                          (double.parse(_oriLng) +
+                                  double.parse(widget.desLng)) /
+                              2),
+                    ),
+                    markers: Set<Marker>.of(_initMarkerMap.values),
+                    polylines: _polylinePoints.isEmpty
+                        ? {}
+                        : {
+                            Polyline(
+                              width: 20,
+                              customTexture: BitmapDescriptor.fromIconPath(
+                                  'assets/map/texture_green.png'),
+                              joinType: JoinType.round,
+                              points: _polylinePoints,
+                            )
+                          },
+                  ),
+                  NavigationCard(
+                    polyline: _polyline,
+                    onNavigate: _handleNavigation,
+                    oriLat: _oriLat,
+                    oriLng: _oriLng,
+                    desLat: widget.desLat,
+                    desLng: widget.desLng,
+                    oriText: _oriText,
+                    desText: widget.desText,
+                  ),
+                ],
+              );
+            } else {
+              return Text('Error: ${snapShot.error}');
+            }
+          }),
     );
   }
 }

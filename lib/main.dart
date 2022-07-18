@@ -1,8 +1,7 @@
-import 'package:amap_flutter_base/amap_flutter_base.dart';
-import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:app/routes/home_page.dart';
 import 'package:app/routes/map_find_page.dart';
 import 'package:app/routes/my_profile_page.dart';
+import 'package:app/service/amap_location_service.dart';
 import 'package:app/utils/route_observer.dart';
 import 'package:app/widgets/map/reducer.dart';
 import 'package:app/widgets/map/state.dart';
@@ -22,11 +21,6 @@ void main() {
       child: const App(),
     ),
   );
-
-  //Amap Permission
-  AMapFlutterLocation.updatePrivacyAgree(true);
-  AMapFlutterLocation.updatePrivacyShow(true, true);
-  const AMapPrivacyStatement(hasContains: true, hasShow: true, hasAgree: true);
 }
 
 class App extends StatefulWidget {
@@ -50,12 +44,28 @@ class _AppState extends State<App> {
   ];
   var currentPageIndex = 0;
 
+  late AmapLocationService amapLocationService;
+
+  @override
+  void initState() {
+    super.initState();
+    amapLocationService = AmapLocationService();
+    amapLocationService.init();
+    amapLocationService.startLocation();
+  }
+
+  @override
+  void dispose() {
+    amapLocationService.stopLocation();
+    amapLocationService.dispose();
+    super.dispose(); // This will free the memory space allocated to the page
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorObservers: [
-        AppNavigatorObserver()
-      ],
+      navigatorObservers: [AppNavigatorObserver()],
       title: _title,
       //theme: ThemeData.dark(),
       home: Scaffold(

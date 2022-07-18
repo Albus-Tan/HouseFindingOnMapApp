@@ -13,16 +13,29 @@ Future<HousePageEntity> fetchHousePage(
     String rooms,
     String metroLine,
     String metroStation,
+    String keyword,
     int page,
     int pageSize) async {
   var url = Uri.parse(
       'http://124.71.183.73:8080/house/search?price1=$price1&price2=$price2'
       '&page=$page&rentType=$rentType&rooms=$rooms&metro_station=$metroStation'
-      '&district=$district&pageSize=$pageSize&metro_line=$metroLine');
+      '&district=$district&pageSize=$pageSize&metro_line=$metroLine&keywords=$keyword');
   var s = url.toString();
   debugPrint(s);
   final response = await http.post(url);
   // final responseJson = jsonDecode(response.body);
-  final responseJson =json.decode(utf8.decode(response.bodyBytes));
+  final responseJson = json.decode(utf8.decode(response.bodyBytes));
+  return HousePageEntity.fromJson(responseJson);
+}
+
+Future<HousePageEntity> fetchHousePageNearBy(
+    String lat, String lng, int page, int pageSize) async {
+  var url = Uri.parse(
+      'http://124.71.183.73:8080/house/search/nearby?lat=$lat&lng=$lng&pageSize=$pageSize&page=$page');
+  var s = url.toString();
+  debugPrint(s);
+  final response = await http.post(url);
+  // final responseJson = jsonDecode(response.body);
+  final responseJson = json.decode(utf8.decode(response.bodyBytes));
   return HousePageEntity.fromJson(responseJson);
 }

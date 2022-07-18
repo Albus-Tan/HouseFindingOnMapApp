@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:app/routes/search_page.dart';
+import 'package:app/utils/storage.dart';
 import 'package:app/widgets/carousel.dart';
-import 'package:app/widgets/house_list.dart';
+import 'package:app/widgets/house_list_nearby.dart';
 import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
+import '../utils/constants.dart';
+import '../utils/result.dart';
 import 'map_navigation_page.dart';
 
 class HouseDetail {
@@ -17,6 +24,11 @@ class HouseDetail {
   final String image;
   final bool isStatic;
   final String community;
+  final String district;
+  final String longitude;
+  final String latitude;
+  final String location;
+  final String hid;
 
   HouseDetail({
     required this.title,
@@ -29,16 +41,38 @@ class HouseDetail {
     this.image = "",
     this.isStatic = false,
     required this.community,
+    required this.district,
+    required this.longitude,
+    required this.latitude,
+    required this.location,
+    required this.hid,
   });
 }
 
-class HouseDetailPage extends StatelessWidget {
+class HouseDetailPage extends StatefulWidget {
   final HouseDetail houseDetail;
 
   const HouseDetailPage({
     Key? key,
     required this.houseDetail,
   }) : super(key: key);
+
+  @override
+  State<HouseDetailPage> createState() => _HouseDetailPageState();
+}
+
+class _HouseDetailPageState extends State<HouseDetailPage> {
+  var isFavored = false;
+
+  @override
+  void initState() {
+    _checkFavor(widget.houseDetail.hid).then((value) => {
+          setState(() {
+            isFavored = value;
+          })
+        });
+    super.initState();
+  }
 
   /*
   * 绘制标题在上，文字在下的格式化文本
@@ -57,6 +91,98 @@ class HouseDetailPage extends StatelessWidget {
     );
   }
 
+  Future<bool> _checkFavor(String hid) async {
+    var url =
+        Uri.parse('${Constants.backend}/user/checkFavorite?house_id=$hid');
+    print(url);
+    http.Response response;
+    var responseJson;
+    Result<String> res2;
+    final res = await StorageUtil.getStringItem('token');
+    response = await http.post(url, headers: {'Authorization': 'Bearer $res'});
+    if (response.statusCode != 200) {
+      return false;
+    }
+    responseJson = json.decode(utf8.decode(response.bodyBytes));
+    //print(responseJson);
+    res2 = Result.fromJson(responseJson);
+    return (res2.code == 200);
+  }
+
+  Future<void> _favor(String hid) async {
+    var url = Uri.parse('${Constants.backend}/user/favor?house_id=$hid');
+    http.Response response;
+    var responseJson;
+    Result<String> res2;
+    StorageUtil.getStringItem('token').then((res) async => {
+          if (res == null || res == "")
+            {
+              Fluttertoast.showToast(
+                  msg: "Please login first", gravity: ToastGravity.TOP),
+            }
+          else
+            {
+              print('token' + res),
+              response = await http
+                  .post(url, headers: {'Authorization': 'Bearer $res'}),
+              if (response.statusCode != 200)
+                {
+                  Fluttertoast.showToast(
+                      msg: "Login expired! Please login again",
+                      backgroundColor: Colors.red,
+                      gravity: ToastGravity.TOP,),
+                }
+              else
+                {
+                  responseJson = json.decode(utf8.decode(response.bodyBytes)),
+                  res2 = Result.fromJson(responseJson),
+                  if (res2.detail != null)
+                    {
+                      StorageUtil.setStringItem('token', res2.detail ?? ''),
+                      // update token
+                      setState(() {
+                        isFavored = true;
+                      })
+                    }
+                }
+            }
+        });
+  }
+
+  Future<void> _unFavor(String hid) async {
+    var url = Uri.parse('${Constants.backend}/user/unFavor?house_id=$hid');
+    http.Response response;
+    var responseJson;
+    Result<String> res2;
+    StorageUtil.getStringItem('token').then((res) async => {
+          if (res == null || res == "")
+            {
+              Fluttertoast.showToast(
+                  msg: "Please login first", gravity: ToastGravity.TOP),
+            }
+          else
+            {
+              response = await http
+                  .post(url, headers: {'Authorization': 'Bearer $res'}),
+              responseJson = json.decode(utf8.decode(response.bodyBytes)),
+              res2 = Result.fromJson(responseJson),
+              if (res2.detail != null)
+                {
+                  StorageUtil.setStringItem('token', res2.detail ?? ''),
+                  // update token
+                  setState(() {
+                    isFavored = false;
+                  })
+                }
+              else
+                {
+                  Fluttertoast.showToast(
+                      msg: "Login expired! Please login again"),
+                }
+            }
+        });
+  }
+
   /*
   * 绘制AppBar，包含返回按钮，收藏按钮，查找按钮
   * 参考https://bruno.ke.com/page/widgets/brn-app-bar 效果8
@@ -68,10 +194,16 @@ class HouseDetailPage extends StatelessWidget {
       actions: [
         BrnIconAction(
           key: const ValueKey('detail_favorite_button'),
-          iconPressed: () {},
-          child: const Icon(
+          iconPressed: () {
+            if (isFavored) {
+              _unFavor(widget.houseDetail.hid);
+            } else {
+              _favor(widget.houseDetail.hid);
+            }
+          },
+          child: Icon(
             Icons.star_border_outlined,
-            color: Colors.black,
+            color: isFavored ? Colors.amberAccent : Colors.black,
           ),
         ),
         BrnIconAction(
@@ -99,11 +231,16 @@ class HouseDetailPage extends StatelessWidget {
     return Column(
       children: [
         ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 300),
-          child: BrnExpandableText(
-            text: houseDetail.title,
-            maxLines: 2,
-            textStyle: const TextStyle(fontSize: 20),
+          constraints: const BoxConstraints(maxWidth: 320),
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: houseDetail.title,
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
         RichText(
@@ -174,15 +311,16 @@ class HouseDetailPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                settings: const RouteSettings(name:"navigation"),
+                settings: const RouteSettings(name: "navigation"),
                 builder: (context) => MapNavigationPage(
-                  // TODO
-                  oriLat: '39.989643',
-                  oriLng: '116.481028',
-                  desLat: '39.90816',
-                  desLng: '116.434446',
-                  oriText: '天安门',
-                  desText: '清华大学',
+                  oriLat: '',
+                  oriLng: '',
+                  desLat: widget.houseDetail.latitude,
+                  desLng: widget.houseDetail.longitude,
+                  oriText: '我的位置',
+                  desText: widget.houseDetail.community != ""
+                      ? widget.houseDetail.community
+                      : widget.houseDetail.location,
                 ),
               ),
             );
@@ -203,15 +341,18 @@ class HouseDetailPage extends StatelessWidget {
             List<HouseImage>.generate(
               1,
               (index) => HouseImage(
-                  image: houseDetail.image,
+                  image: widget.houseDetail.image,
                   title: '1',
-                  isStatic: houseDetail.isStatic),
+                  isStatic: widget.houseDetail.isStatic),
             ),
           ),
-          _renderDetailTexts(houseDetail),
-          const Flexible(
+          _renderDetailTexts(widget.houseDetail),
+          Flexible(
             flex: 4,
-            child: HouseList(),
+            child: HouseListNearby(
+              lat: widget.houseDetail.latitude,
+              lng: widget.houseDetail.longitude,
+            ),
           ),
           _renderNavigationIcon(context),
         ],

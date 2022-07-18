@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:app/service/backend_service/house/rent_house.dart';
+import 'package:app/widgets/map/type.dart';
 
 class MapAction {
   final String mapId;
@@ -12,11 +14,62 @@ class MapAction {
 }
 
 class AddMarker extends MapAction {
-  final Marker marker;
+  final HouseMarker marker;
 
   AddMarker({
     required super.mapId,
     required this.marker,
+  });
+}
+class AddOriMarker extends MapAction {
+  final HouseMarker marker;
+
+  AddOriMarker({
+    required super.mapId,
+    required this.marker,
+  });
+}
+class UpdateOriMarker extends MapAction {
+  final String id;
+  final double? alphaParam;
+  final Offset? anchorParam;
+  final bool? clickableParam;
+  final bool? draggableParam;
+  final BitmapDescriptor? iconParam;
+  final bool? infoWindowEnableParam;
+  final InfoWindow? infoWindowParam;
+  final LatLng? positionParam;
+  final double? rotationParam;
+  final bool? visibleParam;
+    final List<RentHouse>? housesParam;
+  final ArgumentCallback<String?>? onTapParam;
+  final MarkerDragEndCallback? onDragEndParam;
+
+  UpdateOriMarker({
+    this.alphaParam,
+    this.anchorParam,
+    this.clickableParam,
+    this.draggableParam,
+    this.iconParam,
+    this.infoWindowEnableParam,
+    this.infoWindowParam,
+    this.positionParam,
+    this.rotationParam,
+    this.visibleParam,
+    this.onTapParam,
+    this.onDragEndParam,
+    this.housesParam,
+    required super.mapId,
+    required this.id,
+  });
+}
+
+class RemoveOriMarker extends MapAction {
+  final String createId;
+
+  RemoveOriMarker({
+    required this.createId,
+    required super.mapId,
   });
 }
 
@@ -34,6 +87,7 @@ class UpdateMarker extends MapAction {
   final bool? visibleParam;
   final ArgumentCallback<String?>? onTapParam;
   final MarkerDragEndCallback? onDragEndParam;
+  final List<RentHouse>? housesParam;
 
   UpdateMarker({
     this.alphaParam,
@@ -48,10 +102,13 @@ class UpdateMarker extends MapAction {
     this.visibleParam,
     this.onTapParam,
     this.onDragEndParam,
+    this.housesParam,
     required super.mapId,
     required this.id,
   });
 }
+
+
 
 class RemoveMarker extends MapAction {
   final String createId;
@@ -124,6 +181,15 @@ class MoveCamera extends MapAction {
 
 class Clear extends MapAction {
   Clear({
+    required super.mapId,
+  });
+}
+
+class UpdateWidgetSize extends MapAction {
+  final Size widgetSize;
+
+  UpdateWidgetSize({
+    required this.widgetSize,
     required super.mapId,
   });
 }
