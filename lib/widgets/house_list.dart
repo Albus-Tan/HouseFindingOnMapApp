@@ -12,7 +12,8 @@ class HouseList extends StatefulWidget {
       metroLine,
       metroStation,
       price1,
-      price2;
+      price2,
+      keyword;
 
   const HouseList({
     // this.filter,
@@ -23,6 +24,7 @@ class HouseList extends StatefulWidget {
     this.metroStation = "",
     this.price1 = "",
     this.price2 = "",
+    this.keyword = "",
     Key? key,
   }) : super(key: key);
 
@@ -73,6 +75,7 @@ class _HouseListState extends State<HouseList> {
             widget.rooms,
             widget.metroLine,
             widget.metroStation,
+            widget.keyword,
             page,
             pageSize)
         .then((value) => {

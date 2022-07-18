@@ -120,6 +120,7 @@ class _HouseListPageState extends State<HouseListPage> {
           metroStation: metroStation,
           price1: price1,
           price2: price2,
+          keyword: widget.keyWord,
         ),
       ),
     );
