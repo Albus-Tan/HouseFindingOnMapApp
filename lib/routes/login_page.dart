@@ -167,6 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                         Fluttertoast.showToast(
                           msg: value.msg,
                           backgroundColor: Colors.red,
+                          gravity: ToastGravity.TOP,
                         ),
                       }
                     else

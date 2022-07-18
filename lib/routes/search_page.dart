@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../service/amap_api_service/amap_api_service.dart';
@@ -32,19 +33,32 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
 
   /// 搜索提示条目
   List<Tips> inputTipsList = [];
-
+  bool onChange = true;
   @override
   String get searchFieldLabel => searchHint;
 
   Future<void> getInputTips(String keyword) async {
+    if (!onChange) {
+      onChange = true;
+      return;
+    }
     if (query == '') {
+      String que;
+      inputTipsList.clear();
+      que = query;
+      query = que;
+      onChange = false;
       return;
     } else {
+      String que;
       await fetchResidentialInputTips(keyword).then((value) => {
             print("fetchResidentialInputTips: "),
             print(value),
             inputTipsList.clear(),
             inputTipsList.addAll(value.tips),
+            que = query,
+            query = que,
+            onChange = false,
           });
     }
   }
