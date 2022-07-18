@@ -15,66 +15,18 @@ class MapAction {
 
 class AddMarker extends MapAction {
   final HouseMarker marker;
+  final MarkerType markerType;
 
   AddMarker({
     required super.mapId,
     required this.marker,
-  });
-}
-class AddOriMarker extends MapAction {
-  final HouseMarker marker;
-
-  AddOriMarker({
-    required super.mapId,
-    required this.marker,
-  });
-}
-class UpdateOriMarker extends MapAction {
-  final String id;
-  final double? alphaParam;
-  final Offset? anchorParam;
-  final bool? clickableParam;
-  final bool? draggableParam;
-  final BitmapDescriptor? iconParam;
-  final bool? infoWindowEnableParam;
-  final InfoWindow? infoWindowParam;
-  final LatLng? positionParam;
-  final double? rotationParam;
-  final bool? visibleParam;
-    final List<RentHouse>? housesParam;
-  final ArgumentCallback<String?>? onTapParam;
-  final MarkerDragEndCallback? onDragEndParam;
-
-  UpdateOriMarker({
-    this.alphaParam,
-    this.anchorParam,
-    this.clickableParam,
-    this.draggableParam,
-    this.iconParam,
-    this.infoWindowEnableParam,
-    this.infoWindowParam,
-    this.positionParam,
-    this.rotationParam,
-    this.visibleParam,
-    this.onTapParam,
-    this.onDragEndParam,
-    this.housesParam,
-    required super.mapId,
-    required this.id,
-  });
-}
-
-class RemoveOriMarker extends MapAction {
-  final String createId;
-
-  RemoveOriMarker({
-    required this.createId,
-    required super.mapId,
+    required this.markerType,
   });
 }
 
 class UpdateMarker extends MapAction {
   final String id;
+  final MarkerType markerType;
   final double? alphaParam;
   final Offset? anchorParam;
   final bool? clickableParam;
@@ -105,22 +57,22 @@ class UpdateMarker extends MapAction {
     this.housesParam,
     required super.mapId,
     required this.id,
+    required this.markerType,
   });
 }
-
-
 
 class RemoveMarker extends MapAction {
   final String createId;
-
+  final MarkerType markerType;
   RemoveMarker({
     required this.createId,
     required super.mapId,
+    required this.markerType,
   });
 }
 
-class CheckPointsInPolygon extends MapAction {
-  CheckPointsInPolygon({
+class CheckCommunityMarkersInPolygon extends MapAction {
+  CheckCommunityMarkersInPolygon({
     required super.mapId,
   });
 }

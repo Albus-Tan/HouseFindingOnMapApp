@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
+import '../constant/shanghai_district.dart';
 import '../service/backend_service/house/rent_house.dart';
 import '../service/backend_service/map_find_house.dart';
+import '../utils/district_calculate.dart';
 import '../utils/storage.dart';
 import '../widgets/house_card.dart';
 import '../widgets/house_list/house_data.dart';
@@ -94,6 +96,7 @@ class _MapFindPageState extends State<MapFindPage> {
     int priceHigh = (price2 == '') ? -1 : int.parse(price2);
 
     int mLine = (metroLine == '') ? -1 : int.parse(metroLine);
+    //TODO
     List<String> zhan = (metroStation == '') ? [] : metroStation.split(',');
 
     List<int> shi = [];
@@ -108,7 +111,7 @@ class _MapFindPageState extends State<MapFindPage> {
       rType.add(int.parse(yi));
     }
 
-    final residentialMarkers = keyByHosueMarkerId(store.state.markers);
+    final residentialMarkers = keyByHouseMarkerId(store.state.communityMarkers);
 
     for (final marker in store.state.oriMarkers) {
       var housesList = marker.houses;
@@ -164,8 +167,9 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               UpdateMarker(
-                iconParam: BitmapDescriptor.fromBytes(value!),
                 mapId: store.state.id,
+                markerType: MarkerType.community,
+                iconParam: BitmapDescriptor.fromBytes(value!),
                 id: marker.id,
                 visibleParam: residentialHasMeetRequirement,
                 housesParam: residentialHasMeetRequirement
@@ -179,6 +183,7 @@ class _MapFindPageState extends State<MapFindPage> {
         store.dispatch(
           UpdateMarker(
             mapId: store.state.id,
+            markerType: MarkerType.community,
             id: marker.id,
             visibleParam: residentialHasMeetRequirement,
             housesParam:
@@ -199,12 +204,14 @@ class _MapFindPageState extends State<MapFindPage> {
       rooms,
       metroLine,
       metroStation,
-    ).then((value) => {
-          houses.clear(),
-          houses.addAll(value),
+    ).then(
+      (value) => {
+        houses.clear(),
+        houses.addAll(value),
 
-          // debugPrint("fetchAllHouse: $page $_houseCards"),
-        });
+        // debugPrint("fetchAllHouse: $page $_houseCards"),
+      },
+    );
   }
 
   @override
@@ -230,12 +237,13 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _updateResidentialMarkersOnTap(Store<MapState> store) async {
-    for (var m in store.state.markers) {
+    for (var m in store.state.communityMarkers) {
       store.dispatch(
         UpdateMarker(
+          mapId: store.state.id,
+          markerType: MarkerType.community,
           id: m.id,
           onTapParam: (id) => _markerOnTap(id!, store, context),
-          mapId: store.state.id,
         ),
       );
     }
@@ -249,6 +257,9 @@ class _MapFindPageState extends State<MapFindPage> {
     /// 按照小区整理的房源数据
     Map<String, List<RentHouse>> residentialList = {};
 
+    // 清空之前各个区房源套数的统计
+    resetDistrictHouseNumCalculation();
+
     for (var house in houses) {
       // 小区名为空，暂时丢弃不进行渲染
       if (house.residential == "" || house.residential == null) continue;
@@ -258,41 +269,107 @@ class _MapFindPageState extends State<MapFindPage> {
         residentialList[house.residential ?? ''] = [];
       }
       residentialList[house.residential]?.add(house);
+
+      // 向对应区增加房源数量
+      addHouseByDistrictName(house.district);
     }
 
     // 渲染小区 widget
-    residentialList.forEach((key, value) {
-      // 使用第一个房源信息的地理位置代表整个小区
-      var house = value[0];
-      var residentialMarkerWidget = ResidentialMapFindMarker(
-        residential: house.residential ?? '',
-        num: value.length,
-      );
-      HouseMarker(
-        onTap: (id) => _markerOnTap(id, store, context),
-        position:
-            LatLng(double.parse(house.latitude), double.parse(house.longitude)),
-        draggable: false,
-        houses: value,
-      )
-          .copyWithWidget(
-        widget: residentialMarkerWidget,
-      )
-          .then((value) {
-        store.dispatch(
-          AddMarker(
-            mapId: store.state.id,
-            marker: value,
+    residentialList.forEach(
+      (key, value) {
+        // 使用第一个房源信息的地理位置代表整个小区
+        var house = value[0];
+        var residentialMarkerWidget = ResidentialMapFindMarker(
+          residential: house.residential ?? '',
+          num: value.length,
+        );
+        HouseMarker(
+          onTap: (id) => _markerOnTap(id, store, context),
+          position: LatLng(
+              double.parse(house.latitude), double.parse(house.longitude)),
+          draggable: false,
+          houses: value,
+        )
+            .copyWithWidget(
+          widget: residentialMarkerWidget,
+        )
+            .then(
+          (value) {
+            store.dispatch(
+              AddMarker(
+                mapId: store.state.id,
+                markerType: MarkerType.community,
+                marker: value,
+              ),
+            );
+            store.dispatch(
+              AddMarker(
+                mapId: store.state.id,
+                markerType: MarkerType.origin,
+                marker: value,
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    // 渲染区 widget
+    infoShanghaiDistrict.forEach(
+      (key, value) {
+        final districtMarkerWidget = DistrictMapFindMarker(
+          district: value.name,
+          num: getHouseNumByDistrict(key) ?? 0,
+        );
+        final latLng = LatLng(
+          double.parse(
+            value.lat,
+          ),
+          double.parse(
+            value.lng,
           ),
         );
-        store.dispatch(
-          AddOriMarker(
-            mapId: store.state.id,
-            marker: value,
-          ),
+        HouseMarker(
+          onTap: (id) => {
+            store.dispatch(
+              MoveCamera(
+                mapId: store.state.id,
+                cameraPosition: CameraPosition(
+                  target: latLng,
+                  zoom: store.state.zoomSwitch,
+                ),
+              ),
+            ),
+          },
+          position: latLng,
+          draggable: false,
+          houses: [],
+          visible:
+              (key != Shanghai.shangHai) && (districtMarkerWidget.num != 0),
+        )
+            .copyWithWidget(
+          widget: districtMarkerWidget,
+        )
+            .then(
+          (value) {
+            store.dispatch(
+              AddMarker(
+                mapId: store.state.id,
+                markerType: MarkerType.district,
+                marker: value,
+              ),
+            );
+            // store.dispatch(
+            //   AddMarker(
+            //     mapId: store.state.id,
+            //     markerType: MarkerType.origin,
+            //     marker: value,
+            //   ),
+            // );
+          },
         );
-      });
-    });
+      },
+    );
   }
 
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
@@ -300,7 +377,7 @@ class _MapFindPageState extends State<MapFindPage> {
     print("onTap$id");
 
     /// 建立索引
-    final residentialMarkers = keyByHosueMarkerId(store.state.markers);
+    final residentialMarkers = keyByHouseMarkerId(store.state.communityMarkers);
 
     tappedMarkers[id] = residentialMarkers[id];
     focusingMarkerId = id;
@@ -314,6 +391,7 @@ class _MapFindPageState extends State<MapFindPage> {
         store.dispatch(
           UpdateMarker(
             mapId: store.state.id,
+            markerType: MarkerType.community,
             id: id,
             iconParam: BitmapDescriptor.fromBytes(value!),
           ),
@@ -331,9 +409,11 @@ class _MapFindPageState extends State<MapFindPage> {
     var totalPrice = 0;
     var num = housesList?.length;
     var residential = housesList?[0].residential;
-    housesList?.forEach((element) {
-      totalPrice += element.price;
-    });
+    housesList?.forEach(
+      (element) {
+        totalPrice += element.price;
+      },
+    );
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // set this to true
@@ -391,11 +471,14 @@ class _MapFindPageState extends State<MapFindPage> {
 
   void _updateMarkersInPolygon(Store<MapState> store) {
     // 建立本次多边形中 markers 的 id 与 相关信息的索引
-    final markersInPolygonMap =
-        keyByHosueMarkerId(store.state.markersInPolygon);
+    final markersInPolygonMap = keyByHouseMarkerId(
+      store.state.markersInPolygon,
+    );
 
     /// 建立索引
-    final residentialMarkers = keyByHosueMarkerId(store.state.markers);
+    final residentialMarkers = keyByHouseMarkerId(
+      store.state.communityMarkers,
+    );
 
     // 将上一次在圈内，这一次不在圈内的恢复原样
     for (final id in markersIdInPolygon) {
@@ -410,6 +493,7 @@ class _MapFindPageState extends State<MapFindPage> {
             store.dispatch(
               UpdateMarker(
                 mapId: store.state.id,
+                markerType: MarkerType.community,
                 id: id,
                 iconParam: BitmapDescriptor.fromBytes(value!),
               ),
@@ -435,6 +519,7 @@ class _MapFindPageState extends State<MapFindPage> {
             store.dispatch(
               UpdateMarker(
                 mapId: store.state.id,
+                markerType: MarkerType.community,
                 id: residentialMarkerId,
                 iconParam: BitmapDescriptor.fromBytes(value!),
               ),
@@ -479,6 +564,18 @@ class _MapFindPageState extends State<MapFindPage> {
           iconWidget: const Icon(Icons.gesture),
           onTap: () {
             // _resetAllMarkersInPolygon(store);
+            final state = store.state;
+            if (state.cameraPosition.zoom < state.zoomSwitch) {
+              store.dispatch(
+                MoveCamera(
+                  mapId: state.id,
+                  cameraPosition: CameraPosition(
+                    target: state.cameraPosition.target,
+                    zoom: state.zoomSwitch,
+                  ),
+                ),
+              );
+            }
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
             );
@@ -494,19 +591,27 @@ class _MapFindPageState extends State<MapFindPage> {
           iconWidget: const Icon(Icons.arrow_back),
           onTap: () {
             // _resetAllMarkersInPolygon(store);
+
             store.dispatch(
               ClearPolygon(
                 mapId: store.state.id,
               ),
             );
             store.dispatch(
-              CheckPointsInPolygon(
+              CheckCommunityMarkersInPolygon(
                 mapId: store.state.id,
               ),
             );
-            setState(() {
-              isDrawing = false;
-            });
+            store.dispatch(
+              EndDrawPolygon(
+                mapId: store.state.id,
+              ),
+            );
+            setState(
+              () {
+                isDrawing = false;
+              },
+            );
           },
         ),
       ],
@@ -524,15 +629,29 @@ class _MapFindPageState extends State<MapFindPage> {
           iconWidget: const Icon(Icons.gesture),
           onTap: () {
             BrnToast.show('请在地图上绘制区域', context);
+            final state = store.state;
+            if (state.cameraPosition.zoom < state.zoomSwitch) {
+              store.dispatch(
+                MoveCamera(
+                  mapId: state.id,
+                  cameraPosition: CameraPosition(
+                    target: state.cameraPosition.target,
+                    zoom: state.zoomSwitch,
+                  ),
+                ),
+              );
+            }
             store.dispatch(
               ClearPolygon(mapId: store.state.id),
             );
             store.dispatch(
               StartDrawPolygon(mapId: store.state.id),
             );
-            setState(() {
-              isDrawing = true;
-            });
+            setState(
+              () {
+                isDrawing = true;
+              },
+            );
           },
         ),
         BrnIconButton(
@@ -546,7 +665,10 @@ class _MapFindPageState extends State<MapFindPage> {
               MoveCamera(
                 mapId: store.state.id,
                 cameraPosition: CameraPosition(
-                  target: LatLng(currentPositionLat, currentPositionLng),
+                  target: LatLng(
+                    currentPositionLat,
+                    currentPositionLng,
+                  ),
                   zoom: store.state.cameraPosition.zoom,
                 ),
               ),
@@ -573,7 +695,7 @@ class _MapFindPageState extends State<MapFindPage> {
             //     mapId: store.state.id,
             //   ),
             // );
-            if (store.state.markers.isEmpty) {
+            if (store.state.communityMarkers.isEmpty) {
               _initResidentialMarkers(store);
             } else {
               _updateResidentialMarkersOnTap(store);
@@ -596,6 +718,17 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapId: store.state.id,
               ),
             );
+            store.dispatch(
+              ClearPolygon(
+                mapId: store.state.id,
+              ),
+            );
+            store.dispatch(
+              CheckPointsInPolygon(
+                mapId: store.state.id,
+              ),
+            );
+            _updateMarkersInPolygon(store);
           },
           builder: (context, store) {
             _updateMarkersInPolygon(store);

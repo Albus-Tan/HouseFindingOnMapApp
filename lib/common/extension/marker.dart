@@ -12,6 +12,7 @@ extension WidgetMarker on Marker {
     );
   }
 }
+
 extension WidgetHouseMarker on HouseMarker {
   Future<HouseMarker> copyWithWidget({required Widget widget}) async {
     return copyWithHouses(

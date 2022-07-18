@@ -5,6 +5,7 @@ import 'package:app/widgets/map.dart';
 import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map/reducer.dart';
 import 'package:app/widgets/map/state.dart';
+import 'package:app/widgets/map/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -54,12 +55,14 @@ class App extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           store.dispatch(
-                            CheckPointsInPolygon(mapId: store.state.id),
+                            CheckCommunityMarkersInPolygon(
+                                mapId: store.state.id),
                           );
                           for (final element in store.state.markersInPolygon) {
                             store.dispatch(
                               UpdateMarker(
                                 mapId: store.state.id,
+                                markerType: MarkerType.community,
                                 id: element.id,
                                 iconParam:
                                     BitmapDescriptor.defaultMarkerWithHue(
@@ -85,7 +88,7 @@ class App extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          final marker = Marker(
+                          final marker = HouseMarker(
                             position: const LatLng(
                               40,
                               116.397451,
@@ -97,10 +100,12 @@ class App extends StatelessWidget {
                             ) {
                               debugPrint("${id}dragged to $position");
                             },
+                            houses: [],
                           );
                           store.dispatch(
                             AddMarker(
                               mapId: store.state.id,
+                              markerType: MarkerType.community,
                               marker: marker,
                             ),
                           );

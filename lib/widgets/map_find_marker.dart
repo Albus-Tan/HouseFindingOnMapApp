@@ -1,5 +1,32 @@
 import 'package:flutter/material.dart';
 
+class DistrictMapFindMarker extends StatelessWidget {
+  DistrictMapFindMarker({Key? key, required this.district, required this.num})
+      : super(key: key);
+
+  String district;
+  int num;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(45.0),
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white,
+      ),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Text(
+          "$district\n$num套",
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.black, fontSize: 50,),
+        ),
+      ),
+    );
+  }
+}
+
 class ResidentialMapFindMarker extends StatelessWidget {
   ResidentialMapFindMarker(
       {Key? key, required this.residential, required this.num})
