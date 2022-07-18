@@ -209,6 +209,7 @@ class Content {
       longitude: longitude ?? "0",
       location: location ?? "",
       hid: id ?? "",
+      layout: layout ?? "nothing",
     );
     return data;
   }

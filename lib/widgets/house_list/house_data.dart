@@ -3,7 +3,7 @@ import '../../routes/house_detail_page.dart';
 import '../house_card.dart';
 
 HouseDetail toDetail(String title, int rooms, double squares, String community,
-    int price, String url, String latitude, String longitude, String location, String hid) {
+    int price, String url, String latitude, String longitude, String location, String hid, String layout) {
   return HouseDetail(
     title: title,
     pricePerMonth: price,
@@ -16,6 +16,7 @@ HouseDetail toDetail(String title, int rooms, double squares, String community,
     longitude: longitude,
     location: location,
     hid : hid,
+    layout: layout,
   );
 }
 //
