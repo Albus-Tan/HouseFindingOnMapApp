@@ -724,7 +724,7 @@ class _MapFindPageState extends State<MapFindPage> {
               ),
             );
             store.dispatch(
-              CheckPointsInPolygon(
+              CheckCommunityMarkersInPolygon(
                 mapId: store.state.id,
               ),
             );
