@@ -159,18 +159,74 @@
                 "value": "1",
                 "children": [
                   {
-                    "title": "富锦路",
-                    "key": "富锦路",
+                    "title": "外环路",
+                    "key": "外环路",
                     "type": "checkbox",
                     "defaultValue": "",
-                    "value": "富锦路"
+                    "value": "外环路"
                   },
                   {
-                    "title": "友谊西路",
-                    "key": "友谊西路",
+                    "title": "上海南站",
+                    "key": "上海南站",
                     "type": "checkbox",
                     "defaultValue": "",
-                    "value": "友谊西路"
+                    "value": "上海南站"
+                  },
+                  {
+                    "title": "延长路",
+                    "key": "延长路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "延长路"
+                  },
+                  {
+                    "title": "彭浦新村",
+                    "key": "彭浦新村",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "彭浦新村"
+                  },
+                  {
+                    "title": "人民广场",
+                    "key": "人民广场",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "人民广场"
+                  },
+                  {
+                    "title": "共富新村",
+                    "key": "共富新村",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "共富新村"
+                  },
+                  {
+                    "title": "上海马戏城",
+                    "key": "上海马戏城",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上海马戏城"
+                  },
+                  {
+                    "title": "共康路",
+                    "key": "共康路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "共康路"
+                  },
+                  {
+                    "title": "呼兰路",
+                    "key": "呼兰路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "呼兰路"
+                  },
+                  {
+                    "title": "锦江乐园",
+                    "key": "锦江乐园",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "锦江乐园"
                   },
                   {
                     "title": "宝安公路",
@@ -178,6 +234,27 @@
                     "type": "checkbox",
                     "defaultValue": "",
                     "value": "宝安公路"
+                  },
+                  {
+                    "title": "汶水路",
+                    "key": "汶水路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "汶水路"
+                  },
+                  {
+                    "title": "中山北路",
+                    "key": "中山北路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "中山北路"
+                  },
+                  {
+                    "title": "通河新村",
+                    "key": "通河新村",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "通河新村"
                   }
                 ]
               },
@@ -186,56 +263,779 @@
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "2"
+                "value": "2",
+                "children": [
+                  {
+                    "title": "广兰路",
+                    "key": "广兰路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "广兰路"
+                  },
+                  {
+                    "title": "淞虹路",
+                    "key": "淞虹路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "淞虹路"
+                  },
+                  {
+                    "title": "中山公园",
+                    "key": "中山公园",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "中山公园"
+                  },
+                  {
+                    "title": "世纪大道",
+                    "key": "世纪大道",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "世纪大道"
+                  },
+                  {
+                    "title": "川沙",
+                    "key": "川沙",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "川沙"
+                  },
+                  {
+                    "title": "威宁路",
+                    "key": "威宁路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "威宁路"
+                  },
+                  {
+                    "title": "世纪公园",
+                    "key": "世纪公园",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "世纪公园"
+                  },
+                  {
+                    "title": "北新泾",
+                    "key": "北新泾",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "北新泾"
+                  },
+                  {
+                    "title": "徐泾东",
+                    "key": "徐泾东",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "徐泾东"
+                  },
+                  {
+                    "title": "东昌路",
+                    "key": "东昌路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "东昌路"
+                  },
+                  {
+                    "title": "虹桥火车站",
+                    "key": "虹桥火车站",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "虹桥火车站"
+                  }
+                ]
               },
               {
                 "title": "3号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "3"
+                "value": "3",
+                "children": [
+                  {
+                    "title": "长江南路",
+                    "key": "长江南路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "长江南路"
+                  },
+                  {
+                    "title": "殷高西路",
+                    "key": "殷高西路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "殷高西路"
+                  },
+                  {
+                    "title": "漕溪路",
+                    "key": "漕溪路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "漕溪路"
+                  },
+                  {
+                    "title": "大柏树",
+                    "key": "大柏树",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "大柏树"
+                  },
+                  {
+                    "title": "宝山路",
+                    "key": "宝山路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "宝山路"
+                  },
+                  {
+                    "title": "中潭路",
+                    "key": "中潭路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "中潭路"
+                  },
+                  {
+                    "title": "龙漕路",
+                    "key": "龙漕路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "龙漕路"
+                  },
+                  {
+                    "title": "江湾镇",
+                    "key": "江湾镇",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江湾镇"
+                  },
+                  {
+                    "title": "宜山路",
+                    "key": "宜山路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "宜山路"
+                  },
+                  {
+                    "title": "淞发路",
+                    "key": "淞发路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "淞发路"
+                  },
+                  {
+                    "title": "宝杨路",
+                    "key": "宝杨路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "宝杨路"
+                  }
+                ]
               },
               {
                 "title": "4号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "4"
+                "value": "4",
+                "children": [
+                  {
+                    "title": "蓝村路",
+                    "key": "蓝村路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "蓝村路"
+                  },
+                  {
+                    "title": "海伦路",
+                    "key": "海伦路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "海伦路"
+                  },
+                  {
+                    "title": "塘桥",
+                    "key": "塘桥",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "塘桥"
+                  },
+                  {
+                    "title": "浦东大道",
+                    "key": "浦东大道",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "浦东大道"
+                  },
+                  {
+                    "title": "临平路",
+                    "key": "临平路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "临平路"
+                  },
+                  {
+                    "title": "南浦大桥",
+                    "key": "南浦大桥",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "南浦大桥"
+                  },
+                  {
+                    "title": "上海体育场",
+                    "key": "上海体育场",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上海体育场"
+                  },
+                  {
+                    "title": "鲁班路",
+                    "key": "鲁班路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "鲁班路"
+                  },
+                  {
+                    "title": "西藏南路",
+                    "key": "西藏南路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "西藏南路"
+                  },
+                  {
+                    "title": "浦电路",
+                    "key": "浦电路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "浦电路"
+                  }
+                ]
               },
               {
                 "title": "5号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "5"
+                "value": "5",
+                "children": [
+                  {
+                    "title": "江川路",
+                    "key": "江川路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江川路"
+                  },
+                  {
+                    "title": "西渡",
+                    "key": "西渡",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "西渡"
+                  },
+                  {
+                    "title": "春申路",
+                    "key": "春申路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "春申路"
+                  },
+                  {
+                    "title": "北桥",
+                    "key": "北桥",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "北桥"
+                  }
+                ]
               },
               {
                 "title": "6号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "6"
+                "value": "6",
+                "children": [
+                  {
+                    "title": "金桥路",
+                    "key": "金桥路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "金桥路"
+                  },
+                  {
+                    "title": "上海儿童医学中心",
+                    "key": "上海儿童医学中心",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上海儿童医学中心"
+                  },
+                  {
+                    "title": "外高桥保税区南",
+                    "key": "外高桥保税区南",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "外高桥保税区南"
+                  },
+                  {
+                    "title": "源深体育中心",
+                    "key": "源深体育中心",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "源深体育中心"
+                  },
+                  {
+                    "title": "上南路",
+                    "key": "上南路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上南路"
+                  },
+                  {
+                    "title": "德平路",
+                    "key": "德平路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "德平路"
+                  },
+                  {
+                    "title": "航津路",
+                    "key": "航津路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "航津路"
+                  },
+                  {
+                    "title": "五洲大道",
+                    "key": "五洲大道",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "五洲大道"
+                  },
+                  {
+                    "title": "巨峰路",
+                    "key": "巨峰路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "巨峰路"
+                  },
+                  {
+                    "title": "云山路",
+                    "key": "云山路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "云山路"
+                  },
+                  {
+                    "title": "浦电路",
+                    "key": "浦电路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "浦电路"
+                  }
+                ]
               },
               {
                 "title": "7号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "7"
+                "value": "7",
+                "children": [
+                  {
+                    "title": "大场镇",
+                    "key": "大场镇",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "大场镇"
+                  },
+                  {
+                    "title": "刘行",
+                    "key": "刘行",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "刘行"
+                  },
+                  {
+                    "title": "杨高南路",
+                    "key": "杨高南路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "杨高南路"
+                  },
+                  {
+                    "title": "潘广路",
+                    "key": "潘广路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "潘广路"
+                  },
+                  {
+                    "title": "岚皋路",
+                    "key": "岚皋路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "岚皋路"
+                  },
+                  {
+                    "title": "花木路",
+                    "key": "花木路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "花木路"
+                  },
+                  {
+                    "title": "美兰湖",
+                    "key": "美兰湖",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "美兰湖"
+                  },
+                  {
+                    "title": "上大路",
+                    "key": "上大路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上大路"
+                  },
+                  {
+                    "title": "耀华路",
+                    "key": "耀华路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "耀华路"
+                  },
+                  {
+                    "title": "新村路",
+                    "key": "新村路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "新村路"
+                  },
+                  {
+                    "title": "锦绣路",
+                    "key": "锦绣路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "锦绣路"
+                  },
+                  {
+                    "title": "大华三路",
+                    "key": "大华三路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "大华三路"
+                  },
+                  {
+                    "title": "肇嘉浜路",
+                    "key": "肇嘉浜路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "肇嘉浜路"
+                  },
+                  {
+                    "title": "云台路",
+                    "key": "云台路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "云台路"
+                  }
+                ]
               },
               {
                 "title": "8号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "8"
+                "value": "8",
+                "children": [
+                  {
+                    "title": "曲阜路",
+                    "key": "曲阜路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "曲阜路"
+                  },
+                  {
+                    "title": "联航路",
+                    "key": "联航路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "联航路"
+                  },
+                  {
+                    "title": "凌兆新村",
+                    "key": "凌兆新村",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "凌兆新村"
+                  },
+                  {
+                    "title": "芦恒路",
+                    "key": "芦恒路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "芦恒路"
+                  },
+                  {
+                    "title": "四平路",
+                    "key": "四平路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "四平路"
+                  },
+                  {
+                    "title": "延吉中路",
+                    "key": "延吉中路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "延吉中路"
+                  },
+                  {
+                    "title": "陆家浜路",
+                    "key": "陆家浜路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "陆家浜路"
+                  },
+                  {
+                    "title": "江月路",
+                    "key": "江月路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江月路"
+                  },
+                  {
+                    "title": "沈杜公路",
+                    "key": "沈杜公路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "沈杜公路"
+                  },
+                  {
+                    "title": "黄兴公园",
+                    "key": "黄兴公园",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "黄兴公园"
+                  },
+                  {
+                    "title": "江浦路",
+                    "key": "江浦路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江浦路"
+                  },
+                  {
+                    "title": "黄兴路",
+                    "key": "黄兴路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "黄兴路"
+                  },
+                  {
+                    "title": "翔殷路",
+                    "key": "翔殷路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "翔殷路"
+                  }
+                ]
               },
               {
                 "title": "9号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "9"
+                "value": "9",
+                "children": [
+                  {
+                    "title": "松江体育中心",
+                    "key": "松江体育中心",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "松江体育中心"
+                  },
+                  {
+                    "title": "蓝天路",
+                    "key": "蓝天路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "蓝天路"
+                  },
+                  {
+                    "title": "漕河泾开发区",
+                    "key": "漕河泾开发区",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "漕河泾开发区"
+                  },
+                  {
+                    "title": "金吉路",
+                    "key": "金吉路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "金吉路"
+                  },
+                  {
+                    "title": "芳甸路",
+                    "key": "芳甸路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "芳甸路"
+                  },
+                  {
+                    "title": "台儿庄路",
+                    "key": "台儿庄路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "台儿庄路"
+                  },
+                  {
+                    "title": "顾唐路",
+                    "key": "顾唐路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "顾唐路"
+                  },
+                  {
+                    "title": "合川路",
+                    "key": "合川路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "合川路"
+                  },
+                  {
+                    "title": "打浦桥",
+                    "key": "打浦桥",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "打浦桥"
+                  },
+                  {
+                    "title": "松江大学城",
+                    "key": "松江大学城",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "松江大学城"
+                  },
+                  {
+                    "title": "商城路",
+                    "key": "商城路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "商城路"
+                  },
+                  {
+                    "title": "小南门",
+                    "key": "小南门",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "小南门"
+                  },
+                  {
+                    "title": "中春路",
+                    "key": "中春路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "中春路"
+                  },
+                  {
+                    "title": "松江南站",
+                    "key": "松江南站",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "松江南站"
+                  },
+                  {
+                    "title": "洞泾",
+                    "key": "洞泾",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "洞泾"
+                  },
+                  {
+                    "title": "松江新城",
+                    "key": "松江新城",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "松江新城"
+                  },
+                  {
+                    "title": "七宝",
+                    "key": "七宝",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "七宝"
+                  },
+                  {
+                    "title": "金海路",
+                    "key": "金海路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "金海路"
+                  },
+                  {
+                    "title": "民雷路",
+                    "key": "民雷路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "民雷路"
+                  },
+                  {
+                    "title": "杨高中路",
+                    "key": "杨高中路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "杨高中路"
+                  },
+                  {
+                    "title": "醉白池",
+                    "key": "醉白池",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "醉白池"
+                  },
+                  {
+                    "title": "金桥",
+                    "key": "金桥",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "金桥"
+                  },
+                  {
+                    "title": "星中路",
+                    "key": "星中路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "星中路"
+                  },
+                  {
+                    "title": "佘山",
+                    "key": "佘山",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "佘山"
+                  },
+                  {
+                    "title": "桂林路",
+                    "key": "桂林路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "桂林路"
+                  },
+                  {
+                    "title": "泗泾",
+                    "key": "泗泾",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "泗泾"
+                  },
+                  {
+                    "title": "九亭",
+                    "key": "九亭",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "九亭"
+                  }
+                ]
               },
               {
                 "title": "10号线",
@@ -245,11 +1045,60 @@
                 "value": "10",
                 "children": [
                   {
-                    "title": "基隆路",
-                    "key": "基隆路",
+                    "title": "国权路",
+                    "key": "国权路",
                     "type": "checkbox",
                     "defaultValue": "",
-                    "value": "基隆路"
+                    "value": "国权路"
+                  },
+                  {
+                    "title": "宋园路",
+                    "key": "宋园路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "宋园路"
+                  },
+                  {
+                    "title": "豫园",
+                    "key": "豫园",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "豫园"
+                  },
+                  {
+                    "title": "交通大学",
+                    "key": "交通大学",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "交通大学"
+                  },
+                  {
+                    "title": "上海动物园",
+                    "key": "上海动物园",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上海动物园"
+                  },
+                  {
+                    "title": "江湾体育场",
+                    "key": "江湾体育场",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江湾体育场"
+                  },
+                  {
+                    "title": "陕西南路",
+                    "key": "陕西南路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "陕西南路"
+                  },
+                  {
+                    "title": "双江路",
+                    "key": "双江路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "双江路"
                   }
                 ]
               },
@@ -258,56 +1107,394 @@
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "11"
+                "value": "11",
+                "children": [
+                  {
+                    "title": "江苏路",
+                    "key": "江苏路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江苏路"
+                  },
+                  {
+                    "title": "隆德路",
+                    "key": "隆德路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "隆德路"
+                  },
+                  {
+                    "title": "徐家汇",
+                    "key": "徐家汇",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "徐家汇"
+                  },
+                  {
+                    "title": "曹杨路",
+                    "key": "曹杨路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "曹杨路"
+                  },
+                  {
+                    "title": "御桥",
+                    "key": "御桥",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "御桥"
+                  },
+                  {
+                    "title": "上海游泳馆",
+                    "key": "上海游泳馆",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "上海游泳馆"
+                  }
+                ]
               },
               {
                 "title": "12号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "12"
+                "value": "12",
+                "children": [
+                  {
+                    "title": "宁国路",
+                    "key": "宁国路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "宁国路"
+                  },
+                  {
+                    "title": "曲阜路",
+                    "key": "曲阜路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "曲阜路"
+                  },
+                  {
+                    "title": "东兰路",
+                    "key": "东兰路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "东兰路"
+                  },
+                  {
+                    "title": "南京西路",
+                    "key": "南京西路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "南京西路"
+                  },
+                  {
+                    "title": "虹莘路",
+                    "key": "虹莘路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "虹莘路"
+                  },
+                  {
+                    "title": "杨高北路",
+                    "key": "杨高北路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "杨高北路"
+                  },
+                  {
+                    "title": "龙漕路",
+                    "key": "龙漕路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "龙漕路"
+                  },
+                  {
+                    "title": "隆昌路",
+                    "key": "隆昌路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "隆昌路"
+                  },
+                  {
+                    "title": "东陆路",
+                    "key": "东陆路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "东陆路"
+                  },
+                  {
+                    "title": "虹漕路",
+                    "key": "虹漕路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "虹漕路"
+                  },
+                  {
+                    "title": "漕宝路",
+                    "key": "漕宝路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "漕宝路"
+                  }
+                ]
               },
               {
                 "title": "13号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "13"
+                "value": "13",
+                "children": [
+                  {
+                    "title": "真北路",
+                    "key": "真北路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "真北路"
+                  },
+                  {
+                    "title": "成山路",
+                    "key": "成山路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "成山路"
+                  },
+                  {
+                    "title": "金沙江路",
+                    "key": "金沙江路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "金沙江路"
+                  },
+                  {
+                    "title": "金运路",
+                    "key": "金运路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "金运路"
+                  },
+                  {
+                    "title": "北蔡",
+                    "key": "北蔡",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "北蔡"
+                  },
+                  {
+                    "title": "张江路",
+                    "key": "张江路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "张江路"
+                  },
+                  {
+                    "title": "东明路",
+                    "key": "东明路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "东明路"
+                  },
+                  {
+                    "title": "淮海中路",
+                    "key": "淮海中路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "淮海中路"
+                  }
+                ]
               },
               {
                 "title": "14号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "14"
+                "value": "14",
+                "children": [
+                  {
+                    "title": "中宁路",
+                    "key": "中宁路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "中宁路"
+                  },
+                  {
+                    "title": "龙居路",
+                    "key": "龙居路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "龙居路"
+                  },
+                  {
+                    "title": "浦东大道",
+                    "key": "浦东大道",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "浦东大道"
+                  },
+                  {
+                    "title": "真新新村",
+                    "key": "真新新村",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "真新新村"
+                  },
+                  {
+                    "title": "临洮路",
+                    "key": "临洮路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "临洮路"
+                  },
+                  {
+                    "title": "武定路",
+                    "key": "武定路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "武定路"
+                  }
+                ]
               },
               {
                 "title": "15号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "15"
+                "value": "15",
+                "children": [
+                  {
+                    "title": "武威东路",
+                    "key": "武威东路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "武威东路"
+                  },
+                  {
+                    "title": "丰翔路",
+                    "key": "丰翔路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "丰翔路"
+                  },
+                  {
+                    "title": "罗秀路",
+                    "key": "罗秀路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "罗秀路"
+                  },
+                  {
+                    "title": "吴中路",
+                    "key": "吴中路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "吴中路"
+                  }
+                ]
               },
               {
                 "title": "16号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "16"
+                "value": "16",
+                "children": [
+                  {
+                    "title": "龙阳路",
+                    "key": "龙阳路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "龙阳路"
+                  }
+                ]
               },
               {
                 "title": "17号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "17"
+                "value": "17",
+                "children": [
+                  {
+                    "title": "徐盈路",
+                    "key": "徐盈路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "徐盈路"
+                  },
+                  {
+                    "title": "淀山湖大道",
+                    "key": "淀山湖大道",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "淀山湖大道"
+                  },
+                  {
+                    "title": "汇金路",
+                    "key": "汇金路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "汇金路"
+                  }
+                ]
               },
               {
                 "title": "18号线",
                 "key": "station",
                 "type": "radio",
                 "defaultValue": "",
-                "value": "18"
+                "value": "18",
+                "children": [
+                  {
+                    "title": "民生路",
+                    "key": "民生路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "民生路"
+                  },
+                  {
+                    "title": "复旦大学",
+                    "key": "复旦大学",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "复旦大学"
+                  },
+                  {
+                    "title": "芳芯路",
+                    "key": "芳芯路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "芳芯路"
+                  },
+                  {
+                    "title": "长江南路",
+                    "key": "长江南路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "长江南路"
+                  },
+                  {
+                    "title": "平凉路",
+                    "key": "平凉路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "平凉路"
+                  },
+                  {
+                    "title": "杨高中路",
+                    "key": "杨高中路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "杨高中路"
+                  },
+                  {
+                    "title": "江浦路",
+                    "key": "江浦路",
+                    "type": "checkbox",
+                    "defaultValue": "",
+                    "value": "江浦路"
+                  }
+                ]
               }
             ]
           }
@@ -371,7 +1558,11 @@
           },
           {
             "defaultValue": "",
-            "ext": {"min": 0, "max": 999999, "unit": "元"},
+            "ext": {
+              "min": 0,
+              "max": 999999,
+              "unit": "元"
+            },
             "children": [],
             "key": "",
             "type": "range",
