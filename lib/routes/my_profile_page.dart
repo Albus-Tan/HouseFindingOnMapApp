@@ -35,7 +35,13 @@ class _MyProfilePageState extends State<MyProfilePage> {
     houseList = [];
   }
 
-  Future<List<void>> _getDatas() async {
+  void onChangeFavors() {
+    setState((){
+      name = name;
+    });
+  }
+
+  Future<List<void>> getDatas() async {
     // await _getName();
     // await _getHouse();
     return await Future.wait([
@@ -118,7 +124,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget build(BuildContext context) {
     var number = Random();
     return FutureBuilder(
-      future: _getDatas(),
+      future: getDatas(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
@@ -206,7 +212,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ),
                 const Divider(),
                 Expanded(
-                  child: houseDetailToHouseList(houseList),
+                  child: houseDetailToHouseList(houseList, onChangeFavors,),
                 ),
               ],
             ),

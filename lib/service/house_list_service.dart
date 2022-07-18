@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import '../routes/house_detail_page.dart';
 import '../widgets/house_card.dart';
 
-Widget houseDetailToHouseList(List<HouseDetail> list) {
+Widget houseDetailToHouseList(List<HouseDetail> list, Function onChangeFavors) {
   List<HouseCard> houseCards;
   int totElements = list.length;
-  houseCards = list.map((e) => HouseCard(houseDetail: e)).toList();
+  houseCards = list
+      .map((e) => HouseCard(
+            houseDetail: e,
+            onChangeCallback: onChangeFavors,
+          ))
+      .toList();
   return ListView.separated(
     shrinkWrap: true,
     itemCount: totElements + 1,

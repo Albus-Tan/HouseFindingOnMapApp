@@ -162,27 +162,31 @@ class _RegisterPageState extends State<RegisterPage> {
               (_formKey.currentState as FormState).save();
               //TODO 执行注册方法
 
-              _register(_username, _password).then(
-                (value) => {
-                  if (value.code == 200)
-                    {
-                      Fluttertoast.showToast(msg: value.msg),
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          settings: const RouteSettings(name: "login"),
-                          builder: (context) => const LoginPage(
-                            title: "欢迎登录",
+              _register(_username, _password).then((value) => {
+                    if (value.code == 200)
+                      {
+                        Fluttertoast.showToast(
+                          msg: value.msg,
+                          gravity: ToastGravity.TOP,
+                        ),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            settings: const RouteSettings(name: "login"),
+                            builder: (context) => const LoginPage(
+                              title: "欢迎登录",
+                            ),
                           ),
                         ),
-                      ),
-                    }
-                  else
-                    {
-                      Fluttertoast.showToast(msg: value.msg),
-                    }
-                },
-              );
+                      }
+                    else
+                      {
+                        Fluttertoast.showToast(
+                          msg: value.msg,
+                          gravity: ToastGravity.TOP,
+                        ),
+                      }
+                  });
             }
           },
         ),

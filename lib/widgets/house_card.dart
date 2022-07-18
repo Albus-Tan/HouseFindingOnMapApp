@@ -10,9 +10,11 @@ class HouseCard extends StatelessWidget {
   const HouseCard({
     Key? key,
     required this.houseDetail,
+    this.onChangeCallback,
   }) : super(key: key);
 
   final HouseDetail houseDetail;
+  final Function? onChangeCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,9 @@ class HouseCard extends StatelessWidget {
                       houseDetail: houseDetail,
                     ),
                   ),
-                );
+                ).then((val)=> {
+                  onChangeCallback!(),
+                });
               },
               title: BrnExpandableText(
                 text: houseDetail.title,
