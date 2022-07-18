@@ -9,7 +9,8 @@ import 'package:flutter/foundation.dart';
 class MapState {
   final String id;
   final List<HouseMarker> oriMarkers;
-  final List<HouseMarker> markers;
+  final List<HouseMarker> communityMarkers;
+  final List<HouseMarker> districtMarkers;
   final bool drawing;
   final List<Polyline> polyLines;
 
@@ -20,12 +21,16 @@ class MapState {
   final CameraPosition cameraPosition;
   final Size widgetSize;
 
+  final double zoomSwitch;
+
   static int mapCount = 0;
 
   MapState({
+    required this.zoomSwitch,
     required this.polygon,
     required this.id,
-    required this.markers,
+    required this.communityMarkers,
+    required this.districtMarkers,
     required this.drawing,
     required this.polyLines,
     required this.markersInPolygon,
@@ -35,21 +40,24 @@ class MapState {
     required this.oriMarkers,
   });
 
-  MapState copyWith({
-    String? id,
-    List<HouseMarker>? markers,
-    bool? drawing,
-    List<Polyline>? polyLines,
-    List<LatLng>? polygon,
-    List<HouseMarker>? markersInPolygon,
-    List<HouseMarker>? oriMarkers,
-    AMapController? controller,
-    CameraPosition? cameraPosition,
-    Size? widgetSize,
-  }) =>
+  MapState copyWith(
+          {String? id,
+          List<HouseMarker>? communityMarkers,
+          List<HouseMarker>? districtMarkers,
+          bool? drawing,
+          List<Polyline>? polyLines,
+          List<LatLng>? polygon,
+          List<HouseMarker>? markersInPolygon,
+          List<HouseMarker>? oriMarkers,
+          AMapController? controller,
+          CameraPosition? cameraPosition,
+          Size? widgetSize,
+          double? zoomSwitch}) =>
       MapState(
         id: id ?? this.id,
-        markers: markers ?? this.markers,
+        zoomSwitch: zoomSwitch ?? this.zoomSwitch,
+        communityMarkers: communityMarkers ?? this.communityMarkers,
+        districtMarkers: districtMarkers ?? this.districtMarkers,
         drawing: drawing ?? this.drawing,
         polyLines: polyLines ?? this.polyLines,
         polygon: polygon ?? this.polygon,
@@ -64,7 +72,9 @@ class MapState {
     mapCount++;
     return MapState(
       id: mapCount.toString(),
-      markers: [],
+      zoomSwitch: 13.0,
+      communityMarkers: [],
+      districtMarkers: [],
       drawing: false,
       polyLines: [],
       markersInPolygon: [],

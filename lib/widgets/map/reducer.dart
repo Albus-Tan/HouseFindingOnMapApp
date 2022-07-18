@@ -8,13 +8,10 @@ import 'type.dart';
 
 final Reducer<MapState> mapReducer = combineReducers(
   [
-    TypedReducer(_addMarker),
-    TypedReducer(_updateMarker),
-    TypedReducer(_removeMarker),
-    TypedReducer(_addOriMarker),
-    TypedReducer(_updateOriMarker),
-    TypedReducer(_removeOriMarker),
-    TypedReducer(_checkPointsInPolygon),
+    TypedReducer(_addCommunityMarker),
+    TypedReducer(_updateCommunityMarker),
+    TypedReducer(_removeCommunityMarker),
+    TypedReducer(_checkCommunityMarkersInPolygon),
     TypedReducer(_startDrawPolygon),
     TypedReducer(_addPolygonPoint),
     TypedReducer(_endDrawPolygon),
@@ -27,21 +24,55 @@ final Reducer<MapState> mapReducer = combineReducers(
   ],
 );
 
-MapState _addMarker(MapState state, AddMarker action) {
+MapState _addCommunityMarker(MapState state, AddMarker action) {
   if (state.id == action.mapId) {
-    final markers = state.markers;
+    late final List<HouseMarker> markers;
+    switch (action.markerType) {
+      case MarkerType.community:
+        markers = state.communityMarkers;
+        break;
+      case MarkerType.origin:
+        markers = state.oriMarkers;
+        break;
+      case MarkerType.district:
+        markers = state.districtMarkers;
+        break;
+    }
     markers.add(action.marker);
-    return state.copyWith(
-      markers: markers,
-    );
+    switch (action.markerType) {
+      case MarkerType.community:
+        return state.copyWith(
+          communityMarkers: markers,
+        );
+      case MarkerType.origin:
+        return state.copyWith(
+          oriMarkers: markers,
+        );
+      case MarkerType.district:
+        return state.copyWith(
+          districtMarkers: markers,
+        );
+    }
   } else {
     return state;
   }
 }
 
-MapState _updateMarker(MapState state, UpdateMarker action) {
+MapState _updateCommunityMarker(MapState state, UpdateMarker action) {
   if (state.id == action.mapId) {
-    final markers = keyByHosueMarkerId(state.markers);
+    late final Map<String, HouseMarker> markers;
+    switch (action.markerType) {
+      case MarkerType.community:
+        markers = keyByHouseMarkerId(state.communityMarkers);
+        break;
+      case MarkerType.origin:
+        markers = keyByHouseMarkerId(state.oriMarkers);
+        break;
+      case MarkerType.district:
+        markers = keyByHouseMarkerId(state.districtMarkers);
+        break;
+    }
+
     markers[action.id] = markers[action.id]!.copyWithHouses(
       alphaParam: action.alphaParam,
       anchorParam: action.anchorParam,
@@ -57,83 +88,63 @@ MapState _updateMarker(MapState state, UpdateMarker action) {
       visibleParam: action.visibleParam,
       housesParam: action.housesParam,
     );
-
-    return state.copyWith(
-      markers: markers.values.toList(),
-    );
+    switch (action.markerType) {
+      case MarkerType.community:
+        return state.copyWith(
+          communityMarkers: markers.values.toList(),
+        );
+      case MarkerType.origin:
+        return state.copyWith(
+          oriMarkers: markers.values.toList(),
+        );
+      case MarkerType.district:
+        return state.copyWith(
+          districtMarkers: markers.values.toList(),
+        );
+    }
   } else {
     return state;
   }
 }
 
-MapState _removeMarker(MapState state, RemoveMarker action) {
+MapState _removeCommunityMarker(MapState state, RemoveMarker action) {
   if (state.id == action.mapId) {
-    final markers = keyByHosueMarkerId(state.markers);
+    late final Map<String, HouseMarker> markers;
+    switch (action.markerType) {
+      case MarkerType.community:
+        markers = keyByHouseMarkerId(state.communityMarkers);
+        break;
+      case MarkerType.origin:
+        markers = keyByHouseMarkerId(state.oriMarkers);
+        break;
+      case MarkerType.district:
+        markers = keyByHouseMarkerId(state.districtMarkers);
+        break;
+    }
     markers.remove(action.createId);
-
-    return state.copyWith(
-      markers: markers.values.toList(),
-    );
+    switch (action.markerType) {
+      case MarkerType.community:
+        return state.copyWith(
+          communityMarkers: markers.values.toList(),
+        );
+      case MarkerType.origin:
+        return state.copyWith(
+          oriMarkers: markers.values.toList(),
+        );
+      case MarkerType.district:
+        return state.copyWith(
+          districtMarkers: markers.values.toList(),
+        );
+    }
   } else {
     return state;
   }
 }
 
-MapState _addOriMarker(MapState state, AddOriMarker action) {
+MapState _checkCommunityMarkersInPolygon(
+    MapState state, CheckCommunityMarkersInPolygon action) {
   if (state.id == action.mapId) {
-    final oriMarkers = state.oriMarkers;
-    oriMarkers.add(action.marker);
-    return state.copyWith(
-      oriMarkers: oriMarkers,
-    );
-  } else {
-    return state;
-  }
-}
-
-MapState _updateOriMarker(MapState state, UpdateOriMarker action) {
-  if (state.id == action.mapId) {
-    final oriMarkers = keyByHosueMarkerId(state.oriMarkers);
-    oriMarkers[action.id] = oriMarkers[action.id]!.copyWithHouses(
-      alphaParam: action.alphaParam,
-      anchorParam: action.anchorParam,
-      clickableParam: action.clickableParam,
-      draggableParam: action.draggableParam,
-      iconParam: action.iconParam,
-      infoWindowEnableParam: action.infoWindowEnableParam,
-      infoWindowParam: action.infoWindowParam,
-      onDragEndParam: action.onDragEndParam,
-      onTapParam: action.onTapParam,
-      positionParam: action.positionParam,
-      rotationParam: action.rotationParam,
-      visibleParam: action.visibleParam,
-      housesParam: action.housesParam,
-    );
-
-    return state.copyWith(
-      oriMarkers: oriMarkers.values.toList(),
-    );
-  } else {
-    return state;
-  }
-}
-
-MapState _removeOriMarker(MapState state, RemoveOriMarker action) {
-  if (state.id == action.mapId) {
-    final oriMarkers = keyByHosueMarkerId(state.oriMarkers);
-    oriMarkers.remove(action.createId);
-
-    return state.copyWith(
-      markers: oriMarkers.values.toList(),
-    );
-  } else {
-    return state;
-  }
-}
-
-MapState _checkPointsInPolygon(MapState state, CheckPointsInPolygon action) {
-  if (state.id == action.mapId) {
-    final markers = state.markers;
+    final markers = state.communityMarkers;
     final markersInPolygon = <HouseMarker>[];
     final polygon = state.polygon;
     for (var marker in markers) {
@@ -231,7 +242,7 @@ MapState _clear(MapState state, Clear action) {
   if (state.id == action.mapId) {
     return state.copyWith(
       polygon: [],
-      markers: [],
+      communityMarkers: [],
       polyLines: [],
     );
   } else {

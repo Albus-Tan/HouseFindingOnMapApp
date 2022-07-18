@@ -39,9 +39,15 @@ class MapWidget extends StatelessWidget {
           final state = store.state;
           debugPrint('Enter');
           final markers = <Marker>[];
+          late final List<Marker> pool;
+          if (state.cameraPosition.zoom < state.zoomSwitch) {
+            pool = state.districtMarkers;
+          } else {
+            pool = state.communityMarkers;
+          }
 
-          if(state.drawing==false){
-            for (var e in store.state.markers) {
+          if (state.drawing == false) {
+            for (var e in pool) {
               if (_getLatLngBound(
                 Size(
                   constrains.maxWidth,
@@ -56,10 +62,10 @@ class MapWidget extends StatelessWidget {
             }
           }
 
-
           return Stack(
             children: [
               AMapWidget(
+                minMaxZoomPreference: const MinMaxZoomPreference(10.0, 20.0),
                 initialCameraPosition: state.cameraPosition,
                 polylines: Set.of(state.polyLines),
                 polygons: state.polygon.isEmpty
@@ -128,7 +134,7 @@ class MapWidget extends StatelessWidget {
                             mapId: state.id,
                           ),
                         );
-                        store.dispatch(CheckPointsInPolygon(
+                        store.dispatch(CheckCommunityMarkersInPolygon(
                           mapId: state.id,
                         ));
                       }

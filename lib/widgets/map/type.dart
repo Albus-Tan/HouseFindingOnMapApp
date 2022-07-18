@@ -64,7 +64,7 @@ class HouseMarker extends Marker {
   }
 }
 
-Map<String, HouseMarker> keyByHosueMarkerId(Iterable<HouseMarker> markers) {
+Map<String, HouseMarker> keyByHouseMarkerId(Iterable<HouseMarker> markers) {
   return Map<String, HouseMarker>.fromEntries(
     markers.map(
       (HouseMarker marker) => MapEntry<String, HouseMarker>(
@@ -73,4 +73,9 @@ Map<String, HouseMarker> keyByHosueMarkerId(Iterable<HouseMarker> markers) {
       ),
     ),
   );
+}
+enum MarkerType{
+  origin,
+  community,
+  district,
 }

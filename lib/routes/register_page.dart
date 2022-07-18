@@ -98,22 +98,28 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget buildOtherMethod(context) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
-      children: _RegisterMethod.map((item) => Builder(builder: (context) {
+      children: _RegisterMethod.map(
+        (item) => Builder(
+          builder: (context) {
             return IconButton(
-                icon: Icon(item['icon'],
-                    color: Theme.of(context).iconTheme.color),
-                onPressed: () {
-                  //TODO: 第三方登录方法
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('${item['title']}登录'),
-                        action: SnackBarAction(
-                          label: '取消',
-                          onPressed: () {},
-                        )),
-                  );
-                });
-          })).toList(),
+              icon:
+                  Icon(item['icon'], color: Theme.of(context).iconTheme.color),
+              onPressed: () {
+                //TODO: 第三方登录方法
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${item['title']}登录'),
+                    action: SnackBarAction(
+                      label: '取消',
+                      onPressed: () {},
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ).toList(),
     );
   }
 
@@ -156,25 +162,27 @@ class _RegisterPageState extends State<RegisterPage> {
               (_formKey.currentState as FormState).save();
               //TODO 执行注册方法
 
-              _register(_username, _password).then((value) => {
-                    if (value.code == 200)
-                      {
-                        Fluttertoast.showToast(msg: value.msg),
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            settings: const RouteSettings(name: "login"),
-                            builder: (context) => const LoginPage(
-                              title: "欢迎登录",
-                            ),
+              _register(_username, _password).then(
+                (value) => {
+                  if (value.code == 200)
+                    {
+                      Fluttertoast.showToast(msg: value.msg),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          settings: const RouteSettings(name: "login"),
+                          builder: (context) => const LoginPage(
+                            title: "欢迎登录",
                           ),
                         ),
-                      }
-                    else
-                      {
-                        Fluttertoast.showToast(msg: value.msg),
-                      }
-                  });
+                      ),
+                    }
+                  else
+                    {
+                      Fluttertoast.showToast(msg: value.msg),
+                    }
+                },
+              );
             }
           },
         ),
@@ -201,33 +209,72 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget buildPasswordTextField(BuildContext context) {
     return TextFormField(
-        obscureText: _isObscure, // 是否显示文字
-        onSaved: (v) => _password = v!,
-        validator: (v) {
-          if (v!.isEmpty) {
-            return '请输入密码';
-          }
-          if (v.length < 6) {
-            return '密码需大于6位';
-          }
-        },
-        decoration: InputDecoration(
-            labelText: "Password",
-            suffixIcon: IconButton(
-              icon: Icon(
-                Icons.remove_red_eye,
-                color: _eyeColor,
-              ),
-              onPressed: () {
-                // 修改 state 内部变量, 且需要界面内容更新, 需要使用 setState()
-                setState(() {
-                  _isObscure = !_isObscure;
-                  _eyeColor = (_isObscure
-                      ? Colors.grey
-                      : Theme.of(context).iconTheme.color)!;
-                });
+      obscureText: _isObscure, // 是否显示文字
+      onSaved: (v) => _password = v!,
+      validator: (v) {
+        if (v!.isEmpty) {
+          return '请输入密码';
+        }
+        if (v.length < 6) {
+          return '密码需大于6位';
+        }
+      },
+      decoration: InputDecoration(
+        labelText: "Password",
+        suffixIcon: IconButton(
+          icon: Icon(
+            Icons.remove_red_eye,
+            color: _eyeColor,
+          ),
+          onPressed: () {
+            // 修改 state 内部变量, 且需要界面内容更新, 需要使用 setState()
+            setState(
+              () {
+                _isObscure = !_isObscure;
+                _eyeColor = (_isObscure
+                    ? Colors.grey
+                    : Theme.of(context).iconTheme.color)!;
               },
-            )));
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildPasswordConfirmedTextField(BuildContext context) {
+    return TextFormField(
+      obscureText: _isObscure, // 是否显示文字
+      onSaved: (v) => _password = v!,
+      validator: (v) {
+        if (v!.isEmpty) {
+          return '请输入密码';
+        }
+        if (v.length < 6) {
+          return '密码需大于6位';
+        }
+      },
+      decoration: InputDecoration(
+        labelText: "Password",
+        suffixIcon: IconButton(
+          icon: Icon(
+            Icons.remove_red_eye,
+            color: _eyeColor,
+          ),
+          onPressed: () {
+            // 修改 state 内部变量, 且需要界面内容更新, 需要使用 setState()
+            setState(
+              () {
+                _isObscure = !_isObscure;
+                _eyeColor = (_isObscure
+                    ? Colors.grey
+                    : Theme.of(context).iconTheme.color)!;
+              },
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Widget buildUserNameTextField() {
@@ -261,10 +308,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget buildTitle() {
     return const Padding(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          'Register',
-          style: TextStyle(fontSize: 42),
-        ));
+      padding: EdgeInsets.all(8),
+      child: Text(
+        'Register',
+        style: TextStyle(fontSize: 42),
+      ),
+    );
   }
 }
