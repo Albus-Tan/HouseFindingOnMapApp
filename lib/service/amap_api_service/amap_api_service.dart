@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app/service/amap_api_service/reach_circle/reach_circle.dart';
 import 'package:app/service/amap_api_service/route_plan/bicycle_route_plan.dart';
 import 'package:app/service/amap_api_service/route_plan/driving_route_plan.dart';
 import 'package:app/service/amap_api_service/route_plan/public_route_plan.dart';
@@ -73,4 +74,14 @@ Future<InputTips> fetchResidentialInputTips(String keyword,
   );
   final responseJson = jsonDecode(response.body);
   return InputTips.fromJson(responseJson);
+}
+
+// 通勤圈
+Future<ReachCircle> fetchReachCircle(String lng, String lat, {String minutes = '60'}) async {
+  final response = await http.get(
+    Uri.parse(
+        'https://restapi.amap.com/v3/direction/reachcircle?platform=JS&s=rsv3&key=8b942f01c2c6b908b8594f86c07c1725&location=$lng,$lat&time=$minutes&extensions=all&output=json&strategy=2'),
+  );
+  final responseJson = jsonDecode(response.body);
+  return ReachCircle.fromJson(responseJson);
 }
