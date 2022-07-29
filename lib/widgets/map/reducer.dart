@@ -8,21 +8,26 @@ import 'type.dart';
 
 final Reducer<MapState> mapReducer = combineReducers(
   [
+    TypedReducer(_setMapStatus),
     TypedReducer(_addCommunityMarker),
     TypedReducer(_updateCommunityMarker),
     TypedReducer(_removeCommunityMarker),
     TypedReducer(_checkCommunityMarkersInPolygon),
-    TypedReducer(_startDrawPolygon),
-    TypedReducer(_addPolygonPoint),
-    TypedReducer(_endDrawPolygon),
+    TypedReducer(_addDrawingPolygonPoint),
     TypedReducer(_setController),
     TypedReducer(_updateCameraPosition),
     TypedReducer(_moveCamera),
     TypedReducer(_clear),
-    TypedReducer(_clearPolygon),
+    TypedReducer(_clearDrawingPolygon),
     TypedReducer(_updateWidgetSize),
   ],
 );
+
+MapState _setMapStatus(MapState state, SetMapStatus action) {
+  return state.copyWith(
+    mapStatus: action.mapStatus,
+  );
+}
 
 MapState _addCommunityMarker(MapState state, AddMarker action) {
   if (state.id == action.mapId) {
@@ -145,61 +150,41 @@ MapState _checkCommunityMarkersInPolygon(
     MapState state, CheckCommunityMarkersInPolygon action) {
   if (state.id == action.mapId) {
     final markers = state.communityMarkers;
-    final markersInPolygon = <HouseMarker>[];
-    final polygon = state.polygon;
+    final markersInDrawingPolygon = <HouseMarker>[];
+    final polygon = state.drawnPolygon;
     for (var marker in markers) {
       if (AMapTools.latLngIsInPolygon(marker.position, polygon)) {
-        markersInPolygon.add(marker);
+        markersInDrawingPolygon.add(marker);
       }
     }
 
     return state.copyWith(
-      markersInPolygon: markersInPolygon,
+      markersInDrawingPolygon: markersInDrawingPolygon,
     );
   } else {
     return state;
   }
 }
 
-MapState _startDrawPolygon(MapState state, StartDrawPolygon action) {
-  if (state.id == action.mapId) {
-    return state.copyWith(
-      drawing: true,
-    );
-  } else {
-    return state;
-  }
-}
-
-MapState _addPolygonPoint(MapState state, AddPolygonPoint action) {
+MapState _addDrawingPolygonPoint(MapState state, AddDrawnPolygonPoint action) {
   if (state.id == action.mapId) {
     final position = action.position;
-    final polygon = state.polygon;
+    final drawingPolygon = state.drawnPolygon;
 
-    polygon.add(position);
+    drawingPolygon.add(position);
 
     return state.copyWith(
-      polygon: polygon,
+      drawnPolygon: drawingPolygon,
     );
   } else {
     return state;
   }
 }
 
-MapState _endDrawPolygon(MapState state, EndDrawPolygon action) {
+MapState _clearDrawingPolygon(MapState state, ClearDrawingPolygon action) {
   if (state.id == action.mapId) {
     return state.copyWith(
-      drawing: false,
-    );
-  } else {
-    return state;
-  }
-}
-
-MapState _clearPolygon(MapState state, ClearPolygon action) {
-  if (state.id == action.mapId) {
-    return state.copyWith(
-      polygon: [],
+      drawnPolygon: [],
     );
   } else {
     return state;
@@ -241,9 +226,9 @@ MapState _moveCamera(MapState state, MoveCamera action) {
 MapState _clear(MapState state, Clear action) {
   if (state.id == action.mapId) {
     return state.copyWith(
-      polygon: [],
+      drawnPolygon: [],
       communityMarkers: [],
-      polyLines: [],
+      reachingPolygon: [],
     );
   } else {
     return state;

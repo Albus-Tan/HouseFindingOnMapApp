@@ -11,11 +11,14 @@ class MapState {
   final List<HouseMarker> oriMarkers;
   final List<HouseMarker> communityMarkers;
   final List<HouseMarker> districtMarkers;
-  final bool drawing;
-  final List<Polyline> polyLines;
+  final MapStatus mapStatus;
 
-  final List<HouseMarker> markersInPolygon;
-  final List<LatLng> polygon;
+  final List<HouseMarker> markersInDrawingPolygon;
+  final List<LatLng> drawnPolygon;
+
+  final List<HouseMarker> markersInReachingPolygon;
+  final List<LatLng> reachingPolygon;
+
   final AMapController? controller;
 
   final CameraPosition cameraPosition;
@@ -27,13 +30,14 @@ class MapState {
 
   MapState({
     required this.zoomSwitch,
-    required this.polygon,
+    required this.drawnPolygon,
     required this.id,
     required this.communityMarkers,
     required this.districtMarkers,
-    required this.drawing,
-    required this.polyLines,
-    required this.markersInPolygon,
+    required this.mapStatus,
+    required this.markersInDrawingPolygon,
+    required this.markersInReachingPolygon,
+    required this.reachingPolygon,
     required this.cameraPosition,
     this.controller,
     required this.widgetSize,
@@ -44,10 +48,12 @@ class MapState {
           {String? id,
           List<HouseMarker>? communityMarkers,
           List<HouseMarker>? districtMarkers,
-          bool? drawing,
-          List<Polyline>? polyLines,
-          List<LatLng>? polygon,
-          List<HouseMarker>? markersInPolygon,
+          MapStatus? mapStatus,
+          List<LatLng>? drawnPolygon,
+          List<HouseMarker>? markersInDrawingPolygon,
+          bool? selectingReachingCenter,
+          List<LatLng>? reachingPolygon,
+          List<HouseMarker>? markersInReachingPolygon,
           List<HouseMarker>? oriMarkers,
           AMapController? controller,
           CameraPosition? cameraPosition,
@@ -58,10 +64,13 @@ class MapState {
         zoomSwitch: zoomSwitch ?? this.zoomSwitch,
         communityMarkers: communityMarkers ?? this.communityMarkers,
         districtMarkers: districtMarkers ?? this.districtMarkers,
-        drawing: drawing ?? this.drawing,
-        polyLines: polyLines ?? this.polyLines,
-        polygon: polygon ?? this.polygon,
-        markersInPolygon: markersInPolygon ?? this.markersInPolygon,
+        mapStatus: mapStatus ?? this.mapStatus,
+        drawnPolygon: drawnPolygon ?? this.drawnPolygon,
+        markersInDrawingPolygon:
+            markersInDrawingPolygon ?? this.markersInDrawingPolygon,
+        reachingPolygon: reachingPolygon ?? this.reachingPolygon,
+        markersInReachingPolygon:
+            markersInReachingPolygon ?? this.markersInReachingPolygon,
         controller: controller ?? this.controller,
         cameraPosition: cameraPosition ?? this.cameraPosition,
         widgetSize: widgetSize ?? this.widgetSize,
@@ -75,10 +84,11 @@ class MapState {
       zoomSwitch: 13.0,
       communityMarkers: [],
       districtMarkers: [],
-      drawing: false,
-      polyLines: [],
-      markersInPolygon: [],
-      polygon: [],
+      mapStatus: MapStatus.normal,
+      markersInDrawingPolygon: [],
+      drawnPolygon: [],
+      markersInReachingPolygon: [],
+      reachingPolygon: [],
       cameraPosition: CameraPosition(
         target: LatLng(
           0,

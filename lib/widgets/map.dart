@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:app/widgets/map/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -46,7 +47,9 @@ class MapWidget extends StatelessWidget {
             pool = state.communityMarkers;
           }
 
-          if (state.drawing == false) {
+          if (state.mapStatus == MapStatus.normal ||
+              state.mapStatus == MapStatus.drawn ||
+              state.mapStatus == MapStatus.selected) {
             for (var e in pool) {
               if (_getLatLngBound(
                 Size(
@@ -67,12 +70,12 @@ class MapWidget extends StatelessWidget {
               AMapWidget(
                 minMaxZoomPreference: const MinMaxZoomPreference(10.0, 20.0),
                 initialCameraPosition: state.cameraPosition,
-                polylines: Set.of(state.polyLines),
-                polygons: state.polygon.isEmpty
+                polylines: {},
+                polygons: state.drawnPolygon.isEmpty
                     ? <Polygon>{}
                     : <Polygon>{
                         Polygon(
-                          points: state.polygon,
+                          points: state.drawnPolygon,
                         ),
                       },
                 markers: Set.of(markers),
@@ -93,10 +96,9 @@ class MapWidget extends StatelessWidget {
                 },
               ),
               GestureDetector(
-                onPanUpdate: state.drawing
+                onPanUpdate: state.mapStatus == MapStatus.drawing
                     ? (details) {
                         final screenPosition = details.localPosition;
-
                         final centerLatitude =
                             state.cameraPosition.target.latitude;
                         final centerLongitude =
@@ -110,7 +112,7 @@ class MapWidget extends StatelessWidget {
                         // actualLatitude = pixel * a * exp( 2 * zoom )
                         final a = 2.0 - limitWidth / 2000;
                         store.dispatch(
-                          AddPolygonPoint(
+                          AddDrawnPolygonPoint(
                             mapId: state.id,
                             position: LatLng(
                               (-a *
@@ -127,16 +129,19 @@ class MapWidget extends StatelessWidget {
                         );
                       }
                     : null,
-                onPanEnd: state.drawing
+                onPanEnd: state.mapStatus == MapStatus.drawing
                     ? (detail) {
                         store.dispatch(
-                          EndDrawPolygon(
+                          SetMapStatus(
+                            mapId: state.id,
+                            mapStatus: MapStatus.drawn,
+                          ),
+                        );
+                        store.dispatch(
+                          CheckCommunityMarkersInPolygon(
                             mapId: state.id,
                           ),
                         );
-                        store.dispatch(CheckCommunityMarkersInPolygon(
-                          mapId: state.id,
-                        ));
                       }
                     : null,
               )

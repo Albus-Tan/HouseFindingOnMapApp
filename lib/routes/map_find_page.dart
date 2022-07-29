@@ -92,12 +92,28 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   updateFilteredHouse(Store<MapState> store) {
-    int priceLow = (price1 == '') ? -1 : int.parse(price1);
-    int priceHigh = (price2 == '') ? -1 : int.parse(price2);
+    int priceLow = (price1 == '')
+        ? -1
+        : int.parse(
+            price1,
+          );
+    int priceHigh = (price2 == '')
+        ? -1
+        : int.parse(
+            price2,
+          );
 
-    int mLine = (metroLine == '') ? -1 : int.parse(metroLine);
+    int mLine = (metroLine == '')
+        ? -1
+        : int.parse(
+            metroLine,
+          );
     //TODO
-    List<String> zhan = (metroStation == '') ? [] : metroStation.split(',');
+    List<String> zhan = (metroStation == '')
+        ? []
+        : metroStation.split(
+            ',',
+          );
 
     List<int> shi = [];
     List<String> x = (rooms == '') ? [] : rooms.split(',');
@@ -111,7 +127,9 @@ class _MapFindPageState extends State<MapFindPage> {
       rType.add(int.parse(yi));
     }
 
-    final residentialMarkers = keyByHouseMarkerId(store.state.communityMarkers);
+    final residentialMarkers = keyByHouseMarkerId(
+      store.state.communityMarkers,
+    );
 
     for (final marker in store.state.oriMarkers) {
       var housesList = marker.houses;
@@ -472,7 +490,7 @@ class _MapFindPageState extends State<MapFindPage> {
   void _updateMarkersInPolygon(Store<MapState> store) {
     // 建立本次多边形中 markers 的 id 与 相关信息的索引
     final markersInPolygonMap = keyByHouseMarkerId(
-      store.state.markersInPolygon,
+      store.state.markersInDrawingPolygon,
     );
 
     /// 建立索引
@@ -577,10 +595,15 @@ class _MapFindPageState extends State<MapFindPage> {
               );
             }
             store.dispatch(
-              ClearPolygon(mapId: store.state.id),
+              ClearDrawingPolygon(
+                mapId: store.state.id,
+              ),
             );
             store.dispatch(
-              StartDrawPolygon(mapId: store.state.id),
+              SetMapStatus(
+                mapId: store.state.id,
+                mapStatus: MapStatus.drawing,
+              ),
             );
           },
         ),
@@ -593,7 +616,7 @@ class _MapFindPageState extends State<MapFindPage> {
             // _resetAllMarkersInPolygon(store);
 
             store.dispatch(
-              ClearPolygon(
+              ClearDrawingPolygon(
                 mapId: store.state.id,
               ),
             );
@@ -603,8 +626,9 @@ class _MapFindPageState extends State<MapFindPage> {
               ),
             );
             store.dispatch(
-              EndDrawPolygon(
+              SetMapStatus(
                 mapId: store.state.id,
+                mapStatus: MapStatus.normal,
               ),
             );
             setState(
@@ -642,10 +666,13 @@ class _MapFindPageState extends State<MapFindPage> {
               );
             }
             store.dispatch(
-              ClearPolygon(mapId: store.state.id),
+              ClearDrawingPolygon(mapId: store.state.id),
             );
             store.dispatch(
-              StartDrawPolygon(mapId: store.state.id),
+              SetMapStatus(
+                mapId: store.state.id,
+                mapStatus: MapStatus.drawing,
+              ),
             );
             setState(
               () {
@@ -658,7 +685,9 @@ class _MapFindPageState extends State<MapFindPage> {
           widgetHeight: 60,
           widgetWidth: 40,
           name: '定位',
-          iconWidget: const Icon(Icons.my_location),
+          iconWidget: const Icon(
+            Icons.my_location,
+          ),
           onTap: () async {
             await _updatePos();
             store.dispatch(
@@ -714,12 +743,13 @@ class _MapFindPageState extends State<MapFindPage> {
           },
           onDispose: (store) {
             store.dispatch(
-              EndDrawPolygon(
+              SetMapStatus(
                 mapId: store.state.id,
+                mapStatus: MapStatus.normal,
               ),
             );
             store.dispatch(
-              ClearPolygon(
+              ClearDrawingPolygon(
                 mapId: store.state.id,
               ),
             );
