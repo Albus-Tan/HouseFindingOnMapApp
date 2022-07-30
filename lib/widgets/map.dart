@@ -64,6 +64,24 @@ class MapWidget extends StatelessWidget {
               }
             }
           }
+          late final Set<Polygon> polygons;
+          switch (state.mapStatus) {
+            case MapStatus.drawing:
+            case MapStatus.drawn:
+              polygons = state.drawnPolygon.isEmpty
+                  ? {}
+                  : {
+                      Polygon(
+                        points: state.drawnPolygon,
+                      ),
+                    };
+              break;
+            case MapStatus.selected:
+              polygons = state.reachingPolygon.toSet();
+              break;
+            default:
+              polygons = {};
+          }
 
           return Stack(
             children: [
@@ -71,13 +89,7 @@ class MapWidget extends StatelessWidget {
                 minMaxZoomPreference: const MinMaxZoomPreference(10.0, 20.0),
                 initialCameraPosition: state.cameraPosition,
                 polylines: {},
-                polygons: state.drawnPolygon.isEmpty
-                    ? <Polygon>{}
-                    : <Polygon>{
-                        Polygon(
-                          points: state.drawnPolygon,
-                        ),
-                      },
+                polygons: polygons,
                 markers: Set.of(markers),
                 onMapCreated: (controller) => store.dispatch(
                   SetController(

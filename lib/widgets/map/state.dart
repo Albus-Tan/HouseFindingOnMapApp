@@ -16,8 +16,9 @@ class MapState {
   final List<HouseMarker> markersInDrawingPolygon;
   final List<LatLng> drawnPolygon;
 
+  // final LatLng reachingCenter;
   final List<HouseMarker> markersInReachingPolygon;
-  final List<LatLng> reachingPolygon;
+  final List<Polygon> reachingPolygon;
 
   final AMapController? controller;
 
@@ -52,7 +53,7 @@ class MapState {
           List<LatLng>? drawnPolygon,
           List<HouseMarker>? markersInDrawingPolygon,
           bool? selectingReachingCenter,
-          List<LatLng>? reachingPolygon,
+          List<Polygon>? reachingPolygon,
           List<HouseMarker>? markersInReachingPolygon,
           List<HouseMarker>? oriMarkers,
           AMapController? controller,

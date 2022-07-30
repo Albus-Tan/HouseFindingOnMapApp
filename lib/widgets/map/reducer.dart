@@ -13,6 +13,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_updateCommunityMarker),
     TypedReducer(_removeCommunityMarker),
     TypedReducer(_checkCommunityMarkersInPolygon),
+    TypedReducer(_setReachingPolygon),
     TypedReducer(_addDrawingPolygonPoint),
     TypedReducer(_setController),
     TypedReducer(_updateCameraPosition),
@@ -24,9 +25,13 @@ final Reducer<MapState> mapReducer = combineReducers(
 );
 
 MapState _setMapStatus(MapState state, SetMapStatus action) {
-  return state.copyWith(
-    mapStatus: action.mapStatus,
-  );
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      mapStatus: action.mapStatus,
+    );
+  } else {
+    return state;
+  }
 }
 
 MapState _addCommunityMarker(MapState state, AddMarker action) {
@@ -150,17 +155,48 @@ MapState _checkCommunityMarkersInPolygon(
     MapState state, CheckCommunityMarkersInPolygon action) {
   if (state.id == action.mapId) {
     final markers = state.communityMarkers;
-    final markersInDrawingPolygon = <HouseMarker>[];
-    final polygon = state.drawnPolygon;
-    for (var marker in markers) {
-      if (AMapTools.latLngIsInPolygon(marker.position, polygon)) {
-        markersInDrawingPolygon.add(marker);
+    final markersInPolygon = <HouseMarker>[];
+
+    late final Set<Polygon> polygons;
+
+    switch (state.mapStatus) {
+      case MapStatus.drawn:
+        polygons = state.drawnPolygon.isEmpty
+            ? {}
+            : {
+                Polygon(
+                  points: state.drawnPolygon,
+                ),
+              };
+        break;
+      case MapStatus.selected:
+        polygons = state.reachingPolygon.toSet();
+        break;
+      default:
+        return state;
+    }
+
+    for (final marker in markers) {
+      for (final polygon in polygons) {
+        if (AMapTools.latLngIsInPolygon(marker.position, polygon.points)) {
+          markersInPolygon.add(marker);
+          break;
+        }
       }
     }
 
-    return state.copyWith(
-      markersInDrawingPolygon: markersInDrawingPolygon,
-    );
+    switch (state.mapStatus) {
+      case MapStatus.drawn:
+        return state.copyWith(
+          markersInDrawingPolygon: markersInPolygon,
+        );
+      case MapStatus.selected:
+        return state.copyWith(
+          markersInReachingPolygon: markersInPolygon,
+        );
+      default:
+        return state;
+    }
   } else {
     return state;
   }
@@ -185,6 +221,16 @@ MapState _clearDrawingPolygon(MapState state, ClearDrawingPolygon action) {
   if (state.id == action.mapId) {
     return state.copyWith(
       drawnPolygon: [],
+    );
+  } else {
+    return state;
+  }
+}
+
+MapState _setReachingPolygon(MapState state, SetReachingPolygon action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      reachingPolygon: action.reachingPolygon,
     );
   } else {
     return state;

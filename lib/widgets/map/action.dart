@@ -88,7 +88,7 @@ class SetMapStatus extends MapAction {
 }
 
 class SetReachingPolygon extends MapAction {
-  final List<LatLng> reachingPolygon;
+  final List<Polygon> reachingPolygon;
 
   SetReachingPolygon({
     required super.mapId,
