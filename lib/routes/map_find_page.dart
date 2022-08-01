@@ -450,9 +450,9 @@ class _MapFindPageState extends State<MapFindPage> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  subtitle: Text(
-                      '均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · '
-                      '共$num套'),
+                  subtitle:
+                      Text('均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · '
+                          '共$num套'),
                   trailing: const Icon(Icons.keyboard_arrow_down),
                 ),
                 const Divider(),
@@ -488,9 +488,27 @@ class _MapFindPageState extends State<MapFindPage> {
 
   void _updateMarkersInPolygon(Store<MapState> store) {
     // 建立本次多边形中 markers 的 id 与 相关信息的索引
-    final markersInPolygonMap = keyByHouseMarkerId(
-      store.state.markersInDrawingPolygon,
-    );
+    late final markersInPolygonMap;
+    final state = store.state;
+
+    switch (state.mapStatus) {
+      case MapStatus.drawing:
+      case MapStatus.drawn:
+        markersInPolygonMap = keyByHouseMarkerId(
+          store.state.markersInDrawingPolygon,
+        );
+        break;
+
+      case MapStatus.normal:
+        markersInPolygonMap = {};
+        break;
+      case MapStatus.selecting:
+      case MapStatus.selected:
+        markersInPolygonMap = keyByHouseMarkerId(
+          store.state.markersInReachingPolygon,
+        );
+        break;
+    }
 
     /// 建立索引
     final residentialMarkers = keyByHouseMarkerId(
