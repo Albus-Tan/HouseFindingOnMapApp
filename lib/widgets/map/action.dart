@@ -95,6 +95,14 @@ class SetReachingPolygon extends MapAction {
     required this.reachingPolygon,
   });
 }
+class SetReachingCenter extends MapAction {
+  final LatLng reachingCenter;
+
+  SetReachingCenter({
+    required super.mapId,
+    required this.reachingCenter,
+  });
+}
 
 class AddDrawnPolygonPoint extends MapAction {
   final LatLng position;

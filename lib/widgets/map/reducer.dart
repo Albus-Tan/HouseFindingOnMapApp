@@ -13,6 +13,7 @@ final Reducer<MapState> mapReducer = combineReducers(
     TypedReducer(_updateCommunityMarker),
     TypedReducer(_removeCommunityMarker),
     TypedReducer(_checkCommunityMarkersInPolygon),
+    TypedReducer(_setReachingCenter),
     TypedReducer(_setReachingPolygon),
     TypedReducer(_addDrawingPolygonPoint),
     TypedReducer(_setController),
@@ -112,6 +113,16 @@ MapState _updateCommunityMarker(MapState state, UpdateMarker action) {
           districtMarkers: markers.values.toList(),
         );
     }
+  } else {
+    return state;
+  }
+}
+
+MapState _setReachingCenter(MapState state, SetReachingCenter action) {
+  if (state.id == action.mapId) {
+    return state.copyWith(
+      reachingCenter: action.reachingCenter,
+    );
   } else {
     return state;
   }

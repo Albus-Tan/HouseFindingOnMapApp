@@ -6,6 +6,8 @@ import 'package:app/widgets/map/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
+import '../service/amap_api_service/amap_api_service.dart';
+import '../utils/amap.dart';
 import 'map/action.dart';
 import 'map/state.dart';
 
@@ -106,6 +108,45 @@ class MapWidget extends StatelessWidget {
                     ),
                   );
                 },
+                onTap: state.mapStatus == MapStatus.selecting
+                    ? (LatLng position) {
+                        store.dispatch(
+                          SetMapStatus(
+                            mapId: state.id,
+                            mapStatus: MapStatus.selected,
+                          ),
+                        );
+                        store.dispatch(
+                          SetReachingCenter(
+                            mapId: state.id,
+                            reachingCenter: position,
+                          ),
+                        );
+                        fetchReachCircle(centerPosition: position).then(
+                          (reachCircle) {
+                            store.dispatch(
+                              SetReachingPolygon(
+                                mapId: state.id,
+                                reachingPolygon: reachCircle.polylines
+                                    .map(
+                                      (e) => Polygon(
+                                        points: convertPolylineStr2Points(
+                                          e.outer,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            );
+                            store.dispatch(
+                              CheckCommunityMarkersInPolygon(
+                                mapId: state.id,
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    : null,
               ),
               GestureDetector(
                 onPanUpdate: state.mapStatus == MapStatus.drawing
