@@ -88,7 +88,10 @@ class MapWidget extends StatelessWidget {
           return Stack(
             children: [
               AMapWidget(
-                minMaxZoomPreference: const MinMaxZoomPreference(10.0, 20.0),
+                minMaxZoomPreference: const MinMaxZoomPreference(
+                  10.0,
+                  20.0,
+                ),
                 initialCameraPosition: state.cameraPosition,
                 polylines: {},
                 polygons: polygons,
@@ -109,7 +112,7 @@ class MapWidget extends StatelessWidget {
                   );
                 },
                 onTap: state.mapStatus == MapStatus.selecting
-                    ? (LatLng position) {
+                    ? (position) {
                         store.dispatch(
                           SetMapStatus(
                             mapId: state.id,
@@ -146,7 +149,7 @@ class MapWidget extends StatelessWidget {
                           },
                         );
                       }
-                    : null,
+                    : (position){},
               ),
               GestureDetector(
                 onPanUpdate: state.mapStatus == MapStatus.drawing

@@ -5,6 +5,7 @@ import 'package:app/common/extension/widget.dart';
 import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map_find_marker.dart';
 import 'package:bruno/bruno.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -31,9 +32,6 @@ class MapFindPage extends StatefulWidget {
 class _MapFindPageState extends State<MapFindPage> {
   /// 所有房源数据
   List<RentHouse> houses = [];
-
-  /// 正在画圈
-  bool isDrawing = false;
 
   /// 地图上房源小区 Marker
   String focusingMarkerId = "";
@@ -453,7 +451,8 @@ class _MapFindPageState extends State<MapFindPage> {
                     ),
                   ),
                   subtitle: Text(
-                      '均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · 共$num套'),
+                      '均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · '
+                      '共$num套'),
                   trailing: const Icon(Icons.keyboard_arrow_down),
                 ),
                 const Divider(),
@@ -522,56 +521,60 @@ class _MapFindPageState extends State<MapFindPage> {
     }
 
     // 遍历这一次在圈内的
-    markersInPolygonMap.forEach((residentialMarkerId, value) {
-      // 上一次不在圈内
-      if (!markersIdInPolygon.contains(residentialMarkerId)) {
-        var residentialMapFindMarker = ResidentialMapFindMarker(
-          residential:
-              markersInPolygonMap[residentialMarkerId]?.houses[0].residential ??
-                  '',
-          num: markersInPolygonMap[residentialMarkerId]?.houses.length ?? 0,
-        );
-        residentialMapFindMarker.inPolygon = true;
-        residentialMapFindMarker.toUint8List().then(
-          (value) {
-            store.dispatch(
-              UpdateMarker(
-                mapId: store.state.id,
-                markerType: MarkerType.community,
-                id: residentialMarkerId,
-                iconParam: BitmapDescriptor.fromBytes(value!),
-              ),
-            );
-          },
-        );
-      }
-    });
+    markersInPolygonMap.forEach(
+      (residentialMarkerId, value) {
+        // 上一次不在圈内
+        if (!markersIdInPolygon.contains(residentialMarkerId)) {
+          var residentialMapFindMarker = ResidentialMapFindMarker(
+            residential: markersInPolygonMap[residentialMarkerId]
+                    ?.houses[0]
+                    .residential ??
+                '',
+            num: markersInPolygonMap[residentialMarkerId]?.houses.length ?? 0,
+          );
+          residentialMapFindMarker.inPolygon = true;
+          residentialMapFindMarker.toUint8List().then(
+            (value) {
+              store.dispatch(
+                UpdateMarker(
+                  mapId: store.state.id,
+                  markerType: MarkerType.community,
+                  id: residentialMarkerId,
+                  iconParam: BitmapDescriptor.fromBytes(value!),
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
 
     // 更新圈内 id 集合
     markersIdInPolygon.clear();
-    markersInPolygonMap.forEach((residentialMarkerId, value) {
-      markersIdInPolygon.add(residentialMarkerId);
-    });
+    markersInPolygonMap.forEach(
+      (
+        residentialMarkerId,
+        value,
+      ) {
+        markersIdInPolygon.add(residentialMarkerId);
+      },
+    );
   }
 
-  // void _resetAllMarkers(Store<MapState> store) {
-  //   for (final element in store.state.markers) {
-  //     residentialMarkers[element.id]?.inPolygon = false;
-  //     residentialMarkers[element.id]?.toUint8List().then(
-  //       (value) {
-  //         store.dispatch(
-  //           UpdateMarker(
-  //             mapId: store.state.id,
-  //             id: element.id,
-  //             iconParam: BitmapDescriptor.fromBytes(value!),
-  //           ),
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  Widget buildOperations(Store<MapState> store) {
+    switch (store.state.mapStatus) {
+      case MapStatus.normal:
+        return buildNormalOperations(store);
+      case MapStatus.drawing:
+      case MapStatus.drawn:
+        return buildDrawingOperations(store);
+      case MapStatus.selecting:
+      case MapStatus.selected:
+        return buildSelectingOperations(store);
+    }
+  }
 
-  Widget buildOperationsWhenDrawing(Store<MapState> store) {
+  Widget buildDrawingOperations(Store<MapState> store) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -631,10 +634,50 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapStatus: MapStatus.normal,
               ),
             );
-            setState(
-              () {
-                isDrawing = false;
-              },
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget buildSelectingOperations(Store<MapState> store) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '重选',
+          iconWidget: const Icon(
+            Icons.pan_tool_alt_outlined,
+          ),
+          onTap: () {
+            // _resetAllMarkersInPolygon(store);
+            final state = store.state;
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.selecting,
+              ),
+            );
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '退出',
+          iconWidget: const Icon(Icons.arrow_back),
+          onTap: () {
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: store.state.id,
+              ),
+            );
+            store.dispatch(
+              SetMapStatus(
+                mapId: store.state.id,
+                mapStatus: MapStatus.normal,
+              ),
             );
           },
         ),
@@ -642,7 +685,7 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 
-  Widget buildOperationsWhenNotDrawing(Store<MapState> store) {
+  Widget buildNormalOperations(Store<MapState> store) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -674,10 +717,23 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapStatus: MapStatus.drawing,
               ),
             );
-            setState(
-              () {
-                isDrawing = true;
-              },
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '通勤',
+          iconWidget: const Icon(
+            Icons.alarm_outlined,
+          ),
+          onTap: () {
+            BrnToast.show('请选择通勤起点', context);
+            final state = store.state;
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.selecting,
+              ),
             );
           },
         ),
@@ -685,9 +741,7 @@ class _MapFindPageState extends State<MapFindPage> {
           widgetHeight: 60,
           widgetWidth: 40,
           name: '定位',
-          iconWidget: const Icon(
-            Icons.my_location,
-          ),
+          iconWidget: const Icon(Icons.my_location),
           onTap: () async {
             await _updatePos();
             store.dispatch(
@@ -719,15 +773,14 @@ class _MapFindPageState extends State<MapFindPage> {
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
-            // store.dispatch(
-            //   Clear(
-            //     mapId: store.state.id,
-            //   ),
-            // );
             if (store.state.communityMarkers.isEmpty) {
-              _initResidentialMarkers(store);
+              _initResidentialMarkers(
+                store,
+              );
             } else {
-              _updateResidentialMarkersOnTap(store);
+              _updateResidentialMarkersOnTap(
+                store,
+              );
               selectionChanged = true;
             }
             store.dispatch(
@@ -735,7 +788,10 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapId: store.state.id,
                 cameraPosition: const CameraPosition(
                   // 初始化至上海市
-                  target: LatLng(31.2382, 121.4913),
+                  target: LatLng(
+                    31.2382,
+                    121.4913,
+                  ),
                   zoom: 15,
                 ),
               ),
@@ -760,30 +816,56 @@ class _MapFindPageState extends State<MapFindPage> {
             );
             _updateMarkersInPolygon(store);
           },
-          builder: (context, store) {
-            _updateMarkersInPolygon(store);
+          builder: (
+            context,
+            store,
+          ) {
+            _updateMarkersInPolygon(
+              store,
+            );
             if (selectionChanged) {
-              updateFilteredHouse(store);
+              updateFilteredHouse(
+                store,
+              );
               selectionChanged = false;
             }
+            final state = store.state;
+            final mapStatus = state.mapStatus;
             return MaterialApp(
               home: Scaffold(
-                appBar: isDrawing
+                appBar: mapStatus == MapStatus.drawing ||
+                        mapStatus == MapStatus.drawn
                     ? AppBar(
                         backgroundColor: Colors.white,
                         title: const Text(
                           "画图找房",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                         centerTitle: true,
                         titleSpacing: 0.0,
                       )
-                    : AppBar(
-                        backgroundColor: Colors.white,
-                        title: selectionInitialized ? selection : Container(),
-                        centerTitle: true,
-                        titleSpacing: 0.0,
-                      ),
+                    : mapStatus == MapStatus.selecting ||
+                            mapStatus == MapStatus.selected
+                        ? AppBar(
+                            backgroundColor: Colors.white,
+                            title: const Text(
+                              "通勤找房",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            centerTitle: true,
+                            titleSpacing: 0.0,
+                          )
+                        : AppBar(
+                            backgroundColor: Colors.white,
+                            title:
+                                selectionInitialized ? selection : Container(),
+                            centerTitle: true,
+                            titleSpacing: 0.0,
+                          ),
                 body: StoreProvider(
                   store: store,
                   child: Stack(
@@ -795,12 +877,15 @@ class _MapFindPageState extends State<MapFindPage> {
                         child: Container(
                           decoration: const BoxDecoration(
                             color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                20.0,
+                              ),
+                            ),
                           ),
-                          child: isDrawing
-                              ? buildOperationsWhenDrawing(store)
-                              : buildOperationsWhenNotDrawing(store),
+                          child: buildOperations(
+                            store,
+                          ),
                         ),
                       ),
                     ],
