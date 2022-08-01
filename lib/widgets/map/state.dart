@@ -16,7 +16,7 @@ class MapState {
   final List<HouseMarker> markersInDrawingPolygon;
   final List<LatLng> drawnPolygon;
 
-  // final LatLng reachingCenter;
+  final LatLng reachingCenter;
   final List<HouseMarker> markersInReachingPolygon;
   final List<Polygon> reachingPolygon;
 
@@ -30,6 +30,7 @@ class MapState {
   static int mapCount = 0;
 
   MapState({
+    required this.reachingCenter,
     required this.zoomSwitch,
     required this.drawnPolygon,
     required this.id,
@@ -45,21 +46,23 @@ class MapState {
     required this.oriMarkers,
   });
 
-  MapState copyWith(
-          {String? id,
-          List<HouseMarker>? communityMarkers,
-          List<HouseMarker>? districtMarkers,
-          MapStatus? mapStatus,
-          List<LatLng>? drawnPolygon,
-          List<HouseMarker>? markersInDrawingPolygon,
-          bool? selectingReachingCenter,
-          List<Polygon>? reachingPolygon,
-          List<HouseMarker>? markersInReachingPolygon,
-          List<HouseMarker>? oriMarkers,
-          AMapController? controller,
-          CameraPosition? cameraPosition,
-          Size? widgetSize,
-          double? zoomSwitch}) =>
+  MapState copyWith({
+    LatLng? reachingCenter,
+    String? id,
+    List<HouseMarker>? communityMarkers,
+    List<HouseMarker>? districtMarkers,
+    MapStatus? mapStatus,
+    List<LatLng>? drawnPolygon,
+    List<HouseMarker>? markersInDrawingPolygon,
+    bool? selectingReachingCenter,
+    List<Polygon>? reachingPolygon,
+    List<HouseMarker>? markersInReachingPolygon,
+    List<HouseMarker>? oriMarkers,
+    AMapController? controller,
+    CameraPosition? cameraPosition,
+    Size? widgetSize,
+    double? zoomSwitch,
+  }) =>
       MapState(
         id: id ?? this.id,
         zoomSwitch: zoomSwitch ?? this.zoomSwitch,
@@ -76,6 +79,7 @@ class MapState {
         cameraPosition: cameraPosition ?? this.cameraPosition,
         widgetSize: widgetSize ?? this.widgetSize,
         oriMarkers: oriMarkers ?? this.oriMarkers,
+        reachingCenter: reachingCenter ?? this.reachingCenter,
       );
 
   static MapState initialState() {
@@ -83,21 +87,28 @@ class MapState {
     return MapState(
       id: mapCount.toString(),
       zoomSwitch: 13.0,
-      communityMarkers: [],
-      districtMarkers: [],
+      communityMarkers: const [],
+      districtMarkers: const [],
       mapStatus: MapStatus.normal,
-      markersInDrawingPolygon: [],
-      drawnPolygon: [],
-      markersInReachingPolygon: [],
-      reachingPolygon: [],
-      cameraPosition: CameraPosition(
+      markersInDrawingPolygon: const [],
+      drawnPolygon: const [],
+      markersInReachingPolygon: const [],
+      reachingPolygon: const [],
+      cameraPosition: const CameraPosition(
         target: LatLng(
           0,
           0,
         ),
       ),
-      widgetSize: Size(0, 0),
-      oriMarkers: [],
+      widgetSize: const Size(
+        0,
+        0,
+      ),
+      oriMarkers: const [],
+      reachingCenter: const LatLng(
+        0,
+        0,
+      ),
     );
   }
 }
