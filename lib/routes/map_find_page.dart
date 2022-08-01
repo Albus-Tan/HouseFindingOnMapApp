@@ -124,14 +124,14 @@ class _MapFindPageState extends State<MapFindPage> {
     for (final yi in y) {
       rType.add(int.parse(yi));
     }
-
+    final state = store.state;
     final residentialMarkers = keyByHouseMarkerId(
-      store.state.communityMarkers,
+      state.communityMarkers,
     );
 
-    for (final marker in store.state.oriMarkers) {
-      var housesList = marker.houses;
-      var filteredHousesList = <RentHouse>[];
+    for (final marker in state.oriMarkers) {
+      final housesList = marker.houses;
+      final filteredHousesList = <RentHouse>[];
       bool residentialHasMeetRequirement = false;
       // 遍历检查是否有符合条件的
       for (final house in housesList) {
@@ -170,20 +170,37 @@ class _MapFindPageState extends State<MapFindPage> {
         }
       }
 
-      residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
-
+      residentialHasMeetRequirement = filteredHousesList.isNotEmpty;
+      late final List<HouseMarker> markersInPolygon;
+      switch (state.mapStatus) {
+        case MapStatus.normal:
+          markersInPolygon = [];
+          break;
+        case MapStatus.drawing:
+        case MapStatus.drawn:
+          markersInPolygon = state.markersInDrawingPolygon;
+          break;
+        case MapStatus.selecting:
+        case MapStatus.selected:
+          markersInPolygon = state.markersInReachingPolygon;
+          break;
+      }
+      final markersInPolygonMap = keyByHouseMarkerId(markersInPolygon);
       if (residentialHasMeetRequirement &&
           filteredHousesList.length !=
               residentialMarkers[marker.id]?.houses.length) {
-        var residentialMapFindMarker = ResidentialMapFindMarker(
+        final residentialMapFindMarker = ResidentialMapFindMarker(
           residential: filteredHousesList[0].residential ?? '',
           num: filteredHousesList.length,
+          inPolygon: markersInPolygonMap.containsKey(
+            marker.id,
+          ),
         );
         residentialMapFindMarker.toUint8List().then(
           (value) {
             store.dispatch(
               UpdateMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.community,
                 iconParam: BitmapDescriptor.fromBytes(value!),
                 id: marker.id,
@@ -198,7 +215,7 @@ class _MapFindPageState extends State<MapFindPage> {
       } else {
         store.dispatch(
           UpdateMarker(
-            mapId: store.state.id,
+            mapId: state.id,
             markerType: MarkerType.community,
             id: marker.id,
             visibleParam: residentialHasMeetRequirement,
@@ -253,10 +270,11 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _updateResidentialMarkersOnTap(Store<MapState> store) async {
-    for (var m in store.state.communityMarkers) {
+    final state = store.state;
+    for (var m in state.communityMarkers) {
       store.dispatch(
         UpdateMarker(
-          mapId: store.state.id,
+          mapId: state.id,
           markerType: MarkerType.community,
           id: m.id,
           onTapParam: (id) => _markerOnTap(id!, store, context),
@@ -266,6 +284,7 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _initResidentialMarkers(Store<MapState> store) async {
+    final state = store.state;
     // 从后端拿取所有数据
     await getAllHouses();
 
@@ -294,8 +313,8 @@ class _MapFindPageState extends State<MapFindPage> {
     residentialList.forEach(
       (key, value) {
         // 使用第一个房源信息的地理位置代表整个小区
-        var house = value[0];
-        var residentialMarkerWidget = ResidentialMapFindMarker(
+        final house = value[0];
+        final residentialMarkerWidget = ResidentialMapFindMarker(
           residential: house.residential ?? '',
           num: value.length,
         );
@@ -313,14 +332,14 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               AddMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.community,
                 marker: value,
               ),
             );
             store.dispatch(
               AddMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.origin,
                 marker: value,
               ),
@@ -349,10 +368,10 @@ class _MapFindPageState extends State<MapFindPage> {
           onTap: (id) => {
             store.dispatch(
               MoveCamera(
-                mapId: store.state.id,
+                mapId: state.id,
                 cameraPosition: CameraPosition(
                   target: latLng,
-                  zoom: store.state.zoomSwitch,
+                  zoom: state.zoomSwitch,
                 ),
               ),
             ),
@@ -370,14 +389,14 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               AddMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.district,
                 marker: value,
               ),
             );
             // store.dispatch(
             //   AddMarker(
-            //     mapId: store.state.id,
+            //     mapId: state.id,
             //     markerType: MarkerType.origin,
             //     marker: value,
             //   ),
@@ -389,11 +408,13 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
+    final state = store.state;
+
     /// 依据 id 从 residentialMarkers 中取出对应 widget
     print("onTap$id");
 
     /// 建立索引
-    final residentialMarkers = keyByHouseMarkerId(store.state.communityMarkers);
+    final residentialMarkers = keyByHouseMarkerId(state.communityMarkers);
 
     tappedMarkers[id] = residentialMarkers[id];
     focusingMarkerId = id;
@@ -406,7 +427,7 @@ class _MapFindPageState extends State<MapFindPage> {
       (value) {
         store.dispatch(
           UpdateMarker(
-            mapId: store.state.id,
+            mapId: state.id,
             markerType: MarkerType.community,
             id: id,
             iconParam: BitmapDescriptor.fromBytes(value!),
@@ -495,7 +516,7 @@ class _MapFindPageState extends State<MapFindPage> {
       case MapStatus.drawing:
       case MapStatus.drawn:
         markersInPolygonMap = keyByHouseMarkerId(
-          store.state.markersInDrawingPolygon,
+          state.markersInDrawingPolygon,
         );
         break;
 
@@ -505,14 +526,14 @@ class _MapFindPageState extends State<MapFindPage> {
       case MapStatus.selecting:
       case MapStatus.selected:
         markersInPolygonMap = keyByHouseMarkerId(
-          store.state.markersInReachingPolygon,
+          state.markersInReachingPolygon,
         );
         break;
     }
 
     /// 建立索引
     final residentialMarkers = keyByHouseMarkerId(
-      store.state.communityMarkers,
+      state.communityMarkers,
     );
 
     // 将上一次在圈内，这一次不在圈内的恢复原样
@@ -527,7 +548,7 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               UpdateMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.community,
                 id: id,
                 iconParam: BitmapDescriptor.fromBytes(value!),
@@ -555,7 +576,7 @@ class _MapFindPageState extends State<MapFindPage> {
             (value) {
               store.dispatch(
                 UpdateMarker(
-                  mapId: store.state.id,
+                  mapId: state.id,
                   markerType: MarkerType.community,
                   id: residentialMarkerId,
                   iconParam: BitmapDescriptor.fromBytes(value!),
@@ -580,7 +601,8 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Widget buildOperations(Store<MapState> store) {
-    switch (store.state.mapStatus) {
+    final state = store.state;
+    switch (state.mapStatus) {
       case MapStatus.normal:
         return buildNormalOperations(store);
       case MapStatus.drawing:
@@ -593,6 +615,7 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Widget buildDrawingOperations(Store<MapState> store) {
+    final state = store.state;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -617,12 +640,12 @@ class _MapFindPageState extends State<MapFindPage> {
             }
             store.dispatch(
               ClearDrawingPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             store.dispatch(
               SetMapStatus(
-                mapId: store.state.id,
+                mapId: state.id,
                 mapStatus: MapStatus.drawing,
               ),
             );
@@ -638,17 +661,17 @@ class _MapFindPageState extends State<MapFindPage> {
 
             store.dispatch(
               ClearDrawingPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             store.dispatch(
               CheckCommunityMarkersInPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             store.dispatch(
               SetMapStatus(
-                mapId: store.state.id,
+                mapId: state.id,
                 mapStatus: MapStatus.normal,
               ),
             );
@@ -659,6 +682,7 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Widget buildSelectingOperations(Store<MapState> store) {
+    final state = store.state;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -688,12 +712,12 @@ class _MapFindPageState extends State<MapFindPage> {
           onTap: () {
             store.dispatch(
               CheckCommunityMarkersInPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             store.dispatch(
               SetMapStatus(
-                mapId: store.state.id,
+                mapId: state.id,
                 mapStatus: MapStatus.normal,
               ),
             );
@@ -704,6 +728,7 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Widget buildNormalOperations(Store<MapState> store) {
+    final state = store.state;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -727,11 +752,11 @@ class _MapFindPageState extends State<MapFindPage> {
               );
             }
             store.dispatch(
-              ClearDrawingPolygon(mapId: store.state.id),
+              ClearDrawingPolygon(mapId: state.id),
             );
             store.dispatch(
               SetMapStatus(
-                mapId: store.state.id,
+                mapId: state.id,
                 mapStatus: MapStatus.drawing,
               ),
             );
@@ -764,13 +789,13 @@ class _MapFindPageState extends State<MapFindPage> {
             await _updatePos();
             store.dispatch(
               MoveCamera(
-                mapId: store.state.id,
+                mapId: state.id,
                 cameraPosition: CameraPosition(
                   target: LatLng(
                     currentPositionLat,
                     currentPositionLng,
                   ),
-                  zoom: store.state.cameraPosition.zoom,
+                  zoom: state.cameraPosition.zoom,
                 ),
               ),
             );
@@ -791,7 +816,8 @@ class _MapFindPageState extends State<MapFindPage> {
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
-            if (store.state.communityMarkers.isEmpty) {
+            final state = store.state;
+            if (state.communityMarkers.isEmpty) {
               _initResidentialMarkers(
                 store,
               );
@@ -803,7 +829,7 @@ class _MapFindPageState extends State<MapFindPage> {
             }
             store.dispatch(
               UpdateCameraPosition(
-                mapId: store.state.id,
+                mapId: state.id,
                 cameraPosition: const CameraPosition(
                   // 初始化至上海市
                   target: LatLng(
@@ -816,20 +842,21 @@ class _MapFindPageState extends State<MapFindPage> {
             );
           },
           onDispose: (store) {
+            final state = store.state;
             store.dispatch(
               SetMapStatus(
-                mapId: store.state.id,
+                mapId: state.id,
                 mapStatus: MapStatus.normal,
               ),
             );
             store.dispatch(
               ClearDrawingPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             store.dispatch(
               CheckCommunityMarkersInPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             _updateMarkersInPolygon(store);
@@ -847,43 +874,44 @@ class _MapFindPageState extends State<MapFindPage> {
               );
               selectionChanged = false;
             }
-            final state = store.state;
-            final mapStatus = state.mapStatus;
+            // final state = store.state;
+            // final mapStatus = state.mapStatus;
             return MaterialApp(
               home: Scaffold(
-                appBar: mapStatus == MapStatus.drawing ||
-                        mapStatus == MapStatus.drawn
-                    ? AppBar(
-                        backgroundColor: Colors.white,
-                        title: const Text(
-                          "画图找房",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        centerTitle: true,
-                        titleSpacing: 0.0,
-                      )
-                    : mapStatus == MapStatus.selecting ||
-                            mapStatus == MapStatus.selected
-                        ? AppBar(
-                            backgroundColor: Colors.white,
-                            title: const Text(
-                              "通勤找房",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                            centerTitle: true,
-                            titleSpacing: 0.0,
-                          )
-                        : AppBar(
-                            backgroundColor: Colors.white,
-                            title:
-                                selectionInitialized ? selection : Container(),
-                            centerTitle: true,
-                            titleSpacing: 0.0,
-                          ),
+                appBar:
+                    // mapStatus == MapStatus.drawing ||
+                    //         mapStatus == MapStatus.drawn
+                    //     ? AppBar(
+                    //         backgroundColor: Colors.white,
+                    //         title: const Text(
+                    //           "画图找房",
+                    //           style: TextStyle(
+                    //             color: Colors.black,
+                    //           ),
+                    //         ),
+                    //         centerTitle: true,
+                    //         titleSpacing: 0.0,
+                    //       )
+                    //     : mapStatus == MapStatus.selecting ||
+                    //             mapStatus == MapStatus.selected
+                    //         ? AppBar(
+                    //             backgroundColor: Colors.white,
+                    //             title: const Text(
+                    //               "通勤找房",
+                    //               style: TextStyle(
+                    //                 color: Colors.black,
+                    //               ),
+                    //             ),
+                    //             centerTitle: true,
+                    //             titleSpacing: 0.0,
+                    //           )
+                    //         :
+                    AppBar(
+                  backgroundColor: Colors.white,
+                  title: selectionInitialized ? selection : Container(),
+                  centerTitle: true,
+                  titleSpacing: 0.0,
+                ),
                 body: StoreProvider(
                   store: store,
                   child: Stack(

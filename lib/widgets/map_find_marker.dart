@@ -20,7 +20,10 @@ class DistrictMapFindMarker extends StatelessWidget {
         child: Text(
           "$district\n$num套",
           textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.black, fontSize: 50,),
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 50,
+          ),
         ),
       ),
     );
@@ -28,14 +31,19 @@ class DistrictMapFindMarker extends StatelessWidget {
 }
 
 class ResidentialMapFindMarker extends StatelessWidget {
-  ResidentialMapFindMarker(
-      {Key? key, required this.residential, required this.num})
-      : super(key: key);
+  ResidentialMapFindMarker({
+    Key? key,
+    required this.residential,
+    required this.num,
+    this.inPolygon = false,
+  }) : super(
+          key: key,
+        );
 
   String residential;
   int num;
   bool focus = false;
-  bool inPolygon = false;
+  bool inPolygon;
   final focusedTextColor = Colors.white;
   final focusedBackgroundColor = Colors.redAccent;
   final normalTextColor = Colors.black;
