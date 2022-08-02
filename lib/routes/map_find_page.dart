@@ -787,10 +787,24 @@ class _MapFindPageState extends State<MapFindPage> {
           iconWidget: const Icon(
             Icons.recommend,
           ),
-          onTap: () {
-            // TODO
-            BrnToast.show('算法向您推荐的房源将突出显示', context);
+          onTap: () async {
+            BrnToast.show('算法向您推荐的周边房源将突出显示', context);
             final state = store.state;
+            await _updatePos();
+            store.dispatch(
+              MoveCamera(
+                mapId: state.id,
+                cameraPosition: CameraPosition(
+                  target: LatLng(
+                    currentPositionLat,
+                    currentPositionLng,
+                  ),
+                  zoom: state.cameraPosition.zoom,
+                ),
+              ),
+            );
+
+            // TODO
             store.dispatch(
               SetMapStatus(
                 mapId: state.id,
