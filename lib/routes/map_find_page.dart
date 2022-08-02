@@ -783,6 +783,25 @@ class _MapFindPageState extends State<MapFindPage> {
         BrnIconButton(
           widgetHeight: 60,
           widgetWidth: 40,
+          name: '推荐',
+          iconWidget: const Icon(
+            Icons.recommend,
+          ),
+          onTap: () {
+            // TODO
+            BrnToast.show('算法向您推荐的房源将突出显示', context);
+            final state = store.state;
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.selecting,
+              ),
+            );
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
           name: '定位',
           iconWidget: const Icon(Icons.my_location),
           onTap: () async {
