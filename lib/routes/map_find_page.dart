@@ -699,14 +699,14 @@ class _MapFindPageState extends State<MapFindPage> {
           iconWidget: const Icon(Icons.arrow_back),
           onTap: () {
             store.dispatch(
-              CheckCommunityMarkersInPolygon(
-                mapId: state.id,
-              ),
-            );
-            store.dispatch(
               SetMapStatus(
                 mapId: state.id,
                 mapStatus: MapStatus.normal,
+              ),
+            );
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: state.id,
               ),
             );
           },
