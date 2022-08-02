@@ -9,9 +9,9 @@ import 'type.dart';
 final Reducer<MapState> mapReducer = combineReducers(
   [
     TypedReducer(_setMapStatus),
-    TypedReducer(_addCommunityMarker),
-    TypedReducer(_updateCommunityMarker),
-    TypedReducer(_removeCommunityMarker),
+    TypedReducer(_addMarker),
+    TypedReducer(_updateMarker),
+    TypedReducer(_removeMarker),
     TypedReducer(_checkCommunityMarkersInPolygon),
     TypedReducer(_setReachingCenter),
     TypedReducer(_setReachingPolygon),
@@ -35,7 +35,7 @@ MapState _setMapStatus(MapState state, SetMapStatus action) {
   }
 }
 
-MapState _addCommunityMarker(MapState state, AddMarker action) {
+MapState _addMarker(MapState state, AddMarker action) {
   if (state.id == action.mapId) {
     late final List<HouseMarker> markers;
     switch (action.markerType) {
@@ -69,7 +69,7 @@ MapState _addCommunityMarker(MapState state, AddMarker action) {
   }
 }
 
-MapState _updateCommunityMarker(MapState state, UpdateMarker action) {
+MapState _updateMarker(MapState state, UpdateMarker action) {
   if (state.id == action.mapId) {
     late final Map<String, HouseMarker> markers;
     switch (action.markerType) {
@@ -128,7 +128,7 @@ MapState _setReachingCenter(MapState state, SetReachingCenter action) {
   }
 }
 
-MapState _removeCommunityMarker(MapState state, RemoveMarker action) {
+MapState _removeMarker(MapState state, RemoveMarker action) {
   if (state.id == action.mapId) {
     late final Map<String, HouseMarker> markers;
     switch (action.markerType) {
@@ -181,6 +181,7 @@ MapState _checkCommunityMarkersInPolygon(
               };
         break;
       case MapStatus.selected:
+      case MapStatus.recommending:
         polygons = state.reachingPolygon.toSet();
         break;
       default:
@@ -189,7 +190,10 @@ MapState _checkCommunityMarkersInPolygon(
 
     for (final marker in markers) {
       for (final polygon in polygons) {
-        if (AMapTools.latLngIsInPolygon(marker.position, polygon.points)) {
+        if (AMapTools.latLngIsInPolygon(
+          marker.position,
+          polygon.points,
+        )) {
           markersInPolygon.add(marker);
           break;
         }
@@ -202,10 +206,13 @@ MapState _checkCommunityMarkersInPolygon(
           markersInDrawingPolygon: markersInPolygon,
         );
       case MapStatus.selected:
+      case MapStatus.recommending:
         return state.copyWith(
           markersInReachingPolygon: markersInPolygon,
         );
-      default:
+      case MapStatus.normal:
+      case MapStatus.drawing:
+      case MapStatus.selecting:
         return state;
     }
   } else {

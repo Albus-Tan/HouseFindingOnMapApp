@@ -64,6 +64,7 @@ class MapWidget extends StatelessWidget {
             case MapStatus.selected:
             case MapStatus.drawn:
             case MapStatus.normal:
+            case MapStatus.recommending:
               for (var e in pool) {
                 if (_getLatLngBound(
                   Size(
@@ -78,7 +79,9 @@ class MapWidget extends StatelessWidget {
                 }
               }
               break;
-            default:
+            case MapStatus.drawing:
+            case MapStatus.selecting:
+              break;
           }
           late final Set<Polygon> polygons;
           switch (state.mapStatus) {

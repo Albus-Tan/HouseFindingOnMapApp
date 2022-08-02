@@ -88,4 +88,5 @@ enum MapStatus {
   drawn,
   selecting,
   selected,
+  recommending,
 }

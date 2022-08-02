@@ -11,8 +11,10 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 import '../constant/shanghai_district.dart';
+import '../service/amap_api_service/amap_api_service.dart';
 import '../service/backend_service/house/rent_house.dart';
 import '../service/backend_service/map_find_house.dart';
+import '../utils/amap.dart';
 import '../utils/district_calculate.dart';
 import '../utils/storage.dart';
 import '../widgets/house_card.dart';
@@ -182,6 +184,7 @@ class _MapFindPageState extends State<MapFindPage> {
           break;
         case MapStatus.selecting:
         case MapStatus.selected:
+        case MapStatus.recommending:
           markersInPolygon = state.markersInReachingPolygon;
           break;
       }
@@ -525,6 +528,7 @@ class _MapFindPageState extends State<MapFindPage> {
         break;
       case MapStatus.selecting:
       case MapStatus.selected:
+      case MapStatus.recommending:
         markersInPolygonMap = keyByHouseMarkerId(
           state.markersInReachingPolygon,
         );
@@ -603,6 +607,7 @@ class _MapFindPageState extends State<MapFindPage> {
   Widget buildOperations(Store<MapState> store) {
     final state = store.state;
     switch (state.mapStatus) {
+      case MapStatus.recommending:
       case MapStatus.normal:
         return buildNormalOperations(store);
       case MapStatus.drawing:
@@ -791,25 +796,54 @@ class _MapFindPageState extends State<MapFindPage> {
             BrnToast.show('算法向您推荐的周边房源将突出显示', context);
             final state = store.state;
             await _updatePos();
+            final currentPosition = LatLng(
+              currentPositionLat,
+              currentPositionLng,
+            );
+            store.dispatch(SetMapStatus(
+              mapId: state.id,
+              mapStatus: MapStatus.recommending,
+            ));
             store.dispatch(
               MoveCamera(
                 mapId: state.id,
                 cameraPosition: CameraPosition(
-                  target: LatLng(
-                    currentPositionLat,
-                    currentPositionLng,
-                  ),
+                  target: currentPosition,
                   zoom: state.cameraPosition.zoom,
                 ),
               ),
             );
-
-            // TODO
             store.dispatch(
-              SetMapStatus(
+              SetReachingCenter(
                 mapId: state.id,
-                mapStatus: MapStatus.selecting,
+                reachingCenter: currentPosition,
               ),
+            );
+            fetchReachCircle(
+              centerPosition: currentPosition,
+              minutes: '20',
+            ).then(
+              (reachCircle) {
+                store.dispatch(
+                  SetReachingPolygon(
+                    mapId: state.id,
+                    reachingPolygon: reachCircle.polylines
+                        .map(
+                          (e) => Polygon(
+                            points: convertPolylineStr2Points(
+                              e.outer,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                );
+                store.dispatch(
+                  CheckCommunityMarkersInPolygon(
+                    mapId: state.id,
+                  ),
+                );
+              },
             );
           },
         ),
@@ -876,6 +910,7 @@ class _MapFindPageState extends State<MapFindPage> {
           },
           onDispose: (store) {
             final state = store.state;
+
             store.dispatch(
               SetMapStatus(
                 mapId: state.id,
@@ -892,7 +927,9 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapId: state.id,
               ),
             );
-            _updateMarkersInPolygon(store);
+            _updateMarkersInPolygon(
+              store,
+            );
           },
           builder: (
             context,
