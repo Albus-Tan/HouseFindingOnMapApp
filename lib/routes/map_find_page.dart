@@ -608,6 +608,7 @@ class _MapFindPageState extends State<MapFindPage> {
     final state = store.state;
     switch (state.mapStatus) {
       case MapStatus.recommending:
+        return buildRecommendingOperations(store);
       case MapStatus.normal:
         return buildNormalOperations(store);
       case MapStatus.drawing:
@@ -669,6 +670,34 @@ class _MapFindPageState extends State<MapFindPage> {
                 mapId: state.id,
               ),
             );
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: state.id,
+              ),
+            );
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.normal,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget buildRecommendingOperations(Store<MapState> store) {
+    final state = store.state;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '退出',
+          iconWidget: const Icon(Icons.arrow_back),
+          onTap: () {
             store.dispatch(
               CheckCommunityMarkersInPolygon(
                 mapId: state.id,
@@ -948,12 +977,24 @@ class _MapFindPageState extends State<MapFindPage> {
             // final mapStatus = state.mapStatus;
             return MaterialApp(
               home: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Colors.white,
-                  title: selectionInitialized ? selection : Container(),
-                  centerTitle: true,
-                  titleSpacing: 0.0,
-                ),
+                appBar: store.state.mapStatus == MapStatus.recommending
+                    ? AppBar(
+                        backgroundColor: Colors.white,
+                        title: const Text(
+                          "周边推荐",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        centerTitle: true,
+                        titleSpacing: 0.0,
+                      )
+                    : AppBar(
+                        backgroundColor: Colors.white,
+                        title: selectionInitialized ? selection : Container(),
+                        centerTitle: true,
+                        titleSpacing: 0.0,
+                      ),
                 body: StoreProvider(
                   store: store,
                   child: Stack(
