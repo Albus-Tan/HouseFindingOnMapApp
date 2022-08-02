@@ -878,35 +878,7 @@ class _MapFindPageState extends State<MapFindPage> {
             // final mapStatus = state.mapStatus;
             return MaterialApp(
               home: Scaffold(
-                appBar:
-                    // mapStatus == MapStatus.drawing ||
-                    //         mapStatus == MapStatus.drawn
-                    //     ? AppBar(
-                    //         backgroundColor: Colors.white,
-                    //         title: const Text(
-                    //           "画图找房",
-                    //           style: TextStyle(
-                    //             color: Colors.black,
-                    //           ),
-                    //         ),
-                    //         centerTitle: true,
-                    //         titleSpacing: 0.0,
-                    //       )
-                    //     : mapStatus == MapStatus.selecting ||
-                    //             mapStatus == MapStatus.selected
-                    //         ? AppBar(
-                    //             backgroundColor: Colors.white,
-                    //             title: const Text(
-                    //               "通勤找房",
-                    //               style: TextStyle(
-                    //                 color: Colors.black,
-                    //               ),
-                    //             ),
-                    //             centerTitle: true,
-                    //             titleSpacing: 0.0,
-                    //           )
-                    //         :
-                    AppBar(
+                appBar: AppBar(
                   backgroundColor: Colors.white,
                   title: selectionInitialized ? selection : Container(),
                   centerTitle: true,
