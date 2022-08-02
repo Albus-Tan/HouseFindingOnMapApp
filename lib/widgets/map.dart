@@ -40,31 +40,45 @@ class MapWidget extends StatelessWidget {
       builder: (context, store) => LayoutBuilder(
         builder: (context, constrains) {
           final state = store.state;
-          debugPrint('Enter');
           final markers = <Marker>[];
           late final List<Marker> pool;
           if (state.cameraPosition.zoom < state.zoomSwitch) {
-            pool = state.districtMarkers;
+            pool = state.districtMarkers.toList();
           } else {
-            pool = state.communityMarkers;
+            pool = state.communityMarkers.toList();
           }
 
-          if (state.mapStatus == MapStatus.normal ||
-              state.mapStatus == MapStatus.drawn ||
-              state.mapStatus == MapStatus.selected) {
-            for (var e in pool) {
-              if (_getLatLngBound(
-                Size(
-                  constrains.maxWidth,
-                  constrains.maxHeight,
+          if (state.mapStatus == MapStatus.selected) {
+            pool.add(
+              HouseMarker(
+                position: state.reachingCenter,
+                icon: BitmapDescriptor.fromIconPath(
+                  'assets/map/point.png',
                 ),
-                store.state.cameraPosition,
-              ).contains(
-                e.position,
-              )) {
-                markers.add(e);
+                houses: [],
+              ),
+            );
+          }
+
+          switch (state.mapStatus) {
+            case MapStatus.selected:
+            case MapStatus.drawn:
+            case MapStatus.normal:
+              for (var e in pool) {
+                if (_getLatLngBound(
+                  Size(
+                    constrains.maxWidth,
+                    constrains.maxHeight,
+                  ),
+                  store.state.cameraPosition,
+                ).contains(
+                  e.position,
+                )) {
+                  markers.add(e);
+                }
               }
-            }
+              break;
+            default:
           }
           late final Set<Polygon> polygons;
           switch (state.mapStatus) {
@@ -149,7 +163,7 @@ class MapWidget extends StatelessWidget {
                           },
                         );
                       }
-                    : (position){},
+                    : (position) {},
               ),
               GestureDetector(
                 onPanUpdate: state.mapStatus == MapStatus.drawing

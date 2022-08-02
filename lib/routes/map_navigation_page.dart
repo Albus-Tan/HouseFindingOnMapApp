@@ -32,12 +32,12 @@ class MapNavigationPage extends StatefulWidget {
 
 class _MapNavigationPageState extends State<MapNavigationPage> {
   String _polyline = "";
-  List<LatLng> _polylinePoints = [];
+  final List<LatLng> _polylinePoints = [];
 
   final Map<String, Marker> _initMarkerMap = <String, Marker>{};
   bool _hasInitMarker = false;
-  static final String _startIconPath = 'assets/map/start.png';
-  static final String _endIconPath = 'assets/map/end.png';
+  static const String _startIconPath = 'assets/map/start.png';
+  static const String _endIconPath = 'assets/map/end.png';
 
   late Future<void> _futureBuilderFuture;
   late String _oriLat;
