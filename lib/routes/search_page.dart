@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../service/amap_api_service/amap_api_service.dart';
 import '../service/amap_api_service/search/input_tips.dart';
+import '../service/backend_service/select_house.dart';
+import '../utils/storage.dart';
 import 'house_list_page.dart';
 
 class SearchBarViewDelegate extends SearchDelegate<String> {
@@ -209,7 +211,7 @@ class _SearchContentViewState extends State<SearchContentView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
-            '房源推荐',
+            '附近推荐',
             style: TextStyle(fontSize: 16),
           ),
           const SearchItemView(),
@@ -236,25 +238,75 @@ class SearchItemView extends StatefulWidget {
 
 class _SearchItemViewState extends State<SearchItemView> {
   List<String> items = [
-    "汤臣一品",
-    "上海交通大学西一区",
-    "上海交通大学东区",
-    "平安里",
-    'gradle',
-    'Camera',
-    '代码混淆 安全',
-    '逆向加固'
   ];
+
+  String lat = '';
+  String lng = '';
+  int page = 0, pageSize = 20;
+  bool hasInit = false;
+
+  Future<void> getHousePages() async {
+    await fetchHousePageNearBy(
+        lat,
+        lng,
+        page,
+        pageSize)
+        .then((value) => {
+      value.content?.forEach((e) {
+        if(e.residential != null){
+          items.add(e.residential ?? '');
+        }
+      }),
+      items = items.toSet().toList(),
+    });
+  }
+
+  Future<void> getPos() async {
+    if(lat == '' || lng == ''){
+      await StorageUtil.getDoubleItem('lat').then((res) async => {
+        lat = res.toString(),
+      });
+      await StorageUtil.getDoubleItem('lng').then((res) async => {
+        lng = res.toString(),
+      });
+    }
+  }
+
+  Future<void> initData() async {
+    if(!hasInit){
+      await getPos();
+      await getHousePages();
+      hasInit = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 10,
-      // runSpacing: 0,
-      children: items.map((item) {
-        return SearchItem(title: item);
-      }).toList(),
-    );
+    return FutureBuilder(
+        future: initData(),
+        builder: (BuildContext context, AsyncSnapshot snapShot) {
+          if (snapShot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                color: Colors.blueAccent,
+              ),
+            );
+          } else if (snapShot.connectionState == ConnectionState.done) {
+            print(snapShot.hasError);
+            return Wrap(
+              spacing: 10,
+              // runSpacing: 0,
+              children: items.map((item) {
+                return SearchItem(title: item);
+              }).toList(),
+            );
+          } else {
+            return Center(
+              child: Text('Error: ${snapShot.error}'),
+            );
+          }
+        });
   }
 }
 
