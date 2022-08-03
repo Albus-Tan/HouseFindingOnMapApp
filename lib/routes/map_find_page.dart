@@ -514,7 +514,6 @@ class _MapFindPageState extends State<MapFindPage> {
     // 建立本次多边形中 markers 的 id 与 相关信息的索引
     late final markersInPolygonMap;
     final state = store.state;
-
     switch (state.mapStatus) {
       case MapStatus.drawing:
       case MapStatus.drawn:
@@ -845,8 +844,8 @@ class _MapFindPageState extends State<MapFindPage> {
             final state = store.state;
             await _updatePos();
             final currentPosition = LatLng(
-              // 31.238,
-              // 121.491
+              // 31.248,
+              // 121.481
               currentPositionLat,
               currentPositionLng,
             );
@@ -893,7 +892,7 @@ class _MapFindPageState extends State<MapFindPage> {
                     mapId: state.id,
                   ),
                 );
-                if (state.markersInReachingPolygon.length <= 2) {
+                if (store.state.markersInReachingPolygon.length <= 2) {
                   BrnToast.show('当前位置周边房源过少，无法为您推荐', context);
                 }
               },
