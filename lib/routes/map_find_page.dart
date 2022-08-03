@@ -528,10 +528,18 @@ class _MapFindPageState extends State<MapFindPage> {
         break;
       case MapStatus.selecting:
       case MapStatus.selected:
-      case MapStatus.recommending:
         markersInPolygonMap = keyByHouseMarkerId(
           state.markersInReachingPolygon,
         );
+        break;
+      case MapStatus.recommending:
+        if (state.markersInReachingPolygon.length > 2) {
+          markersInPolygonMap = keyByHouseMarkerId(
+            state.markersInReachingPolygon,
+          );
+        } else {
+          markersInPolygonMap = {};
+        }
         break;
     }
 
@@ -731,9 +739,17 @@ class _MapFindPageState extends State<MapFindPage> {
             // _resetAllMarkersInPolygon(store);
             final state = store.state;
             store.dispatch(
+              SetReachingPolygon(mapId: state.id, reachingPolygon: []),
+            );
+            store.dispatch(
               SetMapStatus(
                 mapId: state.id,
                 mapStatus: MapStatus.selecting,
+              ),
+            );
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: state.id,
               ),
             );
           },
@@ -744,6 +760,9 @@ class _MapFindPageState extends State<MapFindPage> {
           name: '退出',
           iconWidget: const Icon(Icons.arrow_back),
           onTap: () {
+            store.dispatch(
+              SetReachingPolygon(mapId: state.id, reachingPolygon: []),
+            );
             store.dispatch(
               CheckCommunityMarkersInPolygon(
                 mapId: state.id,
@@ -826,6 +845,8 @@ class _MapFindPageState extends State<MapFindPage> {
             final state = store.state;
             await _updatePos();
             final currentPosition = LatLng(
+              // 31.238,
+              // 121.491
               currentPositionLat,
               currentPositionLng,
             );
@@ -850,7 +871,7 @@ class _MapFindPageState extends State<MapFindPage> {
             );
             fetchReachCircle(
               centerPosition: currentPosition,
-              minutes: '20',
+              minutes: '30',
             ).then(
               (reachCircle) {
                 store.dispatch(
@@ -872,6 +893,9 @@ class _MapFindPageState extends State<MapFindPage> {
                     mapId: state.id,
                   ),
                 );
+                if (state.markersInReachingPolygon.length <= 2) {
+                  BrnToast.show('当前位置周边房源过少，无法为您推荐', context);
+                }
               },
             );
           },
