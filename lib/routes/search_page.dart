@@ -26,30 +26,45 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   String get searchFieldLabel => searchHint;
 
   Future<void> getInputTips(String keyword) async {
-    if (!onChange) {
-      onChange = true;
-      return;
-    }
-    if (query == '') {
-      String que;
+    if(query == ""){
       inputTipsList.clear();
-      que = query;
-      query = que;
-      onChange = false;
-      return;
     } else {
-      String que;
       await fetchResidentialInputTips(keyword).then((value) => {
-            print("fetchResidentialInputTips: "),
-            print(value),
-            inputTipsList.clear(),
-            inputTipsList.addAll(value.tips),
-            que = query,
-            query = que,
-            onChange = false,
-          });
+        print("fetchResidentialInputTips: "),
+        print(value),
+        inputTipsList.clear(),
+        inputTipsList.addAll(value.tips),
+      });
     }
   }
+
+  // TODO
+  /// 尝试修复搜索提示滞后
+  // Future<void> getInputTips(String keyword) async {
+  //   if (!onChange) {
+  //     onChange = true;
+  //     return;
+  //   }
+  //   if (query == '') {
+  //     String que;
+  //     inputTipsList.clear();
+  //     que = query;
+  //     query = que;
+  //     onChange = false;
+  //     return;
+  //   } else {
+  //     String que;
+  //     await fetchResidentialInputTips(keyword).then((value) => {
+  //           print("fetchResidentialInputTips: "),
+  //           print(value),
+  //           inputTipsList.clear(),
+  //           inputTipsList.addAll(value.tips),
+  //           que = query,
+  //           query = que,
+  //           onChange = false,
+  //         });
+  //   }
+  // }
 
   @override
   List<Widget> buildActions(BuildContext context) {
