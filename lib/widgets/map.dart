@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:app/widgets/map/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
+import '../service/amap_api_service/amap_api_service.dart';
+import '../utils/amap.dart';
 import 'map/action.dart';
 import 'map/state.dart';
 
@@ -37,44 +40,78 @@ class MapWidget extends StatelessWidget {
       builder: (context, store) => LayoutBuilder(
         builder: (context, constrains) {
           final state = store.state;
-          debugPrint('Enter');
           final markers = <Marker>[];
           late final List<Marker> pool;
           if (state.cameraPosition.zoom < state.zoomSwitch) {
-            pool = state.districtMarkers;
+            pool = state.districtMarkers.toList();
           } else {
-            pool = state.communityMarkers;
+            pool = state.communityMarkers.toList();
           }
 
-          if (state.drawing == false) {
-            for (var e in pool) {
-              if (_getLatLngBound(
-                Size(
-                  constrains.maxWidth,
-                  constrains.maxHeight,
+          if (state.mapStatus == MapStatus.selected) {
+            pool.add(
+              HouseMarker(
+                position: state.reachingCenter,
+                icon: BitmapDescriptor.fromIconPath(
+                  'assets/map/point.png',
                 ),
-                store.state.cameraPosition,
-              ).contains(
-                e.position,
-              )) {
-                markers.add(e);
+                houses: [],
+              ),
+            );
+          }
+
+          switch (state.mapStatus) {
+            case MapStatus.selected:
+            case MapStatus.drawn:
+            case MapStatus.normal:
+            case MapStatus.recommending:
+              for (var e in pool) {
+                if (_getLatLngBound(
+                  Size(
+                    constrains.maxWidth,
+                    constrains.maxHeight,
+                  ),
+                  store.state.cameraPosition,
+                ).contains(
+                  e.position,
+                )) {
+                  markers.add(e);
+                }
               }
-            }
+              break;
+            case MapStatus.drawing:
+            case MapStatus.selecting:
+              break;
+          }
+          late final Set<Polygon> polygons;
+          switch (state.mapStatus) {
+            case MapStatus.drawing:
+            case MapStatus.drawn:
+              polygons = state.drawnPolygon.isEmpty
+                  ? {}
+                  : {
+                      Polygon(
+                        points: state.drawnPolygon,
+                      ),
+                    };
+              break;
+            case MapStatus.selected:
+              polygons = state.reachingPolygon.toSet();
+              break;
+            default:
+              polygons = {};
           }
 
           return Stack(
             children: [
               AMapWidget(
-                minMaxZoomPreference: const MinMaxZoomPreference(10.0, 20.0),
+                minMaxZoomPreference: const MinMaxZoomPreference(
+                  10.0,
+                  20.0,
+                ),
                 initialCameraPosition: state.cameraPosition,
-                polylines: Set.of(state.polyLines),
-                polygons: state.polygon.isEmpty
-                    ? <Polygon>{}
-                    : <Polygon>{
-                        Polygon(
-                          points: state.polygon,
-                        ),
-                      },
+                polylines: {},
+                polygons: polygons,
                 markers: Set.of(markers),
                 onMapCreated: (controller) => store.dispatch(
                   SetController(
@@ -91,12 +128,50 @@ class MapWidget extends StatelessWidget {
                     ),
                   );
                 },
+                onTap: state.mapStatus == MapStatus.selecting
+                    ? (position) {
+                        store.dispatch(
+                          SetMapStatus(
+                            mapId: state.id,
+                            mapStatus: MapStatus.selected,
+                          ),
+                        );
+                        store.dispatch(
+                          SetReachingCenter(
+                            mapId: state.id,
+                            reachingCenter: position,
+                          ),
+                        );
+                        fetchReachCircle(centerPosition: position).then(
+                          (reachCircle) {
+                            store.dispatch(
+                              SetReachingPolygon(
+                                mapId: state.id,
+                                reachingPolygon: reachCircle.polylines
+                                    .map(
+                                      (e) => Polygon(
+                                        points: convertPolylineStr2Points(
+                                          e.outer,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            );
+                            store.dispatch(
+                              CheckCommunityMarkersInPolygon(
+                                mapId: state.id,
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    : (position) {},
               ),
               GestureDetector(
-                onPanUpdate: state.drawing
+                onPanUpdate: state.mapStatus == MapStatus.drawing
                     ? (details) {
                         final screenPosition = details.localPosition;
-
                         final centerLatitude =
                             state.cameraPosition.target.latitude;
                         final centerLongitude =
@@ -110,7 +185,7 @@ class MapWidget extends StatelessWidget {
                         // actualLatitude = pixel * a * exp( 2 * zoom )
                         final a = 2.0 - limitWidth / 2000;
                         store.dispatch(
-                          AddPolygonPoint(
+                          AddDrawnPolygonPoint(
                             mapId: state.id,
                             position: LatLng(
                               (-a *
@@ -127,16 +202,19 @@ class MapWidget extends StatelessWidget {
                         );
                       }
                     : null,
-                onPanEnd: state.drawing
+                onPanEnd: state.mapStatus == MapStatus.drawing
                     ? (detail) {
                         store.dispatch(
-                          EndDrawPolygon(
+                          SetMapStatus(
+                            mapId: state.id,
+                            mapStatus: MapStatus.drawn,
+                          ),
+                        );
+                        store.dispatch(
+                          CheckCommunityMarkersInPolygon(
                             mapId: state.id,
                           ),
                         );
-                        store.dispatch(CheckCommunityMarkersInPolygon(
-                          mapId: state.id,
-                        ));
                       }
                     : null,
               )

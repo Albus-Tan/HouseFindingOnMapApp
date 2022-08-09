@@ -50,7 +50,6 @@ dev_dependencies:
 #  # Used by tests. Not required to use `json_serializable`.
 #  _json_serial_shared_test:
 #    path: ../shared_test
-  build_runner: ^2.0.0
 
   # Used by tests. Not required to use `json_serializable`.
   build_verify: ^3.0.0
@@ -91,6 +90,8 @@ flutter:
     - assets/map/start.png
     - assets/map/location_marker.png
     - assets/map/texture_green.png
+    - assets/map/point.png
+    - assets/map/flag.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

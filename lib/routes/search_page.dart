@@ -1,8 +1,10 @@
-
+import 'package:app/constant/enum.dart';
 import 'package:flutter/material.dart';
 
 import '../service/amap_api_service/amap_api_service.dart';
 import '../service/amap_api_service/search/input_tips.dart';
+import '../service/backend_service/select_house.dart';
+import '../utils/storage.dart';
 import 'house_list_page.dart';
 
 class SearchBarViewDelegate extends SearchDelegate<String> {
@@ -13,55 +15,56 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   //   keyWord: "",
   // );
 
-  /// 待搜索的所有条目
-  var sourceList = [
-    "汤臣一品",
-    "上海交通大学西一区",
-    "上海交通大学东区",
-    "平安里",
-    "东方明珠",
-    "金茂大厦",
-    "sousuo",
-    "sss",
-    "sobk",
-    "haofangzi",
-    "abcdef",
-  ];
-
   /// 推荐的搜索条目
   var suggestList = ["汤臣一品", "上海交通大学"];
 
   /// 搜索提示条目
   List<Tips> inputTipsList = [];
   bool onChange = true;
+
   @override
   String get searchFieldLabel => searchHint;
 
   Future<void> getInputTips(String keyword) async {
-    if (!onChange) {
-      onChange = true;
-      return;
-    }
-    if (query == '') {
-      String que;
+    if(query == ""){
       inputTipsList.clear();
-      que = query;
-      query = que;
-      onChange = false;
-      return;
     } else {
-      String que;
       await fetchResidentialInputTips(keyword).then((value) => {
-            print("fetchResidentialInputTips: "),
-            print(value),
-            inputTipsList.clear(),
-            inputTipsList.addAll(value.tips),
-            que = query,
-            query = que,
-            onChange = false,
-          });
+        print("fetchResidentialInputTips: "),
+        print(value),
+        inputTipsList.clear(),
+        inputTipsList.addAll(value.tips),
+      });
     }
   }
+
+  // TODO
+  /// 尝试修复搜索提示滞后
+  // Future<void> getInputTips(String keyword) async {
+  //   if (!onChange) {
+  //     onChange = true;
+  //     return;
+  //   }
+  //   if (query == '') {
+  //     String que;
+  //     inputTipsList.clear();
+  //     que = query;
+  //     query = que;
+  //     onChange = false;
+  //     return;
+  //   } else {
+  //     String que;
+  //     await fetchResidentialInputTips(keyword).then((value) => {
+  //           print("fetchResidentialInputTips: "),
+  //           print(value),
+  //           inputTipsList.clear(),
+  //           inputTipsList.addAll(value.tips),
+  //           que = query,
+  //           query = que,
+  //           onChange = false,
+  //         });
+  //   }
+  // }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -142,6 +145,38 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   //   );
   // }
 
+  Widget buildSearchContentView() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text(
+            '附近推荐',
+            style: TextStyle(fontSize: 16),
+          ),
+          SearchItemView(
+              onSearchContentSelect: onSearchContentSelect,
+              searchRecommendType: SearchRecommendType.nearby),
+          Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: const Text(
+              '最新发布',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          SearchItemView(
+              onSearchContentSelect: onSearchContentSelect,
+              searchRecommendType: SearchRecommendType.latest)
+        ],
+      ),
+    );
+  }
+
+  onSearchContentSelect(String title) {
+    query = title;
+  }
+
   /// 搜索推荐下拉列表
   @override
   Widget buildSuggestions(BuildContext context) {
@@ -153,8 +188,8 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return query.isEmpty
-                ? const SingleChildScrollView(
-                    child: SearchContentView(),
+                ? SingleChildScrollView(
+                    child: buildSearchContentView(),
                   )
                 : ListView.builder(
                     itemCount: suggest.length,
@@ -193,92 +228,112 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   }
 }
 
-class SearchContentView extends StatefulWidget {
-  const SearchContentView({Key? key}) : super(key: key);
-
-  @override
-  createState() => _SearchContentViewState();
-}
-
-class _SearchContentViewState extends State<SearchContentView> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const Text(
-            '房源推荐',
-            style: TextStyle(fontSize: 16),
-          ),
-          const SearchItemView(),
-          Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: const Text(
-              '历史记录',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-          const SearchItemView()
-        ],
-      ),
-    );
-  }
-}
-
 class SearchItemView extends StatefulWidget {
-  const SearchItemView({Key? key}) : super(key: key);
+  const SearchItemView(
+      {Key? key, this.onSearchContentSelect, this.searchRecommendType})
+      : super(key: key);
+
+  final onSearchContentSelect;
+  final searchRecommendType;
 
   @override
   createState() => _SearchItemViewState();
 }
 
 class _SearchItemViewState extends State<SearchItemView> {
-  List<String> items = [
-    "汤臣一品",
-    "上海交通大学西一区",
-    "上海交通大学东区",
-    "平安里",
-    'gradle',
-    'Camera',
-    '代码混淆 安全',
-    '逆向加固'
-  ];
+  List<String> recommendResidentialList = [];
 
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 10,
-      // runSpacing: 0,
-      children: items.map((item) {
-        return SearchItem(title: item);
-      }).toList(),
-    );
+  String lat = '';
+  String lng = '';
+  int page = 0, pageSize = 30;
+  bool hasInit = false;
+
+  Future<void> getHousePages() async {
+    switch (widget.searchRecommendType) {
+      case SearchRecommendType.nearby:
+        await fetchHousePageNearBy(lat, lng, page, pageSize).then((value) => {
+              value.content?.forEach((e) {
+                if (e.residential != null) {
+                  recommendResidentialList.add(e.residential ?? '');
+                }
+              }),
+              recommendResidentialList =
+                  recommendResidentialList.toSet().toList().sublist(0, 10),
+            });
+        break;
+      case SearchRecommendType.latest:
+        await fetchHousePage("", "", "", "", "", "", "", "", page, pageSize)
+            .then((value) => {
+                  value.content?.forEach((e) {
+                    if (e.residential != null) {
+                      recommendResidentialList.add(e.residential ?? '');
+                    }
+                  }),
+                  recommendResidentialList =
+                      recommendResidentialList.toSet().toList().sublist(0, 10),
+                });
+        break;
+    }
   }
-}
 
-class SearchItem extends StatefulWidget {
-  @required
-  final String title;
+  Future<void> getPos() async {
+    if (lat == '' || lng == '') {
+      await StorageUtil.getDoubleItem('lat').then((res) async => {
+            lat = res.toString(),
+          });
+      await StorageUtil.getDoubleItem('lng').then((res) async => {
+            lng = res.toString(),
+          });
+    }
+  }
 
-  const SearchItem({Key? key, required this.title}) : super(key: key);
+  Future<void> initData() async {
+    if (!hasInit) {
+      await getPos();
+      await getHousePages();
+      hasInit = true;
+    }
+  }
 
-  @override
-  createState() => _SearchItemState();
-}
-
-class _SearchItemState extends State<SearchItem> {
-  @override
-  Widget build(BuildContext context) {
+  Widget buildSearchItem(String title) {
     return InkWell(
       child: Chip(
-        label: Text(widget.title),
+        label: Text(title),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       onTap: () {
-        debugPrint(widget.title);
+        debugPrint(title);
+        widget.onSearchContentSelect(title);
       },
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: initData(),
+        builder: (BuildContext context, AsyncSnapshot snapShot) {
+          if (snapShot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                color: Colors.blueAccent,
+              ),
+            );
+          } else if (snapShot.connectionState == ConnectionState.done) {
+            print(snapShot.hasError);
+            return Wrap(
+              spacing: 10,
+              // runSpacing: 0,
+              children: recommendResidentialList.map((item) {
+                return buildSearchItem(item);
+              }).toList(),
+            );
+          } else {
+            return Center(
+              child: Text('Error: ${snapShot.error}'),
+            );
+          }
+        });
   }
 }

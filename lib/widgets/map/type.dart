@@ -6,6 +6,7 @@ import 'package:app/service/backend_service/house/rent_house.dart';
 
 class HouseMarker extends Marker {
   final List<RentHouse> houses;
+
   HouseMarker({
     required super.position,
     super.alpha,
@@ -74,8 +75,18 @@ Map<String, HouseMarker> keyByHouseMarkerId(Iterable<HouseMarker> markers) {
     ),
   );
 }
-enum MarkerType{
+
+enum MarkerType {
   origin,
   community,
   district,
+}
+
+enum MapStatus {
+  normal,
+  drawing,
+  drawn,
+  selecting,
+  selected,
+  recommending,
 }

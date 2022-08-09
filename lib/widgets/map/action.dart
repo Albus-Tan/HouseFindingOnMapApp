@@ -64,6 +64,7 @@ class UpdateMarker extends MapAction {
 class RemoveMarker extends MapAction {
   final String createId;
   final MarkerType markerType;
+
   RemoveMarker({
     required this.createId,
     required super.mapId,
@@ -77,29 +78,44 @@ class CheckCommunityMarkersInPolygon extends MapAction {
   });
 }
 
-class StartDrawPolygon extends MapAction {
-  StartDrawPolygon({
+class SetMapStatus extends MapAction {
+  final MapStatus mapStatus;
+
+  SetMapStatus({
     required super.mapId,
+    required this.mapStatus,
   });
 }
 
-class AddPolygonPoint extends MapAction {
+class SetReachingPolygon extends MapAction {
+  final List<Polygon> reachingPolygon;
+
+  SetReachingPolygon({
+    required super.mapId,
+    required this.reachingPolygon,
+  });
+}
+class SetReachingCenter extends MapAction {
+  final LatLng reachingCenter;
+
+  SetReachingCenter({
+    required super.mapId,
+    required this.reachingCenter,
+  });
+}
+
+class AddDrawnPolygonPoint extends MapAction {
   final LatLng position;
 
-  AddPolygonPoint({
+  AddDrawnPolygonPoint({
     required super.mapId,
     required this.position,
   });
 }
 
-class EndDrawPolygon extends MapAction {
-  EndDrawPolygon({
-    required super.mapId,
-  });
-}
 
-class ClearPolygon extends MapAction {
-  ClearPolygon({
+class ClearDrawingPolygon extends MapAction {
+  ClearDrawingPolygon({
     required super.mapId,
   });
 }

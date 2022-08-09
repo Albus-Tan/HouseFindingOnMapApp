@@ -58,7 +58,7 @@ class App extends StatelessWidget {
                             CheckCommunityMarkersInPolygon(
                                 mapId: store.state.id),
                           );
-                          for (final element in store.state.markersInPolygon) {
+                          for (final element in store.state.markersInDrawingPolygon) {
                             store.dispatch(
                               UpdateMarker(
                                 mapId: store.state.id,
@@ -79,7 +79,7 @@ class App extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           store.dispatch(
-                            StartDrawPolygon(mapId: store.state.id),
+                            SetMapStatus(mapId: store.state.id,mapStatus: MapStatus.drawing),
                           );
                         },
                         child: Text(

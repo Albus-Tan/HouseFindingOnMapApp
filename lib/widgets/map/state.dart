@@ -11,11 +11,15 @@ class MapState {
   final List<HouseMarker> oriMarkers;
   final List<HouseMarker> communityMarkers;
   final List<HouseMarker> districtMarkers;
-  final bool drawing;
-  final List<Polyline> polyLines;
+  final MapStatus mapStatus;
 
-  final List<HouseMarker> markersInPolygon;
-  final List<LatLng> polygon;
+  final List<HouseMarker> markersInDrawingPolygon;
+  final List<LatLng> drawnPolygon;
+
+  final LatLng reachingCenter;
+  final List<HouseMarker> markersInReachingPolygon;
+  final List<Polygon> reachingPolygon;
+
   final AMapController? controller;
 
   final CameraPosition cameraPosition;
@@ -26,46 +30,56 @@ class MapState {
   static int mapCount = 0;
 
   MapState({
+    required this.reachingCenter,
     required this.zoomSwitch,
-    required this.polygon,
+    required this.drawnPolygon,
     required this.id,
     required this.communityMarkers,
     required this.districtMarkers,
-    required this.drawing,
-    required this.polyLines,
-    required this.markersInPolygon,
+    required this.mapStatus,
+    required this.markersInDrawingPolygon,
+    required this.markersInReachingPolygon,
+    required this.reachingPolygon,
     required this.cameraPosition,
     this.controller,
     required this.widgetSize,
     required this.oriMarkers,
   });
 
-  MapState copyWith(
-          {String? id,
-          List<HouseMarker>? communityMarkers,
-          List<HouseMarker>? districtMarkers,
-          bool? drawing,
-          List<Polyline>? polyLines,
-          List<LatLng>? polygon,
-          List<HouseMarker>? markersInPolygon,
-          List<HouseMarker>? oriMarkers,
-          AMapController? controller,
-          CameraPosition? cameraPosition,
-          Size? widgetSize,
-          double? zoomSwitch}) =>
+  MapState copyWith({
+    LatLng? reachingCenter,
+    String? id,
+    List<HouseMarker>? communityMarkers,
+    List<HouseMarker>? districtMarkers,
+    MapStatus? mapStatus,
+    List<LatLng>? drawnPolygon,
+    List<HouseMarker>? markersInDrawingPolygon,
+    bool? selectingReachingCenter,
+    List<Polygon>? reachingPolygon,
+    List<HouseMarker>? markersInReachingPolygon,
+    List<HouseMarker>? oriMarkers,
+    AMapController? controller,
+    CameraPosition? cameraPosition,
+    Size? widgetSize,
+    double? zoomSwitch,
+  }) =>
       MapState(
         id: id ?? this.id,
         zoomSwitch: zoomSwitch ?? this.zoomSwitch,
         communityMarkers: communityMarkers ?? this.communityMarkers,
         districtMarkers: districtMarkers ?? this.districtMarkers,
-        drawing: drawing ?? this.drawing,
-        polyLines: polyLines ?? this.polyLines,
-        polygon: polygon ?? this.polygon,
-        markersInPolygon: markersInPolygon ?? this.markersInPolygon,
+        mapStatus: mapStatus ?? this.mapStatus,
+        drawnPolygon: drawnPolygon ?? this.drawnPolygon,
+        markersInDrawingPolygon:
+            markersInDrawingPolygon ?? this.markersInDrawingPolygon,
+        reachingPolygon: reachingPolygon ?? this.reachingPolygon,
+        markersInReachingPolygon:
+            markersInReachingPolygon ?? this.markersInReachingPolygon,
         controller: controller ?? this.controller,
         cameraPosition: cameraPosition ?? this.cameraPosition,
         widgetSize: widgetSize ?? this.widgetSize,
         oriMarkers: oriMarkers ?? this.oriMarkers,
+        reachingCenter: reachingCenter ?? this.reachingCenter,
       );
 
   static MapState initialState() {
@@ -75,18 +89,26 @@ class MapState {
       zoomSwitch: 13.0,
       communityMarkers: [],
       districtMarkers: [],
-      drawing: false,
-      polyLines: [],
-      markersInPolygon: [],
-      polygon: [],
-      cameraPosition: CameraPosition(
+      mapStatus: MapStatus.normal,
+      markersInDrawingPolygon:  [],
+      drawnPolygon: [],
+      markersInReachingPolygon: [],
+      reachingPolygon: [],
+      cameraPosition:  CameraPosition(
         target: LatLng(
           0,
           0,
         ),
       ),
-      widgetSize: Size(0, 0),
+      widgetSize:Size(
+        0,
+        0,
+      ),
       oriMarkers: [],
+      reachingCenter: LatLng(
+        0,
+        0,
+      ),
     );
   }
 }

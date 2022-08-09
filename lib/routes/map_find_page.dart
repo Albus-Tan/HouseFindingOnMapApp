@@ -5,13 +5,16 @@ import 'package:app/common/extension/widget.dart';
 import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map_find_marker.dart';
 import 'package:bruno/bruno.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 import '../constant/shanghai_district.dart';
+import '../service/amap_api_service/amap_api_service.dart';
 import '../service/backend_service/house/rent_house.dart';
 import '../service/backend_service/map_find_house.dart';
+import '../utils/amap.dart';
 import '../utils/district_calculate.dart';
 import '../utils/storage.dart';
 import '../widgets/house_card.dart';
@@ -31,9 +34,6 @@ class MapFindPage extends StatefulWidget {
 class _MapFindPageState extends State<MapFindPage> {
   /// 所有房源数据
   List<RentHouse> houses = [];
-
-  /// 正在画圈
-  bool isDrawing = false;
 
   /// 地图上房源小区 Marker
   String focusingMarkerId = "";
@@ -92,12 +92,28 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   updateFilteredHouse(Store<MapState> store) {
-    int priceLow = (price1 == '') ? -1 : int.parse(price1);
-    int priceHigh = (price2 == '') ? -1 : int.parse(price2);
+    int priceLow = (price1 == '')
+        ? -1
+        : int.parse(
+            price1,
+          );
+    int priceHigh = (price2 == '')
+        ? -1
+        : int.parse(
+            price2,
+          );
 
-    int mLine = (metroLine == '') ? -1 : int.parse(metroLine);
+    int mLine = (metroLine == '')
+        ? -1
+        : int.parse(
+            metroLine,
+          );
     //TODO
-    List<String> zhan = (metroStation == '') ? [] : metroStation.split(',');
+    List<String> zhan = (metroStation == '')
+        ? []
+        : metroStation.split(
+            ',',
+          );
 
     List<int> shi = [];
     List<String> x = (rooms == '') ? [] : rooms.split(',');
@@ -110,12 +126,14 @@ class _MapFindPageState extends State<MapFindPage> {
     for (final yi in y) {
       rType.add(int.parse(yi));
     }
+    final state = store.state;
+    final residentialMarkers = keyByHouseMarkerId(
+      state.communityMarkers,
+    );
 
-    final residentialMarkers = keyByHouseMarkerId(store.state.communityMarkers);
-
-    for (final marker in store.state.oriMarkers) {
-      var housesList = marker.houses;
-      var filteredHousesList = <RentHouse>[];
+    for (final marker in state.oriMarkers) {
+      final housesList = marker.houses;
+      final filteredHousesList = <RentHouse>[];
       bool residentialHasMeetRequirement = false;
       // 遍历检查是否有符合条件的
       for (final house in housesList) {
@@ -154,20 +172,38 @@ class _MapFindPageState extends State<MapFindPage> {
         }
       }
 
-      residentialHasMeetRequirement = (filteredHousesList.isNotEmpty);
-
+      residentialHasMeetRequirement = filteredHousesList.isNotEmpty;
+      late final List<HouseMarker> markersInPolygon;
+      switch (state.mapStatus) {
+        case MapStatus.normal:
+          markersInPolygon = [];
+          break;
+        case MapStatus.drawing:
+        case MapStatus.drawn:
+          markersInPolygon = state.markersInDrawingPolygon;
+          break;
+        case MapStatus.selecting:
+        case MapStatus.selected:
+        case MapStatus.recommending:
+          markersInPolygon = state.markersInReachingPolygon;
+          break;
+      }
+      final markersInPolygonMap = keyByHouseMarkerId(markersInPolygon);
       if (residentialHasMeetRequirement &&
           filteredHousesList.length !=
               residentialMarkers[marker.id]?.houses.length) {
-        var residentialMapFindMarker = ResidentialMapFindMarker(
+        final residentialMapFindMarker = ResidentialMapFindMarker(
           residential: filteredHousesList[0].residential ?? '',
           num: filteredHousesList.length,
+          inPolygon: markersInPolygonMap.containsKey(
+            marker.id,
+          ),
         );
         residentialMapFindMarker.toUint8List().then(
           (value) {
             store.dispatch(
               UpdateMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.community,
                 iconParam: BitmapDescriptor.fromBytes(value!),
                 id: marker.id,
@@ -182,7 +218,7 @@ class _MapFindPageState extends State<MapFindPage> {
       } else {
         store.dispatch(
           UpdateMarker(
-            mapId: store.state.id,
+            mapId: state.id,
             markerType: MarkerType.community,
             id: marker.id,
             visibleParam: residentialHasMeetRequirement,
@@ -237,10 +273,11 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _updateResidentialMarkersOnTap(Store<MapState> store) async {
-    for (var m in store.state.communityMarkers) {
+    final state = store.state;
+    for (var m in state.communityMarkers) {
       store.dispatch(
         UpdateMarker(
-          mapId: store.state.id,
+          mapId: state.id,
           markerType: MarkerType.community,
           id: m.id,
           onTapParam: (id) => _markerOnTap(id!, store, context),
@@ -250,6 +287,7 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   Future<void> _initResidentialMarkers(Store<MapState> store) async {
+    final state = store.state;
     // 从后端拿取所有数据
     await getAllHouses();
 
@@ -278,8 +316,8 @@ class _MapFindPageState extends State<MapFindPage> {
     residentialList.forEach(
       (key, value) {
         // 使用第一个房源信息的地理位置代表整个小区
-        var house = value[0];
-        var residentialMarkerWidget = ResidentialMapFindMarker(
+        final house = value[0];
+        final residentialMarkerWidget = ResidentialMapFindMarker(
           residential: house.residential ?? '',
           num: value.length,
         );
@@ -297,14 +335,14 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               AddMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.community,
                 marker: value,
               ),
             );
             store.dispatch(
               AddMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.origin,
                 marker: value,
               ),
@@ -333,10 +371,10 @@ class _MapFindPageState extends State<MapFindPage> {
           onTap: (id) => {
             store.dispatch(
               MoveCamera(
-                mapId: store.state.id,
+                mapId: state.id,
                 cameraPosition: CameraPosition(
                   target: latLng,
-                  zoom: store.state.zoomSwitch,
+                  zoom: state.zoomSwitch,
                 ),
               ),
             ),
@@ -354,14 +392,14 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               AddMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.district,
                 marker: value,
               ),
             );
             // store.dispatch(
             //   AddMarker(
-            //     mapId: store.state.id,
+            //     mapId: state.id,
             //     markerType: MarkerType.origin,
             //     marker: value,
             //   ),
@@ -373,11 +411,13 @@ class _MapFindPageState extends State<MapFindPage> {
   }
 
   void _markerOnTap(String id, Store<MapState> store, BuildContext context) {
+    final state = store.state;
+
     /// 依据 id 从 residentialMarkers 中取出对应 widget
     print("onTap$id");
 
     /// 建立索引
-    final residentialMarkers = keyByHouseMarkerId(store.state.communityMarkers);
+    final residentialMarkers = keyByHouseMarkerId(state.communityMarkers);
 
     tappedMarkers[id] = residentialMarkers[id];
     focusingMarkerId = id;
@@ -390,7 +430,7 @@ class _MapFindPageState extends State<MapFindPage> {
       (value) {
         store.dispatch(
           UpdateMarker(
-            mapId: store.state.id,
+            mapId: state.id,
             markerType: MarkerType.community,
             id: id,
             iconParam: BitmapDescriptor.fromBytes(value!),
@@ -434,8 +474,9 @@ class _MapFindPageState extends State<MapFindPage> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  subtitle: Text(
-                      '均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · 共$num套'),
+                  subtitle:
+                      Text('均价${(totalPrice / num!).toStringAsFixed(2)}元/月 · '
+                          '共$num套'),
                   trailing: const Icon(Icons.keyboard_arrow_down),
                 ),
                 const Divider(),
@@ -471,13 +512,39 @@ class _MapFindPageState extends State<MapFindPage> {
 
   void _updateMarkersInPolygon(Store<MapState> store) {
     // 建立本次多边形中 markers 的 id 与 相关信息的索引
-    final markersInPolygonMap = keyByHouseMarkerId(
-      store.state.markersInPolygon,
-    );
+    late final markersInPolygonMap;
+    final state = store.state;
+    switch (state.mapStatus) {
+      case MapStatus.drawing:
+      case MapStatus.drawn:
+        markersInPolygonMap = keyByHouseMarkerId(
+          state.markersInDrawingPolygon,
+        );
+        break;
+
+      case MapStatus.normal:
+        markersInPolygonMap = {};
+        break;
+      case MapStatus.selecting:
+      case MapStatus.selected:
+        markersInPolygonMap = keyByHouseMarkerId(
+          state.markersInReachingPolygon,
+        );
+        break;
+      case MapStatus.recommending:
+        if (state.markersInReachingPolygon.length > 2) {
+          markersInPolygonMap = keyByHouseMarkerId(
+            state.markersInReachingPolygon,
+          );
+        } else {
+          markersInPolygonMap = {};
+        }
+        break;
+    }
 
     /// 建立索引
     final residentialMarkers = keyByHouseMarkerId(
-      store.state.communityMarkers,
+      state.communityMarkers,
     );
 
     // 将上一次在圈内，这一次不在圈内的恢复原样
@@ -492,7 +559,7 @@ class _MapFindPageState extends State<MapFindPage> {
           (value) {
             store.dispatch(
               UpdateMarker(
-                mapId: store.state.id,
+                mapId: state.id,
                 markerType: MarkerType.community,
                 id: id,
                 iconParam: BitmapDescriptor.fromBytes(value!),
@@ -504,56 +571,64 @@ class _MapFindPageState extends State<MapFindPage> {
     }
 
     // 遍历这一次在圈内的
-    markersInPolygonMap.forEach((residentialMarkerId, value) {
-      // 上一次不在圈内
-      if (!markersIdInPolygon.contains(residentialMarkerId)) {
-        var residentialMapFindMarker = ResidentialMapFindMarker(
-          residential:
-              markersInPolygonMap[residentialMarkerId]?.houses[0].residential ??
-                  '',
-          num: markersInPolygonMap[residentialMarkerId]?.houses.length ?? 0,
-        );
-        residentialMapFindMarker.inPolygon = true;
-        residentialMapFindMarker.toUint8List().then(
-          (value) {
-            store.dispatch(
-              UpdateMarker(
-                mapId: store.state.id,
-                markerType: MarkerType.community,
-                id: residentialMarkerId,
-                iconParam: BitmapDescriptor.fromBytes(value!),
-              ),
-            );
-          },
-        );
-      }
-    });
+    markersInPolygonMap.forEach(
+      (residentialMarkerId, value) {
+        // 上一次不在圈内
+        if (!markersIdInPolygon.contains(residentialMarkerId)) {
+          var residentialMapFindMarker = ResidentialMapFindMarker(
+            residential: markersInPolygonMap[residentialMarkerId]
+                    ?.houses[0]
+                    .residential ??
+                '',
+            num: markersInPolygonMap[residentialMarkerId]?.houses.length ?? 0,
+          );
+          residentialMapFindMarker.inPolygon = true;
+          residentialMapFindMarker.toUint8List().then(
+            (value) {
+              store.dispatch(
+                UpdateMarker(
+                  mapId: state.id,
+                  markerType: MarkerType.community,
+                  id: residentialMarkerId,
+                  iconParam: BitmapDescriptor.fromBytes(value!),
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
 
     // 更新圈内 id 集合
     markersIdInPolygon.clear();
-    markersInPolygonMap.forEach((residentialMarkerId, value) {
-      markersIdInPolygon.add(residentialMarkerId);
-    });
+    markersInPolygonMap.forEach(
+      (
+        residentialMarkerId,
+        value,
+      ) {
+        markersIdInPolygon.add(residentialMarkerId);
+      },
+    );
   }
 
-  // void _resetAllMarkers(Store<MapState> store) {
-  //   for (final element in store.state.markers) {
-  //     residentialMarkers[element.id]?.inPolygon = false;
-  //     residentialMarkers[element.id]?.toUint8List().then(
-  //       (value) {
-  //         store.dispatch(
-  //           UpdateMarker(
-  //             mapId: store.state.id,
-  //             id: element.id,
-  //             iconParam: BitmapDescriptor.fromBytes(value!),
-  //           ),
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  Widget buildOperations(Store<MapState> store) {
+    final state = store.state;
+    switch (state.mapStatus) {
+      case MapStatus.recommending:
+        return buildRecommendingOperations(store);
+      case MapStatus.normal:
+        return buildNormalOperations(store);
+      case MapStatus.drawing:
+      case MapStatus.drawn:
+        return buildDrawingOperations(store);
+      case MapStatus.selecting:
+      case MapStatus.selected:
+        return buildSelectingOperations(store);
+    }
+  }
 
-  Widget buildOperationsWhenDrawing(Store<MapState> store) {
+  Widget buildDrawingOperations(Store<MapState> store) {
+    final state = store.state;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -577,10 +652,15 @@ class _MapFindPageState extends State<MapFindPage> {
               );
             }
             store.dispatch(
-              ClearPolygon(mapId: store.state.id),
+              ClearDrawingPolygon(
+                mapId: state.id,
+              ),
             );
             store.dispatch(
-              StartDrawPolygon(mapId: store.state.id),
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.drawing,
+              ),
             );
           },
         ),
@@ -593,24 +673,20 @@ class _MapFindPageState extends State<MapFindPage> {
             // _resetAllMarkersInPolygon(store);
 
             store.dispatch(
-              ClearPolygon(
-                mapId: store.state.id,
+              ClearDrawingPolygon(
+                mapId: state.id,
               ),
             );
             store.dispatch(
               CheckCommunityMarkersInPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
             store.dispatch(
-              EndDrawPolygon(
-                mapId: store.state.id,
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.normal,
               ),
-            );
-            setState(
-              () {
-                isDrawing = false;
-              },
             );
           },
         ),
@@ -618,7 +694,93 @@ class _MapFindPageState extends State<MapFindPage> {
     );
   }
 
-  Widget buildOperationsWhenNotDrawing(Store<MapState> store) {
+  Widget buildRecommendingOperations(Store<MapState> store) {
+    final state = store.state;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '退出',
+          iconWidget: const Icon(Icons.arrow_back),
+          onTap: () {
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.normal,
+              ),
+            );
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: state.id,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget buildSelectingOperations(Store<MapState> store) {
+    final state = store.state;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '重选',
+          iconWidget: const Icon(
+            Icons.pan_tool_alt_outlined,
+          ),
+          onTap: () {
+            // _resetAllMarkersInPolygon(store);
+            final state = store.state;
+            store.dispatch(
+              SetReachingPolygon(mapId: state.id, reachingPolygon: []),
+            );
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.selecting,
+              ),
+            );
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: state.id,
+              ),
+            );
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '退出',
+          iconWidget: const Icon(Icons.arrow_back),
+          onTap: () {
+            store.dispatch(
+              SetReachingPolygon(mapId: state.id, reachingPolygon: []),
+            );
+            store.dispatch(
+              CheckCommunityMarkersInPolygon(
+                mapId: state.id,
+              ),
+            );
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.normal,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget buildNormalOperations(Store<MapState> store) {
+    final state = store.state;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -642,14 +804,97 @@ class _MapFindPageState extends State<MapFindPage> {
               );
             }
             store.dispatch(
-              ClearPolygon(mapId: store.state.id),
+              ClearDrawingPolygon(mapId: state.id),
             );
             store.dispatch(
-              StartDrawPolygon(mapId: store.state.id),
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.drawing,
+              ),
             );
-            setState(
-              () {
-                isDrawing = true;
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '通勤',
+          iconWidget: const Icon(
+            Icons.alarm_outlined,
+          ),
+          onTap: () {
+            BrnToast.show('请选择通勤起点', context);
+            final state = store.state;
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.selecting,
+              ),
+            );
+          },
+        ),
+        BrnIconButton(
+          widgetHeight: 60,
+          widgetWidth: 40,
+          name: '推荐',
+          iconWidget: const Icon(
+            Icons.recommend,
+          ),
+          onTap: () async {
+            BrnToast.show('算法向您推荐的周边房源将突出显示', context);
+            final state = store.state;
+            await _updatePos();
+            final currentPosition = LatLng(
+              // 31.248,
+              // 121.481
+              currentPositionLat,
+              currentPositionLng,
+            );
+            store.dispatch(SetMapStatus(
+              mapId: state.id,
+              mapStatus: MapStatus.recommending,
+            ));
+            store.dispatch(
+              MoveCamera(
+                mapId: state.id,
+                cameraPosition: CameraPosition(
+                  target: currentPosition,
+                  zoom: state.cameraPosition.zoom,
+                ),
+              ),
+            );
+            store.dispatch(
+              SetReachingCenter(
+                mapId: state.id,
+                reachingCenter: currentPosition,
+              ),
+            );
+            fetchReachCircle(
+              centerPosition: currentPosition,
+              minutes: '30',
+            ).then(
+              (reachCircle) {
+                store.dispatch(
+                  SetReachingPolygon(
+                    mapId: state.id,
+                    reachingPolygon: reachCircle.polylines
+                        .map(
+                          (e) => Polygon(
+                            points: convertPolylineStr2Points(
+                              e.outer,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                );
+                store.dispatch(
+                  CheckCommunityMarkersInPolygon(
+                    mapId: state.id,
+                  ),
+                );
+                if (store.state.markersInReachingPolygon.length <= 2) {
+                  BrnToast.show('当前位置周边房源过少，无法为您推荐', context);
+                }
               },
             );
           },
@@ -663,13 +908,13 @@ class _MapFindPageState extends State<MapFindPage> {
             await _updatePos();
             store.dispatch(
               MoveCamera(
-                mapId: store.state.id,
+                mapId: state.id,
                 cameraPosition: CameraPosition(
                   target: LatLng(
                     currentPositionLat,
                     currentPositionLng,
                   ),
-                  zoom: store.state.cameraPosition.zoom,
+                  zoom: state.cameraPosition.zoom,
                 ),
               ),
             );
@@ -690,60 +935,79 @@ class _MapFindPageState extends State<MapFindPage> {
       children: [
         StoreBuilder<MapState>(
           onInit: (store) {
-            // store.dispatch(
-            //   Clear(
-            //     mapId: store.state.id,
-            //   ),
-            // );
-            if (store.state.communityMarkers.isEmpty) {
-              _initResidentialMarkers(store);
+            final state = store.state;
+            if (state.communityMarkers.isEmpty) {
+              _initResidentialMarkers(
+                store,
+              );
             } else {
-              _updateResidentialMarkersOnTap(store);
+              _updateResidentialMarkersOnTap(
+                store,
+              );
               selectionChanged = true;
             }
             store.dispatch(
               UpdateCameraPosition(
-                mapId: store.state.id,
+                mapId: state.id,
                 cameraPosition: const CameraPosition(
                   // 初始化至上海市
-                  target: LatLng(31.2382, 121.4913),
+                  target: LatLng(
+                    31.2382,
+                    121.4913,
+                  ),
                   zoom: 15,
                 ),
               ),
             );
           },
           onDispose: (store) {
+            final state = store.state;
+
             store.dispatch(
-              EndDrawPolygon(
-                mapId: store.state.id,
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.normal,
               ),
             );
             store.dispatch(
-              ClearPolygon(
-                mapId: store.state.id,
+              ClearDrawingPolygon(
+                mapId: state.id,
               ),
             );
             store.dispatch(
               CheckCommunityMarkersInPolygon(
-                mapId: store.state.id,
+                mapId: state.id,
               ),
             );
-            _updateMarkersInPolygon(store);
+            _updateMarkersInPolygon(
+              store,
+            );
           },
-          builder: (context, store) {
-            _updateMarkersInPolygon(store);
+          builder: (
+            context,
+            store,
+          ) {
+            _updateMarkersInPolygon(
+              store,
+            );
             if (selectionChanged) {
-              updateFilteredHouse(store);
+              updateFilteredHouse(
+                store,
+              );
               selectionChanged = false;
             }
+            // final state = store.state;
+            // final mapStatus = state.mapStatus;
             return MaterialApp(
               home: Scaffold(
-                appBar: isDrawing
+                appBar: store.state.mapStatus == MapStatus.recommending
                     ? AppBar(
                         backgroundColor: Colors.white,
                         title: const Text(
-                          "画图找房",
-                          style: TextStyle(color: Colors.black),
+                          "周边推荐",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                         centerTitle: true,
                         titleSpacing: 0.0,
@@ -765,12 +1029,15 @@ class _MapFindPageState extends State<MapFindPage> {
                         child: Container(
                           decoration: const BoxDecoration(
                             color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                20.0,
+                              ),
+                            ),
                           ),
-                          child: isDrawing
-                              ? buildOperationsWhenDrawing(store)
-                              : buildOperationsWhenNotDrawing(store),
+                          child: buildOperations(
+                            store,
+                          ),
                         ),
                       ),
                     ],

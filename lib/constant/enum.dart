@@ -9,3 +9,8 @@ enum NavigationType {
   public,
   bicycle,
 }
+
+enum SearchRecommendType {
+  nearby,
+  latest,
+}
