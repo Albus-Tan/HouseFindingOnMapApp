@@ -1,14 +1,12 @@
 import 'dart:convert';
 
-import 'package:app/service/backend_service/user/user_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 import '../utils/constants.dart';
 import '../utils/result.dart';
-import '../utils/storage.dart';
 import 'login_page.dart';
-import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key, required this.title}) : super(key: key);
@@ -20,10 +18,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey _formKey = GlobalKey<FormState>();
-  late String _username, _password;
+  late String _username, _password, _changedPassword;
   bool _isObscure = true;
   Color _eyeColor = Colors.grey;
-  final List _RegisterMethod = [
+  final List _registerMethod = [
     {
       "title": "facebook",
       "icon": Icons.facebook,
@@ -37,6 +35,12 @@ class _RegisterPageState extends State<RegisterPage> {
       "icon": Icons.account_balance,
     },
   ];
+
+  @override
+  void initState() {
+    _username = _password = _changedPassword = "";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +58,8 @@ class _RegisterPageState extends State<RegisterPage> {
             buildUserNameTextField(), // 输入邮箱
             const SizedBox(height: 30),
             buildPasswordTextField(context), // 输入密码
+            const SizedBox(height: 30),
+            buildConfirmPasswordTextField(context), // 确认密码
             // buildForgetPasswordText(context), // 忘记密码
             const SizedBox(height: 60),
             buildRegisterButton(context), // 登录按钮
@@ -98,28 +104,29 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget buildOtherMethod(context) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
-      children: _RegisterMethod.map(
-        (item) => Builder(
-          builder: (context) {
-            return IconButton(
-              icon:
-                  Icon(item['icon'], color: Theme.of(context).iconTheme.color),
-              onPressed: () {
-                //TODO: 第三方登录方法
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${item['title']}登录'),
-                    action: SnackBarAction(
-                      label: '取消',
-                      onPressed: () {},
-                    ),
-                  ),
+      children: _registerMethod
+          .map(
+            (item) => Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(item['icon'],
+                      color: Theme.of(context).iconTheme.color),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${item['title']}登录'),
+                        action: SnackBarAction(
+                          label: '取消',
+                          onPressed: () {},
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
-        ),
-      ).toList(),
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -160,7 +167,6 @@ class _RegisterPageState extends State<RegisterPage> {
             // 表单校验通过才会继续执行
             if ((_formKey.currentState as FormState).validate()) {
               (_formKey.currentState as FormState).save();
-              //TODO 执行注册方法
 
               _register(_username, _password).then((value) => {
                     if (value.code == 200)
@@ -215,6 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return TextFormField(
       obscureText: _isObscure, // 是否显示文字
       onSaved: (v) => _password = v!,
+      onChanged: (v) => _changedPassword = v,
       validator: (v) {
         if (v!.isEmpty) {
           return '请输入密码';
@@ -246,20 +253,21 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget buildPasswordConfirmedTextField(BuildContext context) {
+  Widget buildConfirmPasswordTextField(BuildContext context) {
     return TextFormField(
       obscureText: _isObscure, // 是否显示文字
-      onSaved: (v) => _password = v!,
+      // onSaved: (v) => _confirmPassword = v!,
       validator: (v) {
+        // print("confirm: $v password: $_changedPassword");
         if (v!.isEmpty) {
-          return '请输入密码';
+          return '请确认密码';
         }
-        if (v.length < 6) {
-          return '密码需大于6位';
+        if ((v) != _changedPassword) {
+          return '确认密码需与密码一致';
         }
       },
       decoration: InputDecoration(
-        labelText: "Password",
+        labelText: "Confirm Password",
         suffixIcon: IconButton(
           icon: Icon(
             Icons.remove_red_eye,
