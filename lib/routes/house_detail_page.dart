@@ -30,6 +30,7 @@ class HouseDetail {
   final String location;
   final String hid;
   final String layout;
+  final String compressedImage;
 
   HouseDetail({
     required this.title,
@@ -41,6 +42,7 @@ class HouseDetail {
     this.weiNumber = 0,
     this.image = "",
     this.isStatic = false,
+    this.compressedImage = "",
     required this.community,
     required this.district,
     required this.longitude,

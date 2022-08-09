@@ -98,34 +98,37 @@ class Content {
   int? metroLine;
   String? metroStation;
   String? firstPicUrl;
+  String? compress;
 
-  Content(
-      {this.id,
-      this.createTime,
-      this.displaySource,
-      this.displayRentType,
-      this.icon,
-      this.publishDate,
-      this.pictures,
-      this.title,
-      this.location,
-      this.longitude,
-      this.latitude,
-      this.rentType,
-      this.onlineUrl,
-      this.district,
-      this.city,
-      this.price,
-      this.source,
-      this.residential,
-      this.squares,
-      this.layout,
-      this.shi,
-      this.ting,
-      this.wei,
-      this.metroLine,
-      this.metroStation,
-      this.firstPicUrl});
+  Content({
+    this.id,
+    this.createTime,
+    this.displaySource,
+    this.displayRentType,
+    this.icon,
+    this.publishDate,
+    this.pictures,
+    this.title,
+    this.location,
+    this.longitude,
+    this.latitude,
+    this.rentType,
+    this.onlineUrl,
+    this.district,
+    this.city,
+    this.price,
+    this.source,
+    this.residential,
+    this.squares,
+    this.layout,
+    this.shi,
+    this.ting,
+    this.wei,
+    this.metroLine,
+    this.metroStation,
+    this.firstPicUrl,
+    this.compress,
+  });
 
   Content.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -154,6 +157,7 @@ class Content {
     metroLine = json['metroLine'];
     metroStation = json['metroStation'];
     firstPicUrl = json['firstPicUrl'];
+    compress = json['compress'];
   }
 
   Map<String, dynamic> toJson() {
@@ -184,6 +188,7 @@ class Content {
     data['metroLine'] = this.metroLine;
     data['metroStation'] = this.metroStation;
     data['firstPicUrl'] = this.firstPicUrl;
+    data['compress'] = this.compress;
     return data;
   }
 
@@ -210,6 +215,7 @@ class Content {
       location: location ?? "",
       hid: id ?? "",
       layout: layout ?? "nothing",
+      compressedImage: compress ?? "",
     );
     return data;
   }

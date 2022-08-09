@@ -24,8 +24,8 @@ class HouseCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              leading: (houseDetail.image != '')
-                  ? getNetWorkImage(houseDetail.image)
+              leading: (houseDetail.compressedImage != '')
+                  ? getNetWorkImage(houseDetail.compressedImage)
                   : noImage,
               onTap: () {
                 Navigator.push(
