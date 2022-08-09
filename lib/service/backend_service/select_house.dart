@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
+import '../../utils/constants.dart';
 import './select_house/house_page_entity.dart';
 
 Future<HousePageEntity> fetchHousePage(
@@ -17,7 +18,7 @@ Future<HousePageEntity> fetchHousePage(
     int page,
     int pageSize) async {
   var url = Uri.parse(
-      'http://124.71.183.73:8080/house/search?price1=$price1&price2=$price2'
+      '${Constants.backend}/house/search?price1=$price1&price2=$price2'
       '&page=$page&rentType=$rentType&rooms=$rooms&metro_station=$metroStation'
       '&district=$district&pageSize=$pageSize&metro_line=$metroLine&keywords=$keyword');
   var s = url.toString();
@@ -31,7 +32,7 @@ Future<HousePageEntity> fetchHousePage(
 Future<HousePageEntity> fetchHousePageNearBy(
     String lat, String lng, int page, int pageSize) async {
   var url = Uri.parse(
-      'http://124.71.183.73:8080/house/search/nearby?lat=$lat&lng=$lng&pageSize=$pageSize&page=$page');
+      '${Constants.backend}/house/search/nearby?lat=$lat&lng=$lng&pageSize=$pageSize&page=$page');
   var s = url.toString();
   debugPrint(s);
   final response = await http.post(url);
