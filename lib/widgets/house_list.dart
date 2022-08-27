@@ -58,7 +58,7 @@ class _HouseListState extends State<HouseList> {
     await getHousePages();
   }
 
-  Future<List<void>> getDatas() async {
+  Future<List<void>> getData() async {
     return await Future.wait(
       [
         getPageOfHouseCard(),
