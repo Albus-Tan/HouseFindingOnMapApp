@@ -78,22 +78,20 @@ class _HouseListState extends State<HouseList> {
             widget.keyword,
             page,
             pageSize)
-        .then((value) => {
-              debugPrint("fetchHousePage: $page ${value.last!}"),
-              // debugPrint(jsonEncode(value.toJson())),
-              // value.content?.forEach((element) {
-              //   debugPrint(jsonEncode(element.toJson()));
-              // }),
-
-              value.content?.forEach((e) {
-                _houseCards.add(e.toHouseCard());
-              }),
-              // debugPrint("fetchHousePage: $page $_houseCards"),
-              _isLastPage = value.last!,
-              isLoading = false,
-              page++,
-              totElements = value.totalElements!,
-            });
+        .then((value) {
+      value.content?.forEach(
+        (e) {
+          _houseCards.add(
+            e.toHouseCard(),
+          );
+        },
+      );
+      // debugPrint("fetchHousePage: $page $_houseCards"),
+      _isLastPage = value.last!;
+      page++;
+      totElements = value.totalElements!;
+      isLoading = false;
+    });
   }
 
   @override
@@ -103,7 +101,7 @@ class _HouseListState extends State<HouseList> {
     page = 0;
     _isLastPage = isLoading = false;
     return FutureBuilder(
-        future: getDatas(),
+        future: getData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return ListView.separated(
@@ -114,15 +112,13 @@ class _HouseListState extends State<HouseList> {
               itemBuilder: (context, index) {
                 if (index >= _houseCards.length) {
                   getPageOfHouseCard();
-                  // _houseCards.addAll(
-                  //   getHouseCard(),
-                  // ); /*4*/
                 }
-                // while (isLoading);
+                // while (isLoading) {
                 if (index >= _houseCards.length) {
                   if (_isLastPage) {
-                    if (index == _houseCards.length)
+                    if (index == _houseCards.length) {
                       return const Text("已经到底部了~~");
+                    }
                     return const Divider();
                   }
                   if (isLoading) {
@@ -133,6 +129,7 @@ class _HouseListState extends State<HouseList> {
                   }
                 }
                 return _houseCards[index];
+                // }
               },
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider();
