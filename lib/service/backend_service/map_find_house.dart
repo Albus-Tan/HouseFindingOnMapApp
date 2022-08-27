@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,7 +24,7 @@ Future<List<RentHouse>> fetchAllHouse(
   String metroStation,
 ) async {
   var url = Uri.parse(
-      'http://124.71.183.73:8080/house/search/all?price1=$price1&price2=$price2'
+      '${Constants.backend}/house/search/all?price1=$price1&price2=$price2'
       '&rentType=$rentType&rooms=$rooms&metro_station=$metroStation'
       '&district=$district&metro_line=$metroLine');
   var s = url.toString();
