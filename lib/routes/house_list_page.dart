@@ -17,9 +17,6 @@ Widget _renderAppBar(BuildContext context, String keyword) {
       BrnIconAction(
         iconPressed: () {
           showSearch(context: context, delegate: SearchBarViewDelegate());
-          // Navigator.of(context, rootNavigator: false).push(_SearchPageRoute<T>(
-          //   delegate: SearchBarViewDelegate(),
-          // ));
         },
         child: const Icon(
           Icons.search,
@@ -64,9 +61,6 @@ class _HouseListPageState extends State<HouseListPage> {
     setState(() {
       filter = filterParams;
       debugPrint(filterParams.toString());
-      // debugPrint(filterParams["price"]);
-      // debugPrint(filterParams["户型"]);
-      // debugPrint(filterParams["region"]);
       if (filter != null) {
         district = filter!["region"] ?? "";
         rooms = filter!["户型"] ?? "";
@@ -109,7 +103,6 @@ class _HouseListPageState extends State<HouseListPage> {
     if (selectionInitialized) {
       list.add(selection);
     }
-    // list.add(Text(widget.keyWord));
     list.add(
       Expanded(
         child: HouseList(
