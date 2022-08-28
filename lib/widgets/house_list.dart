@@ -114,7 +114,7 @@ class _HouseListState extends State<HouseList> {
           return _houseCards[index];
         } else {
           getHouses(page + 1);
-          return Text("loading");
+          return const Center(child: CircularProgressIndicator());
         }
       },
       separatorBuilder: (BuildContext context, int index) {
