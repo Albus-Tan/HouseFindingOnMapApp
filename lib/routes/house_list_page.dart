@@ -58,26 +58,28 @@ class _HouseListPageState extends State<HouseListPage> {
       Map<String, String> filterParams,
       Map<String, String> customParams,
       BrnSetCustomSelectionMenuTitle setCustomTitleFunction) {
-    setState(() {
-      filter = filterParams;
-      debugPrint(filterParams.toString());
-      if (filter != null) {
-        district = filter!["region"] ?? "";
-        rooms = filter!["户型"] ?? "";
-        metroLine = filter!["subway"] ?? "";
-        metroStation = filter?["station"] ?? "";
-        rentType = filter?["类型"] ?? "";
-        if (filter!["price"] != null) {
-          String s = filter!["price"]!;
-          List<String> x = s.split(':');
-          price1 = x[0];
-          price2 = x[1];
-        } else {
-          price1 = "";
-          price2 = "";
+    setState(
+      () {
+        filter = filterParams;
+        debugPrint(filterParams.toString());
+        if (filter != null) {
+          district = filter!["region"] ?? "";
+          rooms = filter!["户型"] ?? "";
+          metroLine = filter!["subway"] ?? "";
+          metroStation = filter?["station"] ?? "";
+          rentType = filter?["类型"] ?? "";
+          if (filter!["price"] != null) {
+            String s = filter!["price"]!;
+            List<String> x = s.split(':');
+            price1 = x[0];
+            price2 = x[1];
+          } else {
+            price1 = "";
+            price2 = "";
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   @override
@@ -97,7 +99,7 @@ class _HouseListPageState extends State<HouseListPage> {
   Widget build(BuildContext context) {
     final list = widget.needAppBar
         ? <Widget>[
-            _renderAppBar(context,widget.keyWord),
+            _renderAppBar(context, widget.keyWord),
           ]
         : <Widget>[];
     if (selectionInitialized) {

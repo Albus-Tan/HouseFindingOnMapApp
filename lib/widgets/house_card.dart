@@ -36,9 +36,9 @@ class HouseCard extends StatelessWidget {
                       houseDetail: houseDetail,
                     ),
                   ),
-                ).then((val)=> {
-                  onChangeCallback!(),
-                });
+                ).then(
+                  (val) => onChangeCallback!(),
+                );
               },
               title: BrnExpandableText(
                 text: houseDetail.title,

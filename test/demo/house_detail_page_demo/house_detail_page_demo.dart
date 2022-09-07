@@ -11,14 +11,21 @@ HouseDetail houseDetail = HouseDetail(
   weiNumber: 1,
   isStatic: true,
   image: "assets/house_detail_page_houses/house1.jpg",
+  location: '',
+  layout: '',
+  hid: '',
+  district: '',
+  community: '',
+  latitude: '',
+  longitude: '',
 );
 
-class HouseDetailPageApp extends StatelessWidget{
+class HouseDetailPageApp extends StatelessWidget {
   const HouseDetailPageApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       title: 'house page',
       home: HouseDetailPage(houseDetail: houseDetail),
     );

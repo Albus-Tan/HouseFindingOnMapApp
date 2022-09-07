@@ -1,5 +1,4 @@
-
-
+import 'package:app/routes/house_detail_page.dart';
 import 'package:app/widgets/house_card.dart';
 import 'package:flutter/material.dart';
 
@@ -16,14 +15,20 @@ class MyApp extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: const HouseCard(
-          title: "城东刚需好房 东城名苑 精装 房东诚心出售",
-          rooms: 3,
-          squares: 89,
-          community: "荣安美安府",
-          price: 2000,
-          url:
-          "https://pic1.ajkimg.com/display/58ajk/bb2ea992a99e20c0eadf28414065f95d/640x420c.jpg?t=1",
+        body:HouseCard(
+          houseDetail: HouseDetail(
+            location: '',
+            district: '',
+            pricePerMonth: 100,
+            hid: '',
+            community: '',
+            squares: 100,
+            longitude: '',
+            layout: '',
+            shiNumber: 1,
+            latitude: '',
+            title: '',
+          ),
         ),
       ),
     );
