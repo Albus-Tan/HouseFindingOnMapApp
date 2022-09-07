@@ -1,4 +1,4 @@
-//筛选器封装文件，内部有只含selction的main程序 不过存在高度溢出问题
+//筛选器封装文件，内部有只含selection的main程序 不过存在高度溢出问题
 import 'dart:convert';
 
 import 'package:bruno/bruno.dart';
@@ -16,13 +16,5 @@ Future<Widget> selectionView(String path, MyFunction callback) async {
     )!
         .list!,
     onSelectionChanged: callback,
-    // onSelectionChanged: (
-    //   int menuIndex,
-    //   Map<String, String> filterParams,
-    //   Map<String, String> customParams,
-    //   BrnSetCustomSelectionMenuTitle setCustomTitleFunction,
-    // ) {
-    //   debugPrint("Select: $filterParams");
-    // },
   );
 }
