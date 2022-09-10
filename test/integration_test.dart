@@ -22,51 +22,71 @@ void main() {
   );
 
   group('all test', () {
-    testWidgets('house list page test 1', (WidgetTester tester) async {
-      mockNetworkImagesFor(() async {
-        // necessary for http request
-        await tester.pumpWidget(const MaterialApp(
-          home: HouseListPage(),
-        ));
-        await tester.pump();
+    testWidgets(
+      'house list page test 1',
+      (WidgetTester tester) async {
+        mockNetworkImagesFor(
+          () async {
+            // necessary for http request
+            await tester.pumpWidget(
+              const MaterialApp(
+                home: HouseListPage(),
+              ),
+            );
+            await tester.pump();
 
-        expect(find.bySubtype<HouseList>(), findsOneWidget);
-        expect(find.bySubtype<BrnAppBar>(), findsOneWidget);
-        expect(find.bySubtype<BrnSelectionView>(), findsOneWidget);
-        expect(find.text("地区"), findsOneWidget);
+            expect(find.bySubtype<HouseList>(), findsOneWidget);
+            expect(find.bySubtype<BrnAppBar>(), findsOneWidget);
+            expect(find.bySubtype<BrnSelectionView>(), findsOneWidget);
+            expect(find.text("地区"), findsOneWidget);
 
-        expect(find.bySubtype<HouseCard>(), findsWidgets);
-        final card = find.bySubtype<HouseCard>().first;
-        await tester.tap(card);
-        for (int i = 0; i < 3; i++) {
-          await tester.pump(Duration(seconds: 1));
-        }
+            expect(find.bySubtype<HouseCard>(), findsWidgets);
+            final card = find.bySubtype<HouseCard>().first;
+            await tester.tap(card);
+            for (int i = 0; i < 3; i++) {
+              await tester.pump(
+                Duration(
+                  seconds: 1,
+                ),
+              );
+            }
 
-        //跳转到detail
-        expect(find.bySubtype<HouseDetailPage>(), findsOneWidget);
-        expect(find.byType(Image), findsWidgets);
-        await tester.drag(find.byType(PageView), const Offset(-500.0, 0.0));
-        for (int i = 0; i < 3; i++) {
-          await tester.pump(Duration(seconds: 1));
-        }
-      });
-    });
-    testWidgets('house list page test 2', (WidgetTester tester) async {
-      mockNetworkImagesFor(() async {
-        // necessary for http request
-        await tester.pumpWidget(const MaterialApp(
-          home: HouseListPage(),
-        ));
-        await tester.pump();
+            //跳转到detail
+            expect(find.bySubtype<HouseDetailPage>(), findsOneWidget);
+            expect(find.byType(Image), findsWidgets);
+            await tester.drag(find.byType(PageView), const Offset(-500.0, 0.0));
+            for (int i = 0; i < 3; i++) {
+              await tester.pump(
+                Duration(
+                  seconds: 1,
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+    testWidgets(
+      'house list page test 2',
+      (WidgetTester tester) async {
+        mockNetworkImagesFor(
+          () async {
+            // necessary for http request
+            await tester.pumpWidget(const MaterialApp(
+              home: HouseListPage(),
+            ));
+            await tester.pump();
 
-        expect(find.bySubtype<HouseList>(), findsOneWidget);
-        expect(find.bySubtype<BrnAppBar>(), findsOneWidget);
-        // expect(find.byElementType(BrnSelectionView), findsOneWidget);
+            expect(find.bySubtype<HouseList>(), findsOneWidget);
+            expect(find.bySubtype<BrnAppBar>(), findsOneWidget);
+            // expect(find.byElementType(BrnSelectionView), findsOneWidget);
 
-        final search = find.bySubtype<BrnIconAction>().first;
-        await tester.tap(search);
-      });
-    });
+            final search = find.bySubtype<BrnIconAction>().first;
+            await tester.tap(search);
+          },
+        );
+      },
+    );
     testWidgets('home page test 1', (WidgetTester tester) async {
       mockNetworkImagesFor(() async {
         // necessary for http request

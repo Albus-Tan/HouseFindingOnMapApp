@@ -1,10 +1,10 @@
+import 'package:app/routes/house_detail_page.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'rent_house.g.dart';
 
 @JsonSerializable()
 class RentHouse extends Object {
-
   @JsonKey(name: 'id')
   String id;
 
@@ -80,12 +80,58 @@ class RentHouse extends Object {
   @JsonKey(name: 'firstPicUrl')
   String firstPicUrl;
 
-  RentHouse(this.id,this.createTime,this.displaySource,this.displayRentType,this.icon,this.publishDate,this.pictures,this.title,this.location,this.longitude,this.latitude,this.rentType,this.onlineUrl,this.district,this.city,this.price,this.source,this.residential,this.squares,this.layout,this.shi,this.ting,this.wei,this.metroLine,this.firstPicUrl,);
+  @JsonKey(name: 'compress')
+  String compress;
 
-  factory RentHouse.fromJson(Map<String, dynamic> srcJson) => _$RentHouseFromJson(srcJson);
+  RentHouse(
+    this.id,
+    this.createTime,
+    this.displaySource,
+    this.displayRentType,
+    this.icon,
+    this.publishDate,
+    this.pictures,
+    this.title,
+    this.location,
+    this.longitude,
+    this.latitude,
+    this.rentType,
+    this.onlineUrl,
+    this.district,
+    this.city,
+    this.price,
+    this.source,
+    this.residential,
+    this.squares,
+    this.layout,
+    this.shi,
+    this.ting,
+    this.wei,
+    this.metroLine,
+    this.firstPicUrl,
+    this.compress,
+  );
+
+  factory RentHouse.fromJson(Map<String, dynamic> srcJson) =>
+      _$RentHouseFromJson(srcJson);
 
   Map<String, dynamic> toJson() => _$RentHouseToJson(this);
 
+  HouseDetail toDetail() {
+    return HouseDetail(
+      title: title,
+      pricePerMonth: price,
+      squares: squares,
+      shiNumber: shi,
+      community: district,
+      image: firstPicUrl,
+      district: "上海",
+      latitude: latitude,
+      longitude: longitude,
+      location: location,
+      hid: id,
+      layout: layout ?? '',
+      compressedImage: compress,
+    );
+  }
 }
-
-

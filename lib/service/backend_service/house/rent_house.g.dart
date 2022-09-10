@@ -32,6 +32,7 @@ RentHouse _$RentHouseFromJson(Map<String, dynamic> json) => RentHouse(
       json['wei'] as int,
       json['metroLine'] as int,
       json['firstPicUrl'] as String,
+      json['compress'] as String,
     );
 
 Map<String, dynamic> _$RentHouseToJson(RentHouse instance) => <String, dynamic>{
@@ -60,4 +61,5 @@ Map<String, dynamic> _$RentHouseToJson(RentHouse instance) => <String, dynamic>{
       'wei': instance.wei,
       'metroLine': instance.metroLine,
       'firstPicUrl': instance.firstPicUrl,
+      'compress': instance.compress,
     };

@@ -5,24 +5,22 @@ import 'package:app/common/extension/widget.dart';
 import 'package:app/widgets/map/action.dart';
 import 'package:app/widgets/map_find_marker.dart';
 import 'package:bruno/bruno.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-import '../constant/shanghai_district.dart';
-import '../service/amap_api_service/amap_api_service.dart';
-import '../service/backend_service/house/rent_house.dart';
-import '../service/backend_service/map_find_house.dart';
-import '../utils/amap.dart';
-import '../utils/district_calculate.dart';
-import '../utils/storage.dart';
-import '../widgets/house_card.dart';
-import '../widgets/house_list/house_data.dart';
-import '../widgets/map.dart';
-import '../widgets/map/state.dart';
-import '../widgets/map/type.dart';
-import '../widgets/selection.dart';
+import 'package:app/constant/shanghai_district.dart';
+import 'package:app/service/amap_api_service/amap_api_service.dart';
+import 'package:app/service/backend_service/house/rent_house.dart';
+import 'package:app/service/backend_service/map_find_house.dart';
+import 'package:app/utils/amap.dart';
+import 'package:app/utils/district_calculate.dart';
+import 'package:app/utils/storage.dart';
+import 'package:app/widgets/house_card.dart';
+import 'package:app/widgets/map.dart';
+import 'package:app/widgets/map/state.dart';
+import 'package:app/widgets/map/type.dart';
+import 'package:app/widgets/selection.dart';
 
 class MapFindPage extends StatefulWidget {
   const MapFindPage({Key? key}) : super(key: key);
@@ -485,20 +483,21 @@ class _MapFindPageState extends State<MapFindPage> {
                     controller: controller, // set this too
                     // 长度
                     itemCount: num,
+                    //TODO
                     itemBuilder: (_, i) => HouseCard(
-                      houseDetail: toDetail(
-                        housesList?[i].title ?? '',
-                        housesList?[i].shi ?? -1,
-                        housesList?[i].squares ?? -1,
-                        housesList?[i].residential ?? '',
-                        housesList?[i].price ?? -1,
-                        housesList?[i].firstPicUrl ?? '',
-                        housesList?[i].latitude ?? '0',
-                        housesList?[i].longitude ?? '0',
-                        housesList?[i].location ?? "",
-                        housesList?[i].id ?? "",
-                        housesList?[i].layout ?? "nothing",
-                      ),
+                      houseDetail: housesList![i].toDetail(),
+                      //   //   housesList?[i].title ?? '',
+                      //   //   housesList?[i].shi ?? -1,
+                      //   //   housesList?[i].squares ?? -1,
+                      //   //   housesList?[i].residential ?? '',
+                      //   //   housesList?[i].price ?? -1,
+                      //   //   housesList?[i].firstPicUrl ?? '',
+                      //   //   housesList?[i].latitude ?? '0',
+                      //   //   housesList?[i].longitude ?? '0',
+                      //   //   housesList?[i].location ?? "",
+                      //   //   housesList?[i].id ?? "",
+                      //   //   housesList?[i].layout ?? "nothing",
+                      //   ),
                     ),
                   ),
                 ),
@@ -849,10 +848,12 @@ class _MapFindPageState extends State<MapFindPage> {
               currentPositionLat,
               currentPositionLng,
             );
-            store.dispatch(SetMapStatus(
-              mapId: state.id,
-              mapStatus: MapStatus.recommending,
-            ));
+            store.dispatch(
+              SetMapStatus(
+                mapId: state.id,
+                mapStatus: MapStatus.recommending,
+              ),
+            );
             store.dispatch(
               MoveCamera(
                 mapId: state.id,

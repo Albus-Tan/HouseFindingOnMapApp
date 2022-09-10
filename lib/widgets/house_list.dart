@@ -15,7 +15,7 @@ class HouseList extends StatefulWidget {
       price2,
       keyword;
 
-  const HouseList({
+  HouseList({
     // this.filter,
     this.district = "",
     this.rentType = "",
@@ -27,6 +27,28 @@ class HouseList extends StatefulWidget {
     this.keyword = "",
     Key? key,
   }) : super(key: key);
+
+  HouseList copyWith({
+    String? district,
+    String? rentType,
+    String? rooms,
+    String? metroLine,
+    String? metroStation,
+    String? price1,
+    String? price2,
+    String? keyword,
+  }) {
+    return HouseList(
+      district: district ?? this.district,
+      rentType: rentType ?? this.rentType,
+      rooms: rooms ?? this.rooms,
+      metroLine: metroLine ?? this.metroLine,
+      metroStation: metroStation ?? this.metroStation,
+      price1: price1 ?? this.price1,
+      price2: price2 ?? this.price2,
+      keyword: keyword ?? this.keyword,
+    );
+  }
 
   @override
   State<HouseList> createState() => _HouseListState();
@@ -55,23 +77,27 @@ class _HouseListState extends State<HouseList> {
             widget.keyword,
             page,
             pageSize)
-        .then((value) {
-      value.content?.forEach(
-        (e) {
-          _houseCards.add(
-            e.toHouseCard(),
-          );
-        },
-      );
-      // debugPrint("fetchHousePage: $page $_houseCards"),
-      setState(() {
-        _isLastPage = value.last!;
-        this.page = page;
-        totElements = value.totalElements!;
-        cachedElements += 10;
-        isLoading = false;
-      });
-    });
+        .then(
+      (value) {
+        value.content?.forEach(
+          (e) {
+            _houseCards.add(
+              e.toHouseCard(),
+            );
+          },
+        );
+        // debugPrint("fetchHousePage: $page $_houseCards"),
+        setState(
+          () {
+            _isLastPage = value.last!;
+            this.page = page;
+            totElements = value.totalElements!;
+            cachedElements += 10;
+            isLoading = false;
+          },
+        );
+      },
+    );
   }
 
   Future<void> init() async {
@@ -86,20 +112,25 @@ class _HouseListState extends State<HouseList> {
             widget.keyword,
             page,
             pageSize)
-        .then((value) {
-      value.content?.forEach(
-        (e) {
-          _houseCards.add(
-            e.toHouseCard(),
+        .then(
+      (value) {
+        setState(() {
+          value.content?.forEach(
+                (e) {
+              _houseCards.add(
+                e.toHouseCard(),
+              );
+            },
           );
-        },
-      );
-      _isLastPage = value.last!;
-      page = 0;
-      totElements = value.totalElements!;
-      cachedElements = 10;
-      isLoading = false;
-    });
+          _isLastPage = value.last!;
+          page = 0;
+          totElements = value.totalElements!;
+          cachedElements = 10;
+          isLoading = false;
+        });
+
+      },
+    );
   }
 
   @override
@@ -114,7 +145,9 @@ class _HouseListState extends State<HouseList> {
           return _houseCards[index];
         } else {
           getHouses(page + 1);
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
       },
       separatorBuilder: (BuildContext context, int index) {

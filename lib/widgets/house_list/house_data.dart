@@ -1,24 +1,7 @@
 //临时用来做demo的一些数据
-import '../../routes/house_detail_page.dart';
-import '../house_card.dart';
+// import '../../routes/house_detail_page.dart';
+// import '../house_card.dart';
 
-HouseDetail toDetail(String title, int rooms, double squares, String community,
-    int price, String url, String latitude, String longitude, String location, String hid, String layout) {
-  return HouseDetail(
-    title: title,
-    pricePerMonth: price,
-    squares: squares,
-    shiNumber: rooms,
-    community: community,
-    image: url,
-    district: "上海",
-    latitude: latitude,
-    longitude: longitude,
-    location: location,
-    hid : hid,
-    layout: layout,
-  );
-}
 //
 // final List<HouseCard> houseCardExample = <HouseCard>[
 //   HouseCard(

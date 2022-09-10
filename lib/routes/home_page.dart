@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                const HouseList(
+                HouseList(
                   key: Key('recommendTabView'),
                 ),
                 FutureBuilder(
@@ -182,11 +182,11 @@ class _HomePageState extends State<HomePage>
                     }
                   },
                 ),
-                const HouseList(
+                HouseList(
                   key: Key('rentWholeTabView'),
                   rentType: "3",
                 ),
-                const HouseList(
+                HouseList(
                   key: Key('rentTogetherTabView'),
                   rentType: "1",
                 ),

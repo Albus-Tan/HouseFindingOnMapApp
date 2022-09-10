@@ -26,15 +26,15 @@ class SearchBarViewDelegate extends SearchDelegate<String> {
   String get searchFieldLabel => searchHint;
 
   Future<void> getInputTips(String keyword) async {
-    if(query == ""){
+    if (query == "") {
       inputTipsList.clear();
     } else {
       await fetchResidentialInputTips(keyword).then((value) => {
-        print("fetchResidentialInputTips: "),
-        print(value),
-        inputTipsList.clear(),
-        inputTipsList.addAll(value.tips),
-      });
+            print("fetchResidentialInputTips: "),
+            print(value),
+            inputTipsList.clear(),
+            inputTipsList.addAll(value.tips),
+          });
     }
   }
 
@@ -299,7 +299,9 @@ class _SearchItemViewState extends State<SearchItemView> {
     return InkWell(
       child: Chip(
         label: Text(title),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
       onTap: () {
         debugPrint(title);
@@ -311,29 +313,30 @@ class _SearchItemViewState extends State<SearchItemView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: initData(),
-        builder: (BuildContext context, AsyncSnapshot snapShot) {
-          if (snapShot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-                color: Colors.blueAccent,
-              ),
-            );
-          } else if (snapShot.connectionState == ConnectionState.done) {
-            print(snapShot.hasError);
-            return Wrap(
-              spacing: 10,
-              // runSpacing: 0,
-              children: recommendResidentialList.map((item) {
-                return buildSearchItem(item);
-              }).toList(),
-            );
-          } else {
-            return Center(
-              child: Text('Error: ${snapShot.error}'),
-            );
-          }
-        });
+      future: initData(),
+      builder: (BuildContext context, AsyncSnapshot snapShot) {
+        if (snapShot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.white,
+              color: Colors.blueAccent,
+            ),
+          );
+        } else if (snapShot.connectionState == ConnectionState.done) {
+          print(snapShot.hasError);
+          return Wrap(
+            spacing: 10,
+            // runSpacing: 0,
+            children: recommendResidentialList.map((item) {
+              return buildSearchItem(item);
+            }).toList(),
+          );
+        } else {
+          return Center(
+            child: Text('Error: ${snapShot.error}'),
+          );
+        }
+      },
+    );
   }
 }
