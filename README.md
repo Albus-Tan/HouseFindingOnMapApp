@@ -6,11 +6,11 @@ Rent Now is a house finding App based on Amap that can display available houses 
 
 ## Core Features
 
-- **House List Recommendation : **endless list for house recommendation.
+- **House List Recommendation:** endless list for house recommendation.
 
   <img src="README.assets/无限长列表.gif" alt="无限长列表" style="zoom: 80%;" />
 
-- **Map-based House Hunting :** display housing listings in the vicinity of the current location on the map, with support for dragging the map to view listings in different areas.
+- **Map-based House Hunting:** display housing listings in the vicinity of the current location on the map, with support for dragging the map to view listings in different areas.
 
   <img src="README.assets/视觉范围懒加载.gif" alt="视觉范围懒加载" style="zoom: 25%;" />
 
@@ -24,7 +24,7 @@ Rent Now is a house finding App based on Amap that can display available houses 
 
   Identifies user gestures and touchpoints using the Gesture Detector component, calculates positions based on the Mercator projection principle, and displays the corresponding points on the map, connecting them to form smooth curves.
 
-- **Commute-based House Hunting :** offers listings within a one-hour commute circle.
+- **Commute-based House Hunting:** offers listings within a one-hour commute circle.
 
   <img src="README.assets/image-20231127150556962.png" alt="image-20231127150556962" style="zoom:33%;" />
 
