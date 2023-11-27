@@ -12,8 +12,8 @@ Rent Now is a house finding App based on Amap that can display available houses 
 
 - **Map-based House Hunting:** display housing listings in the vicinity of the current location on the map, with support for dragging the map to view listings in different areas.
 
-  <img src="README.assets/视觉范围懒加载.gif" alt="视觉范围懒加载" style="zoom: 25%;" />
-
+  <video src="README.assets/视觉范围懒加载.mp4"></video>
+    
   To enhance rendering performance, we implement lazy loading within the visual range. We rewrite the map's OnCameraChangeListener to obtain the latest visual boundaries of the map area, prioritize loading housing markers within this rectangular latitude and longitude range, and do not load markers from more distant areas.
 
 - **Circle Drawing House Hunting:** displays listings within a user-defined area on the map after drawing.
